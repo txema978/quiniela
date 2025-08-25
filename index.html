@@ -1075,6 +1075,106 @@
             showScreen('uploadScreen');
         }
         
+        // Función para seleccionar usuario (CORREGIDA - POSICIÓN CORRECTA)
+        function selectUser(userId) {
+            console.log('Seleccionando usuario:', userId); // Debug
+            
+            // Limpiar selección anterior
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nuevo usuario
+            selectedUserId = userId;
+            const selectedCard = document.getElementById(userId + 'Card');
+            if (!selectedCard) {
+                console.error('Card no encontrada:', userId + 'Card');
+                return;
+            }
+            
+            selectedCard.classList.add('selected');
+            
+            // Mostrar sección de contraseña CON DELAY
+            const passwordSection = document.getElementById('passwordSection');
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.getElementById('loginButton');
+            
+            if (!passwordSection || !passwordInput || !loginButton) {
+                console.error('Elementos de contraseña no encontrados');
+                return;
+            }
+            
+            setTimeout(() => {
+                passwordSection.classList.add('show');
+                
+                // Focus en el input después de la animación
+                setTimeout(() => {
+                    passwordInput.focus();
+                    // Mostrar teclado en móviles
+                    passwordInput.click();
+                }, 200);
+                
+            }, 100);
+            
+            // Actualizar hint del usuario
+            const userHint = selectedCard.querySelector('.user-hint');
+            if (userHint) {
+                userHint.textContent = 'Seleccionado ✓';
+            }
+            
+            // Resetear contraseña anterior
+            passwordInput.value = '';
+            loginButton.disabled = true;
+            loginButton.textContent = '🔐 Entrar a La Hermandaz';
+            
+            console.log('Usuario seleccionado correctamente'); // Debug
+        }
+        
+        // Función para intentar login con contraseña
+        function attemptLogin() {
+            console.log('Intentando login...'); // Debug
+            
+            const passwordInput = document.getElementById('passwordInput');
+            const enteredPassword = passwordInput.value.trim();
+            
+            if (!selectedUserId) {
+                alert('❌ Selecciona un usuario primero');
+                return;
+            }
+            
+            if (enteredPassword !== APP_PASSWORD) {
+                alert('❌ Contraseña incorrecta\n\nInténtalo de nuevo.');
+                passwordInput.value = '';
+                passwordInput.focus();
+                return;
+            }
+            
+            // Contraseña correcta - hacer login
+            const user = users[selectedUserId];
+            
+            currentUser = {
+                id: selectedUserId,
+                name: user.name,
+                icon: user.icon,
+                photo: user.photo
+            };
+            
+            // Guardar sesión
+            localStorage.setItem('hermandaz_user', JSON.stringify(currentUser));
+            
+            // Limpiar formulario de login
+            resetLoginForm();
+            
+            // Actualizar UI y mostrar menú principal
+            updateUI();
+            showScreen('homeScreen');
+            
+            // Mensaje de bienvenida
+            setTimeout(() => {
+                alert(`✅ ¡Bienvenido ${user.name}!\n\n🎯 Ya puedes:\n• Subir boletos\n• Ver resultados\n• Cambiar tu foto\n• Ver estadísticas`);
+            }, 300);
+        }
+        
         // Funciones placeholder para menús
         function showResults() {
             alert('🚧 Función en desarrollo: Ver Resultados\n\nAquí podrás ver las columnas oficiales y añadir resultados de partidos.');
