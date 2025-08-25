@@ -837,24 +837,45 @@
             setupPasswordInput();
         });
         
-        // Setup del input de contraseña
+        // Setup del input de contraseña (MEJORADO)
         function setupPasswordInput() {
             const passwordInput = document.getElementById('passwordInput');
             const loginButton = document.getElementById('loginButton');
             
+            if (!passwordInput || !loginButton) {
+                console.error('Elementos no encontrados'); // Debug
+                return;
+            }
+            
+            // Evento input para habilitar/deshabilitar botón
             passwordInput.addEventListener('input', function() {
-                if (passwordInput.value.length > 0 && selectedUserId) {
+                console.log('Password input:', passwordInput.value.length, 'Selected user:', selectedUserId); // Debug
+                
+                if (passwordInput.value.trim().length > 0 && selectedUserId) {
                     loginButton.disabled = false;
+                    loginButton.textContent = '🚀 Entrar a La Hermandaz';
                 } else {
                     loginButton.disabled = true;
+                    loginButton.textContent = '🔐 Entrar a La Hermandaz';
                 }
             });
             
+            // Evento Enter para login
             passwordInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !loginButton.disabled) {
+                    console.log('Enter presionado'); // Debug
                     attemptLogin();
                 }
             });
+            
+            // Eventos táctiles para móviles
+            passwordInput.addEventListener('touchstart', function() {
+                setTimeout(() => {
+                    this.focus();
+                }, 100);
+            });
+            
+            console.log('Password input configurado correctamente'); // Debug
         }
         
         // PWA Setup
@@ -932,8 +953,10 @@
             showScreen('homeScreen'); 
         }
         
-        // Función para seleccionar usuario (sin login inmediato)
+        // Función para seleccionar usuario (MEJORADA)
         function selectUser(userId) {
+            console.log('Seleccionando usuario:', userId); // Debug
+            
             // Limpiar selección anterior
             document.querySelectorAll('.user-card').forEach(card => {
                 card.classList.remove('selected');
@@ -941,26 +964,36 @@
             
             // Seleccionar nuevo usuario
             selectedUserId = userId;
-            document.getElementById(userId + 'Card').classList.add('selected');
+            const selectedCard = document.getElementById(userId + 'Card');
+            selectedCard.classList.add('selected');
             
-            // Mostrar sección de contraseña
-            document.getElementById('passwordSection').classList.add('show');
-            
-            // Actualizar hint del usuario
-            const userHint = document.querySelector(`#${userId}Card .user-hint`);
-            userHint.textContent = 'Seleccionado ✓';
-            
-            // Focus en el input de contraseña
-            setTimeout(() => {
-                document.getElementById('passwordInput').focus();
-            }, 300);
-            
-            // Habilitar botón si hay contraseña
+            // Mostrar sección de contraseña CON DELAY
+            const passwordSection = document.getElementById('passwordSection');
             const passwordInput = document.getElementById('passwordInput');
             const loginButton = document.getElementById('loginButton');
-            if (passwordInput.value.length > 0) {
-                loginButton.disabled = false;
-            }
+            
+            setTimeout(() => {
+                passwordSection.classList.add('show');
+                
+                // Focus en el input después de la animación
+                setTimeout(() => {
+                    passwordInput.focus();
+                    
+                    // Mostrar teclado en móviles
+                    passwordInput.click();
+                }, 200);
+                
+            }, 100);
+            
+            // Actualizar hint del usuario
+            const userHint = selectedCard.querySelector('.user-hint');
+            userHint.textContent = 'Seleccionado ✓';
+            
+            // Resetear contraseña anterior
+            passwordInput.value = '';
+            loginButton.disabled = true;
+            
+            console.log('Usuario seleccionado correctamente'); // Debug
         }
         
         // Función para intentar login con contraseña
@@ -1006,12 +1039,22 @@
             }, 300);
         }
         
-        // Función para resetear formulario de login
+        // Función para resetear formulario de login (MEJORADA)
         function resetLoginForm() {
+            console.log('Reseteando formulario de login'); // Debug
+            
             selectedUserId = null;
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('loginButton').disabled = true;
-            document.getElementById('passwordSection').classList.remove('show');
+            
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.getElementById('loginButton');
+            const passwordSection = document.getElementById('passwordSection');
+            
+            if (passwordInput) passwordInput.value = '';
+            if (loginButton) {
+                loginButton.disabled = true;
+                loginButton.textContent = '🔐 Entrar a La Hermandaz';
+            }
+            if (passwordSection) passwordSection.classList.remove('show');
             
             // Limpiar selecciones
             document.querySelectorAll('.user-card').forEach(card => {
@@ -1019,8 +1062,13 @@
             });
             
             // Resetear hints
-            document.querySelector('#oscarCard .user-hint').textContent = 'Toca para seleccionar';
-            document.querySelector('#txemaCard .user-hint').textContent = 'Toca para seleccionar';
+            const oscarHint = document.querySelector('#oscarCard .user-hint');
+            const txemaHint = document.querySelector('#txemaCard .user-hint');
+            
+            if (oscarHint) oscarHint.textContent = 'Toca para seleccionar';
+            if (txemaHint) txemaHint.textContent = 'Toca para seleccionar';
+            
+            console.log('Formulario reseteado'); // Debug
         }
         
         function showUpload() {
