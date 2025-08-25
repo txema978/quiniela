@@ -541,7 +541,7 @@
         }
         
         // Función para intentar login
-        function attemptLogin() {
+        async function attemptLogin() {
             const password = document.getElementById('passwordInput').value.trim();
             
             if (!selectedUserId) {
@@ -556,9 +556,26 @@
                 return;
             }
             
+            // Verificar que el usuario existe
+            if (!users[selectedUserId]) {
+                console.log('Usuario no encontrado, recargando...');
+                await loadUsers();
+            }
+            
+            // Verificar de nuevo después de recargar
+            if (!users[selectedUserId]) {
+                alert('❌ Error cargando usuario. Inténtalo de nuevo.');
+                return;
+            }
+            
             // Login exitoso
-            currentUser = users[selectedUserId];
-            currentUser.id = selectedUserId; // Asegurar que tenga el ID
+            currentUser = {
+                id: selectedUserId,
+                name: users[selectedUserId].name,
+                icon: users[selectedUserId].icon,
+                photo: users[selectedUserId].photo
+            };
+            
             localStorage.setItem('hermandaz_user', selectedUserId);
             
             // Mostrar pantalla principal
