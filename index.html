@@ -7,13 +7,18 @@
     <title>La Hermandaz</title>
     <meta name="theme-color" content="#1e293b">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        html {
+            background: #1e293b;
+            min-height: 100vh;
         }
 
 ```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
     body {
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
@@ -26,6 +31,7 @@
         max-width: 400px;
         margin: 0 auto;
         text-align: center;
+        background: transparent;
     }
     
     .logo {
@@ -78,6 +84,8 @@
         padding: 24px 16px;
         cursor: pointer;
         transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
     }
     
     .user-card:hover {
@@ -812,9 +820,23 @@
             showHome();
         }
         
-        // Clicks en usuarios
-        document.getElementById('oscarCard').addEventListener('click', () => selectUser('oscar'));
-        document.getElementById('txemaCard').addEventListener('click', () => selectUser('txema'));
+        // Clicks en usuarios - Asegurar que funcionen
+        const oscarCard = document.getElementById('oscarCard');
+        const txemaCard = document.getElementById('txemaCard');
+        
+        if (oscarCard) {
+            oscarCard.addEventListener('click', function(e) {
+                console.log('Click en Oscar');
+                selectUser('oscar');
+            });
+        }
+        
+        if (txemaCard) {
+            txemaCard.addEventListener('click', function(e) {
+                console.log('Click en Txema');
+                selectUser('txema');
+            });
+        }
         
         // Input de contraseña
         const passwordInput = document.getElementById('passwordInput');
