@@ -411,8 +411,94 @@
             margin-top: 10px;
         }
         
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
+        /* Estilos para formulario editable */
+        .editable-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .columna-editable {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .columna-editable h4 {
+            color: #10b981;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .partido-editable {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .partido-numero {
+            font-weight: 600;
+            color: #10b981;
+            min-width: 30px;
+        }
+        
+        .equipos-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+        
+        .equipos-input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        
+        .resultado-select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .resultado-select:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        
+        .pleno-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .pleno-input {
+            width: 60px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .pleno-input:focus {
+            outline: none;
+            border-color: #10b981;
         }
 
         /* Estilos para historial */
@@ -679,15 +765,17 @@
                     <p>Analizando boleto...</p>
                 </div>
                 <div id="extractedData" class="hidden">
-                    <h3 style="color: #10b981; margin-bottom: 16px;">Apuestas extraídas:</h3>
+                    <h3 style="color: #10b981; margin-bottom: 16px;">Verifica y corrige los datos:</h3>
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; margin-bottom: 8px; font-weight: 600;">Jornada:</label>
                         <input type="number" id="jornadaInput" min="1" max="50" value="2" 
                                style="width: 100px; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; text-align: center;">
                     </div>
-                    <div id="columnasExtraidas"></div>
-                    <button class="btn btn-primary" id="saveBoletoBtn">Guardar Boleto</button>
-                    <button class="btn btn-secondary" id="newImageBtn">Subir otra imagen</button>
+                    <div id="editableForm"></div>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary" id="saveBoletoBtn">Guardar Boleto</button>
+                        <button class="btn btn-secondary" id="newImageBtn">Subir otra imagen</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1115,105 +1203,214 @@
             reader.readAsDataURL(file);
         }
         
-        // Función para simular OCR (por ahora datos ficticios)
+        // Función para simular OCR con equipos reales de LaLiga
         function simulateOCR() {
-            // Lista de equipos de LaLiga (ejemplo)
-            const equipos = [
-                'Real Madrid - Barcelona', 'Atletico Madrid - Sevilla', 'Real Sociedad - Villarreal',
-                'Athletic Bilbao - Valencia', 'Betis - Osasuna', 'Celta - Mallorca',
-                'Getafe - Las Palmas', 'Girona - Espanyol', 'Alaves - Rayo Vallecano',
-                'Real Valladolid - Leganes', 'Cadiz - Elche', 'Granada - Almeria',
-                'Deportivo - Racing', 'Oviedo - Sporting'
+            // Equipos reales basados en LaLiga 2024-25
+            const equiposReales = [
+                'Mallorca-Celta', 'Levante-Barcelona', 'Osasuna-Valencia',
+                'Real Sociedad-Espanyol', 'Villarreal-Girona', 'R. Oviedo-Real Madrid',
+                'Athletic Club-Rayo Vallecano', 'Mirandés-Huesca', 'Ceuta-Sporting',
+                'R. Zaragoza-Andorra', 'Deportivo-Burgos', 'Cultural Leonesa-Almería',
+                'Albacete-Racing Santander', 'Sevilla-Getafe'
             ];
             
-            // Generar apuestas aleatorias para 14 partidos + pleno al 15
+            // Generar apuestas realistas
             const opciones = ['1', 'X', '2'];
             const columna1 = [];
             const columna2 = [];
             
+            // Partidos 1-14 (1, X, 2)
             for (let i = 0; i < 14; i++) {
                 columna1.push(opciones[Math.floor(Math.random() * opciones.length)]);
                 columna2.push(opciones[Math.floor(Math.random() * opciones.length)]);
             }
             
-            // Pleno al 15 (resultado exacto)
-            const plenos = ['0-0', '1-0', '0-1', '1-1', '2-1', '1-2', '2-0', '0-2', '2-2', '3-1'];
-            columna1.push(plenos[Math.floor(Math.random() * plenos.length)]);
-            columna2.push(plenos[Math.floor(Math.random() * plenos.length)]);
+            // Partido 15 - Pleno al 15 (resultado exacto)
+            const goles1 = Math.floor(Math.random() * 4); // 0, 1, 2, 3
+            const goles2 = Math.floor(Math.random() * 4);
+            const resultado1 = goles1 > 2 ? 'M' : goles1.toString();
+            const resultado2 = goles2 > 2 ? 'M' : goles2.toString();
+            
+            columna1.push(`${resultado1}-${resultado2}`);
+            columna2.push(`${resultado1}-${resultado2}`);
             
             return {
                 columna1: columna1,
                 columna2: columna2,
-                equipos: equipos
+                equipos: equiposReales
             };
         }
         
-        // Función para mostrar datos extraídos
+        // Función para mostrar formulario editable
         function showExtractedData() {
             document.getElementById('processingArea').classList.add('hidden');
             document.getElementById('extractedData').classList.remove('hidden');
             
-            const container = document.getElementById('columnasExtraidas');
+            createEditableForm();
+        }
+        
+        // Función para crear formulario editable
+        function createEditableForm() {
+            const container = document.getElementById('editableForm');
             container.innerHTML = '';
+            container.className = 'editable-form';
             
-            // Mostrar cada columna con partidos
-            Object.keys(extractedColumns).forEach((columna, index) => {
+            // Crear formularios para cada columna
+            Object.keys(extractedColumns).forEach((columna, columnaIndex) => {
                 if (columna === 'equipos') return; // Saltar array de equipos
                 
                 const columnaDiv = document.createElement('div');
-                columnaDiv.style.cssText = `
-                    background: rgba(255,255,255,0.05);
-                    border-radius: 12px;
-                    padding: 16px;
-                    margin-bottom: 16px;
-                    border: 1px solid rgba(16,185,129,0.3);
-                `;
+                columnaDiv.className = 'columna-editable';
                 
                 const titulo = document.createElement('h4');
-                titulo.textContent = `Columna ${index + 1}`;
-                titulo.style.cssText = 'color: #10b981; margin-bottom: 12px; font-size: 16px;';
+                titulo.textContent = `Columna ${columnaIndex + 1}`;
+                columnaDiv.appendChild(titulo);
                 
-                const apuestasContainer = document.createElement('div');
-                apuestasContainer.className = 'columna-apuestas';
-                
+                // Crear campos para cada partido
                 extractedColumns[columna].forEach((apuesta, partidoIndex) => {
-                    const div = document.createElement('div');
-                    div.className = 'apuesta-item';
+                    const partidoDiv = document.createElement('div');
+                    partidoDiv.className = 'partido-editable';
                     
-                    const equiposPartido = extractedColumns.equipos && extractedColumns.equipos[partidoIndex] 
-                        ? extractedColumns.equipos[partidoIndex] 
-                        : `Partido ${partidoIndex + 1}`;
+                    // Número del partido
+                    const numero = document.createElement('span');
+                    numero.className = 'partido-numero';
+                    numero.textContent = `${partidoIndex + 1}.`;
                     
-                    div.innerHTML = `
-                        <span class="apuesta-partido">${equiposPartido}</span>
-                        <span class="apuesta-resultado">${apuesta}</span>
-                    `;
+                    // Campo de equipos
+                    const equiposInput = document.createElement('input');
+                    equiposInput.className = 'equipos-input';
+                    equiposInput.type = 'text';
+                    equiposInput.placeholder = 'Equipo A - Equipo B';
+                    equiposInput.value = extractedColumns.equipos[partidoIndex] || `Partido ${partidoIndex + 1}`;
+                    equiposInput.id = `equipos-${columnaIndex}-${partidoIndex}`;
                     
-                    apuestasContainer.appendChild(div);
+                    partidoDiv.appendChild(numero);
+                    partidoDiv.appendChild(equiposInput);
+                    
+                    // Campo de resultado
+                    if (partidoIndex < 14) {
+                        // Partidos 1-14: selector 1/X/2
+                        const resultadoSelect = document.createElement('select');
+                        resultadoSelect.className = 'resultado-select';
+                        resultadoSelect.id = `resultado-${columnaIndex}-${partidoIndex}`;
+                        
+                        const opciones = ['1', 'X', '2'];
+                        opciones.forEach(opcion => {
+                            const option = document.createElement('option');
+                            option.value = opcion;
+                            option.textContent = opcion;
+                            if (opcion === apuesta) option.selected = true;
+                            resultadoSelect.appendChild(option);
+                        });
+                        
+                        partidoDiv.appendChild(resultadoSelect);
+                        
+                    } else {
+                        // Partido 15: Pleno al 15
+                        const plenoContainer = document.createElement('div');
+                        plenoContainer.className = 'pleno-container';
+                        
+                        const [goles1, goles2] = apuesta.split('-');
+                        
+                        const input1 = document.createElement('input');
+                        input1.className = 'pleno-input';
+                        input1.type = 'text';
+                        input1.maxLength = 1;
+                        input1.value = goles1 || '0';
+                        input1.placeholder = '0';
+                        input1.id = `pleno1-${columnaIndex}`;
+                        
+                        const guion = document.createElement('span');
+                        guion.textContent = '-';
+                        guion.style.color = '#10b981';
+                        guion.style.fontWeight = '600';
+                        
+                        const input2 = document.createElement('input');
+                        input2.className = 'pleno-input';
+                        input2.type = 'text';
+                        input2.maxLength = 1;
+                        input2.value = goles2 || '0';
+                        input2.placeholder = '0';
+                        input2.id = `pleno2-${columnaIndex}`;
+                        
+                        plenoContainer.appendChild(input1);
+                        plenoContainer.appendChild(guion);
+                        plenoContainer.appendChild(input2);
+                        partidoDiv.appendChild(plenoContainer);
+                        
+                        // Añadir ayuda para pleno al 15
+                        const ayuda = document.createElement('div');
+                        ayuda.style.cssText = 'font-size: 11px; color: #94a3b8; margin-top: 4px;';
+                        ayuda.textContent = 'Pleno al 15: 0, 1, 2 o M (más de 2)';
+                        partidoDiv.appendChild(ayuda);
+                    }
+                    
+                    columnaDiv.appendChild(partidoDiv);
                 });
                 
-                columnaDiv.appendChild(titulo);
-                columnaDiv.appendChild(apuestasContainer);
                 container.appendChild(columnaDiv);
             });
         }
         
-        // Función para guardar boleto final
+        // Función para guardar boleto final con datos del formulario
         async function saveBoletoFinal() {
-            if (!currentUser || !currentBoletoImage || !extractedColumns) {
+            if (!currentUser || !currentBoletoImage) {
                 alert('Error: Faltan datos para guardar el boleto');
                 return;
             }
             
             const jornada = document.getElementById('jornadaInput').value || '2';
             
-            showPhotoStatus('<div class="loading"></div>Guardando boleto...');
+            // Recopilar datos del formulario editable
+            const columnasFinales = {};
+            const equiposFinales = [];
+            
+            Object.keys(extractedColumns).forEach((columna, columnaIndex) => {
+                if (columna === 'equipos') return;
+                
+                const apuestasColumna = [];
+                
+                for (let partidoIndex = 0; partidoIndex < 15; partidoIndex++) {
+                    // Recoger equipos (solo una vez)
+                    if (columnaIndex === 0) {
+                        const equiposInput = document.getElementById(`equipos-${columnaIndex}-${partidoIndex}`);
+                        if (equiposInput) {
+                            equiposFinales.push(equiposInput.value || `Partido ${partidoIndex + 1}`);
+                        }
+                    }
+                    
+                    // Recoger resultados
+                    if (partidoIndex < 14) {
+                        // Partidos 1-14
+                        const resultadoSelect = document.getElementById(`resultado-${columnaIndex}-${partidoIndex}`);
+                        if (resultadoSelect) {
+                            apuestasColumna.push(resultadoSelect.value);
+                        }
+                    } else {
+                        // Partido 15 - Pleno al 15
+                        const pleno1Input = document.getElementById(`pleno1-${columnaIndex}`);
+                        const pleno2Input = document.getElementById(`pleno2-${columnaIndex}`);
+                        if (pleno1Input && pleno2Input) {
+                            const gol1 = pleno1Input.value || '0';
+                            const gol2 = pleno2Input.value || '0';
+                            apuestasColumna.push(`${gol1}-${gol2}`);
+                        }
+                    }
+                }
+                
+                columnasFinales[columna] = apuestasColumna;
+            });
+            
+            // Añadir equipos al objeto final
+            columnasFinales.equipos = equiposFinales;
+            
+            showPhotoStatus('Guardando boleto...');
             
             const boletoData = {
                 user_id: currentUser.id,
                 jornada: `J${jornada}`,
                 imagen_url: currentBoletoImage,
-                columnas_apuestas: extractedColumns,
+                columnas_apuestas: columnasFinales,
                 estado: 'pendiente'
             };
             
@@ -1224,7 +1421,7 @@
                     showPhotoStatus('Boleto guardado correctamente');
                     setTimeout(() => {
                         showHome();
-                        alert(`Boleto guardado exitosamente!\n\nJornada: J${jornada}\nUsuario: ${currentUser.name}\nColumnas: ${Object.keys(extractedColumns).filter(k => k !== 'equipos').length}`);
+                        alert(`Boleto guardado exitosamente!\n\nJornada: J${jornada}\nUsuario: ${currentUser.name}\nColumnas: ${Object.keys(columnasFinales).filter(k => k !== 'equipos').length}`);
                     }, 1500);
                 } else {
                     showPhotoStatus('Error al guardar boleto');
