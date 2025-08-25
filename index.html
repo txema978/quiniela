@@ -482,13 +482,14 @@
         }
         
         .boleto-imagen {
-            max-width: 100%;
-            max-height: 200px;
+            width: 100%;
+            max-height: 300px;
             border-radius: 12px;
             margin-bottom: 16px;
-            object-fit: cover;
+            object-fit: contain;
             cursor: pointer;
             transition: transform 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
         }
         
         .boleto-imagen:hover {
@@ -522,20 +523,31 @@
         }
         
         .columna-apuestas {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 4px;
-            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .apuesta-item {
-            padding: 4px;
+            padding: 8px 12px;
             background: rgba(16, 185, 129, 0.2);
-            border-radius: 4px;
-            text-align: center;
+            border-radius: 6px;
             color: white;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .apuesta-partido {
             font-weight: 600;
+        }
+        
+        .apuesta-resultado {
+            color: #10b981;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -668,6 +680,11 @@
                 </div>
                 <div id="extractedData" class="hidden">
                     <h3 style="color: #10b981; margin-bottom: 16px;">Apuestas extraídas:</h3>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Jornada:</label>
+                        <input type="number" id="jornadaInput" min="1" max="50" value="2" 
+                               style="width: 100px; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; text-align: center;">
+                    </div>
                     <div id="columnasExtraidas"></div>
                     <button class="btn btn-primary" id="saveBoletoBtn">Guardar Boleto</button>
                     <button class="btn btn-secondary" id="newImageBtn">Subir otra imagen</button>
@@ -1006,13 +1023,23 @@
             const columnasContainer = div.querySelector(`#columnas-${boleto.id}`);
             if (boleto.columnas_apuestas && typeof boleto.columnas_apuestas === 'object') {
                 Object.keys(boleto.columnas_apuestas).forEach((columna, index) => {
+                    if (columna === 'equipos') return; // Saltar array de equipos
+                    
                     const columnaDiv = document.createElement('div');
                     columnaDiv.className = 'columna-item';
                     
                     const apuestas = boleto.columnas_apuestas[columna] || [];
-                    const apuestasHTML = apuestas.map(apuesta => 
-                        `<span class="apuesta-item">${apuesta}</span>`
-                    ).join('');
+                    const equipos = boleto.columnas_apuestas.equipos || [];
+                    
+                    const apuestasHTML = apuestas.map((apuesta, partidoIndex) => {
+                        const equiposPartido = equipos[partidoIndex] || `Partido ${partidoIndex + 1}`;
+                        return `
+                            <div class="apuesta-item">
+                                <span class="apuesta-partido">${equiposPartido}</span>
+                                <span class="apuesta-resultado">${apuesta}</span>
+                            </div>
+                        `;
+                    }).join('');
                     
                     columnaDiv.innerHTML = `
                         <div class="columna-titulo">Columna ${index + 1}</div>
@@ -1090,10 +1117,34 @@
         
         // Función para simular OCR (por ahora datos ficticios)
         function simulateOCR() {
-            // Datos de ejemplo basados en tu boleto
+            // Lista de equipos de LaLiga (ejemplo)
+            const equipos = [
+                'Real Madrid - Barcelona', 'Atletico Madrid - Sevilla', 'Real Sociedad - Villarreal',
+                'Athletic Bilbao - Valencia', 'Betis - Osasuna', 'Celta - Mallorca',
+                'Getafe - Las Palmas', 'Girona - Espanyol', 'Alaves - Rayo Vallecano',
+                'Real Valladolid - Leganes', 'Cadiz - Elche', 'Granada - Almeria',
+                'Deportivo - Racing', 'Oviedo - Sporting'
+            ];
+            
+            // Generar apuestas aleatorias para 14 partidos + pleno al 15
+            const opciones = ['1', 'X', '2'];
+            const columna1 = [];
+            const columna2 = [];
+            
+            for (let i = 0; i < 14; i++) {
+                columna1.push(opciones[Math.floor(Math.random() * opciones.length)]);
+                columna2.push(opciones[Math.floor(Math.random() * opciones.length)]);
+            }
+            
+            // Pleno al 15 (resultado exacto)
+            const plenos = ['0-0', '1-0', '0-1', '1-1', '2-1', '1-2', '2-0', '0-2', '2-2', '3-1'];
+            columna1.push(plenos[Math.floor(Math.random() * plenos.length)]);
+            columna2.push(plenos[Math.floor(Math.random() * plenos.length)]);
+            
             return {
-                columna1: ['1', 'X', '2', '1', 'X', '2', 'X', '1', '2', '1', 'X', '2', '1', 'X', '2-1'],
-                columna2: ['X', '1', '2', 'X', '1', '2', '1', 'X', '2', 'X', '1', '2', 'X', '1', '1-0']
+                columna1: columna1,
+                columna2: columna2,
+                equipos: equipos
             };
         }
         
@@ -1105,8 +1156,10 @@
             const container = document.getElementById('columnasExtraidas');
             container.innerHTML = '';
             
-            // Mostrar cada columna
+            // Mostrar cada columna con partidos
             Object.keys(extractedColumns).forEach((columna, index) => {
+                if (columna === 'equipos') return; // Saltar array de equipos
+                
                 const columnaDiv = document.createElement('div');
                 columnaDiv.style.cssText = `
                     background: rgba(255,255,255,0.05);
@@ -1120,30 +1173,27 @@
                 titulo.textContent = `Columna ${index + 1}`;
                 titulo.style.cssText = 'color: #10b981; margin-bottom: 12px; font-size: 16px;';
                 
-                const apuestas = document.createElement('div');
-                apuestas.style.cssText = `
-                    display: grid;
-                    grid-template-columns: repeat(5, 1fr);
-                    gap: 8px;
-                    font-family: monospace;
-                `;
+                const apuestasContainer = document.createElement('div');
+                apuestasContainer.className = 'columna-apuestas';
                 
-                extractedColumns[columna].forEach(apuesta => {
-                    const span = document.createElement('span');
-                    span.textContent = apuesta;
-                    span.style.cssText = `
-                        padding: 8px;
-                        background: rgba(16,185,129,0.2);
-                        border-radius: 6px;
-                        text-align: center;
-                        color: white;
-                        font-weight: 600;
+                extractedColumns[columna].forEach((apuesta, partidoIndex) => {
+                    const div = document.createElement('div');
+                    div.className = 'apuesta-item';
+                    
+                    const equiposPartido = extractedColumns.equipos && extractedColumns.equipos[partidoIndex] 
+                        ? extractedColumns.equipos[partidoIndex] 
+                        : `Partido ${partidoIndex + 1}`;
+                    
+                    div.innerHTML = `
+                        <span class="apuesta-partido">${equiposPartido}</span>
+                        <span class="apuesta-resultado">${apuesta}</span>
                     `;
-                    apuestas.appendChild(span);
+                    
+                    apuestasContainer.appendChild(div);
                 });
                 
                 columnaDiv.appendChild(titulo);
-                columnaDiv.appendChild(apuestas);
+                columnaDiv.appendChild(apuestasContainer);
                 container.appendChild(columnaDiv);
             });
         }
@@ -1155,14 +1205,13 @@
                 return;
             }
             
-            showPhotoStatus('<div class="loading"></div>Guardando boleto...');
+            const jornada = document.getElementById('jornadaInput').value || '2';
             
-            // Generar nombre de jornada (por ahora simple)
-            const jornada = `J${new Date().getWeek()}`;
+            showPhotoStatus('<div class="loading"></div>Guardando boleto...');
             
             const boletoData = {
                 user_id: currentUser.id,
-                jornada: jornada,
+                jornada: `J${jornada}`,
                 imagen_url: currentBoletoImage,
                 columnas_apuestas: extractedColumns,
                 estado: 'pendiente'
@@ -1172,17 +1221,17 @@
                 const success = await saveBoleto(boletoData);
                 
                 if (success) {
-                    showPhotoStatus('✅ Boleto guardado correctamente');
+                    showPhotoStatus('Boleto guardado correctamente');
                     setTimeout(() => {
                         showHome();
-                        alert(`🎉 ¡Boleto guardado exitosamente!\n\nJornada: ${jornada}\nUsuario: ${currentUser.name}\nColumnas: ${Object.keys(extractedColumns).length}`);
+                        alert(`Boleto guardado exitosamente!\n\nJornada: J${jornada}\nUsuario: ${currentUser.name}\nColumnas: ${Object.keys(extractedColumns).filter(k => k !== 'equipos').length}`);
                     }, 1500);
                 } else {
-                    showPhotoStatus('⚠️ Error al guardar boleto');
+                    showPhotoStatus('Error al guardar boleto');
                 }
             } catch (error) {
                 console.error('Error guardando boleto:', error);
-                showPhotoStatus('⚠️ Error inesperado');
+                showPhotoStatus('Error inesperado');
             }
         }
         
