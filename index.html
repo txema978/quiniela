@@ -4,12 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Hermandaz</title>
-    <link rel="manifest" href="#" id="manifest-placeholder">
     <meta name="theme-color" content="#1e293b">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="La Hermandaz">
-    
     <style>
         * {
             margin: 0;
@@ -17,190 +12,54 @@
             box-sizing: border-box;
         }
         
-        :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --secondary: #f59e0b;
-            --dark: #1e293b;
-            --dark-light: #334155;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
-            --shadow-lg: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-        }
-        
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* Layout principal */
-        .app {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            padding: 20px;
         }
         
         .container {
-            max-width: 420px;
+            max-width: 400px;
             margin: 0 auto;
-            padding: 20px;
-            flex: 1;
-        }
-        
-        /* Header */
-        .header {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0;
         }
         
         .logo {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 24px;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 32px;
             margin: 0 auto 20px;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
         
-        .logo::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        }
-        
-        .app-title {
-            font-size: 32px;
+        .title {
+            font-size: 28px;
             font-weight: 800;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
         
-        .app-subtitle {
+        .subtitle {
             font-size: 16px;
-            color: var(--text-muted);
-            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 40px;
         }
         
-        /* Pantallas */
         .screen {
             display: none;
-            animation: slideIn 0.3s ease-out;
         }
         
         .screen.active {
             display: block;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Menú principal */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .menu-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .menu-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .menu-item:hover::before {
-            left: 100%;
-        }
-        
-        .menu-item:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .menu-item:active {
-            transform: translateY(-2px);
-        }
-        
-        .menu-icon {
-            font-size: 36px;
-            margin-bottom: 12px;
-            display: block;
-        }
-        
-        .menu-text {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text);
-        }
-        
-        /* Login */
-        .login-container {
-            max-width: 380px;
-            margin: 0 auto;
-        }
-        
-        .login-title {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            color: var(--text);
         }
         
         .user-grid {
@@ -210,68 +69,24 @@
             margin-bottom: 30px;
         }
         
-        /* Password input */
-        .password-section {
-            margin-top: 30px;
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .password-section.show {
-            opacity: 1;
-            max-height: 200px;
-            margin-bottom: 20px;
-        }
-        
-        .password-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 16px 20px;
-            font-size: 16px;
-            color: var(--text);
-            text-align: center;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-        
-        .password-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-        }
-        
-        .password-input::placeholder {
-            color: var(--text-muted);
-        }
-        
-        .user-card.selected {
-            border-color: var(--primary);
-            background: rgba(16, 185, 129, 0.1);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-        
         .user-card {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid transparent;
             border-radius: 16px;
             padding: 24px 16px;
-            text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
         }
         
         .user-card:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow);
-            border-color: var(--primary);
+            border-color: #10b981;
+        }
+        
+        .user-card.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+            transform: translateY(-4px);
         }
         
         .user-avatar {
@@ -283,118 +98,117 @@
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
         }
         
         .user-name {
             font-size: 18px;
             font-weight: 700;
-            color: var(--text);
             margin-bottom: 4px;
         }
         
         .user-hint {
             font-size: 12px;
-            color: var(--text-muted);
+            color: #94a3b8;
         }
         
-        /* Botones */
+        .password-section {
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+        
+        .password-section.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        
+        .password-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 18px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .password-input::placeholder {
+            color: #94a3b8;
+        }
+        
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px 24px;
+            width: 100%;
+            padding: 16px;
             border: none;
             border-radius: 12px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
-            min-height: 48px;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            box-shadow: var(--shadow);
         }
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .btn-secondary {
+        .btn-primary:disabled {
             background: rgba(255, 255, 255, 0.1);
-            color: var(--text);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #94a3b8;
+            cursor: not-allowed;
         }
         
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
         }
         
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
-            color: white;
-        }
-        
-        .btn-full {
-            width: 100%;
-        }
-        
-        /* Upload */
-        .upload-zone {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
             margin-bottom: 30px;
         }
         
-        .upload-zone:hover {
-            border-color: var(--primary);
-            background: rgba(16, 185, 129, 0.05);
+        .menu-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        .upload-zone.dragover {
-            border-color: var(--secondary);
-            background: rgba(245, 158, 11, 0.05);
+        .menu-item:hover {
+            transform: translateY(-4px);
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.08);
         }
         
-        .upload-icon {
-            font-size: 48px;
-            color: var(--primary);
-            margin-bottom: 16px;
+        .menu-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
         }
         
-        .upload-text {
-            font-size: 18px;
+        .menu-text {
+            font-size: 16px;
             font-weight: 600;
-            color: var(--text);
-            margin-bottom: 8px;
         }
         
-        .upload-hint {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-        
-        /* User info */
         .user-info {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 16px;
@@ -402,7 +216,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: auto;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
@@ -416,34 +229,22 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            overflow: hidden;
         }
         
-        .user-info-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        
-        .user-info-text {
-            font-weight: 600;
-            color: var(--text);
-        }
-        
-        .user-info-hint {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-        
-        /* Back button */
         .back-btn {
             position: fixed;
             top: 20px;
@@ -457,401 +258,235 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            color: white;
             font-size: 18px;
-            color: var(--text);
-            z-index: 100;
         }
         
         .back-btn:hover {
             background: rgba(255, 255, 255, 0.15);
-            transform: translateX(-2px);
-        }
-        
-        /* Install button */
-        .install-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--secondary) 0%, #f59e0b 100%);
-            color: var(--dark);
-            border: none;
-            border-radius: 50px;
-            padding: 16px 20px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: var(--shadow-lg);
-            display: none;
-            align-items: center;
-            gap: 8px;
-            z-index: 100;
-            transition: all 0.3s ease;
-        }
-        
-        .install-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .install-btn.show {
-            display: flex;
-        }
-        
-        /* Preview */
-        .preview-container {
-            margin-bottom: 30px;
-            display: none;
-        }
-        
-        .preview-container.show {
-            display: block;
-        }
-        
-        .preview-image {
-            width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-        
-        /* Processing */
-        .processing {
-            background: linear-gradient(135deg, var(--secondary) 0%, #f59e0b 100%);
-            color: var(--dark);
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .processing.show {
-            display: block;
-        }
-        
-        .processing .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--dark);
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 8px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Results */
-        .results-container {
-            display: none;
-        }
-        
-        .results-container.show {
-            display: block;
-        }
-        
-        .results-grid {
-            display: grid;
-            gap: 16px;
-            margin-bottom: 30px;
-        }
-        
-        .column-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-        }
-        
-        .column-header {
-            color: var(--secondary);
-            font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        
-        .column-predictions {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        
-        .prediction-item {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text);
-            padding: 8px 4px;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .pleno-15 {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 8px;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: 700;
-        }
-        
-        /* Action buttons */
-        .action-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        
-        /* Hidden inputs */
-        .hidden {
-            display: none;
-        }
-        
-        /* Responsive */
-        @media (min-width: 768px) {
-            .container {
-                max-width: 500px;
-                padding: 40px;
-            }
-            
-            .menu-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .header {
-                margin-bottom: 60px;
-            }
-        }
-        
-        /* Loading states */
-        .loading {
-            pointer-events: none;
-            opacity: 0.7;
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.3s ease-out;
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <!-- Pantalla de Selección de Usuario (Primera pantalla) -->
-        <div id="userSelectScreen" class="screen active">
-            <div class="container">
-                <div class="header">
-                    <div class="logo">⚽</div>
-                    <h1 class="app-title">LA HERMANDAZ</h1>
-                    <p class="app-subtitle">Quinielas entre colegas</p>
-                </div>
-                
-                <div class="login-container">
-                    <h2 class="login-title">¿Quién eres?</h2>
-                    
-                    <div class="user-grid">
-                        <div class="user-card" onclick="selectUser('oscar')" id="oscarCard">
-                            <div class="user-avatar" id="oscarAvatarSelect">
-                                <span>👨‍💼</span>
-                                <img id="oscarPhotoSelect" style="display: none;" alt="Oscar">
-                            </div>
-                            <div class="user-name">OSCAR</div>
-                            <div class="user-hint">Toca para seleccionar</div>
-                        </div>
-                        
-                        <div class="user-card" onclick="selectUser('txema')" id="txemaCard">
-                            <div class="user-avatar" id="txemaAvatarSelect">
-                                <span>👨‍🎓</span>
-                                <img id="txemaPhotoSelect" style="display: none;" alt="Txema">
-                            </div>
-                            <div class="user-name">TXEMA</div>
-                            <div class="user-hint">Toca para seleccionar</div>
-                        </div>
-                    </div>
-                    
-                    <div class="password-section" id="passwordSection">
-                        <input 
-                            type="password" 
-                            class="password-input" 
-                            id="passwordInput" 
-                            placeholder="Introduce la contraseña"
-                            maxlength="20"
-                        >
-                        <button class="btn btn-primary btn-full" onclick="attemptLogin()" id="loginButton" disabled>
-                            🔐 Entrar a La Hermandaz
-                        </button>
-                    </div>
-                    
-                    <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-top: 30px;">
-                        👆 Selecciona tu usuario e introduce la contraseña
-                    </p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Pantalla Principal (Solo se ve después del login) -->
-        <div id="homeScreen" class="screen">
-            <div class="container">
-                <div class="header">
-                    <div class="logo">⚽</div>
-                    <h1 class="app-title">LA HERMANDAZ</h1>
-                    <p class="app-subtitle" id="welcomeSubtitle">Bienvenido</p>
-                </div>
-                
-                <div class="menu-grid">
-                    <div class="menu-item" onclick="showUpload()">
-                        <span class="menu-icon">📷</span>
-                        <div class="menu-text">Subir Boleto</div>
-                    </div>
-                    
-                    <div class="menu-item" onclick="showResults()">
-                        <span class="menu-icon">📊</span>
-                        <div class="menu-text">Resultados</div>
-                    </div>
-                    
-                    <div class="menu-item" onclick="showStats()">
-                        <span class="menu-icon">🏆</span>
-                        <div class="menu-text">Estadísticas</div>
-                    </div>
-                    
-                    <div class="menu-item" onclick="showHistory()">
-                        <span class="menu-icon">📅</span>
-                        <div class="menu-text">Historial</div>
-                    </div>
-                    
-                    <div class="menu-item" onclick="changePhoto()">
-                        <span class="menu-icon">📸</span>
-                        <div class="menu-text">Mi Foto</div>
-                    </div>
-                    
-                    <div class="menu-item" onclick="showInfo()">
-                        <span class="menu-icon">ℹ️</span>
-                        <div class="menu-text">Info</div>
-                    </div>
-                </div>
-                
-                <div class="user-info" id="userInfo">
-                    <div class="user-info-left">
-                        <div class="user-info-avatar" onclick="changePhoto()">
-                            <span id="userIcon">👨‍💼</span>
-                            <img id="userPhoto" style="display: none;" alt="Foto usuario">
-                        </div>
-                        <div>
-                            <div class="user-info-text" id="userText">Usuario</div>
-                            <div class="user-info-hint" id="userHint">Toca la foto para cambiarla</div>
-                        </div>
-                    </div>
-                    <button class="btn btn-danger" onclick="logout()">
-                        Salir
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Pantalla de Subir Boleto -->
-        <div id="uploadScreen" class="screen">
-            <button class="back-btn" onclick="showHome()">←</button>
+    <div class="container">
+        <!-- Pantalla de Login -->
+        <div id="loginScreen" class="screen active">
+            <div class="logo">⚽</div>
+            <h1 class="title">LA HERMANDAZ</h1>
+            <p class="subtitle">Quinielas entre colegas</p>
             
-            <div class="container">
-                <div class="header">
-                    <h2 class="app-title">📷 Subir Boleto</h2>
-                    <p class="app-subtitle">Haz foto o selecciona imagen</p>
+            <h2 style="font-size: 24px; margin-bottom: 30px;">¿Quién eres?</h2>
+            
+            <div class="user-grid">
+                <div class="user-card" id="oscarCard">
+                    <div class="user-avatar">👨‍💼</div>
+                    <div class="user-name">OSCAR</div>
+                    <div class="user-hint">Toca para seleccionar</div>
                 </div>
                 
-                <div class="upload-zone" onclick="triggerCamera()" id="uploadZone">
-                    <div class="upload-icon">📱</div>
-                    <div class="upload-text">Toca para hacer foto</div>
-                    <div class="upload-hint">o arrastra una imagen aquí</div>
+                <div class="user-card" id="txemaCard">
+                    <div class="user-avatar">👨‍🎓</div>
+                    <div class="user-name">TXEMA</div>
+                    <div class="user-hint">Toca para seleccionar</div>
+                </div>
+            </div>
+            
+            <div class="password-section" id="passwordSection">
+                <input 
+                    type="password" 
+                    class="password-input" 
+                    id="passwordInput" 
+                    placeholder="Introduce la contraseña"
+                >
+                <button class="btn btn-primary" id="loginButton" disabled>
+                    🔐 Entrar a La Hermandaz
+                </button>
+            </div>
+            
+            <p style="color: #94a3b8; font-size: 14px; margin-top: 30px;">
+                👆 Selecciona tu usuario e introduce la contraseña
+            </p>
+        </div>
+        
+        <!-- Pantalla Principal -->
+        <div id="homeScreen" class="screen">
+            <button class="back-btn" id="backBtn">←</button>
+            
+            <div class="logo">⚽</div>
+            <h1 class="title">LA HERMANDAZ</h1>
+            <p class="subtitle" id="welcomeText">Bienvenido</p>
+            
+            <div class="menu-grid">
+                <div class="menu-item" id="uploadBtn">
+                    <span class="menu-icon">📷</span>
+                    <div class="menu-text">Subir Boleto</div>
                 </div>
                 
-                <div class="processing" id="processing">
-                    <div class="spinner"></div>
-                    Analizando boleto con OCR...
+                <div class="menu-item" id="resultsBtn">
+                    <span class="menu-icon">📊</span>
+                    <div class="menu-text">Resultados</div>
                 </div>
                 
-                <div class="preview-container" id="previewContainer">
-                    <img id="previewImage" class="preview-image" alt="Preview">
+                <div class="menu-item" id="statsBtn">
+                    <span class="menu-icon">🏆</span>
+                    <div class="menu-text">Estadísticas</div>
                 </div>
                 
-                <div class="results-container" id="resultsContainer">
-                    <div class="results-grid" id="resultsGrid">
-                        <!-- Resultados se generarán aquí -->
+                <div class="menu-item" id="historyBtn">
+                    <span class="menu-icon">📅</span>
+                    <div class="menu-text">Historial</div>
+                </div>
+                
+                <div class="menu-item" id="photoBtn">
+                    <span class="menu-icon">📸</span>
+                    <div class="menu-text">Mi Foto</div>
+                </div>
+                
+                <div class="menu-item" id="infoBtn">
+                    <span class="menu-icon">ℹ️</span>
+                    <div class="menu-text">Info</div>
+                </div>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-info-left">
+                    <div class="user-info-avatar" id="userAvatar">👨‍💼</div>
+                    <div>
+                        <div style="font-weight: 600;" id="userName">Usuario</div>
+                        <div style="font-size: 12px; color: #94a3b8;">Sesión activa</div>
                     </div>
-                    
-                    <div class="action-grid">
-                        <button class="btn btn-primary btn-full" onclick="confirmBet()">
-                            ✅ Confirmar
-                        </button>
-                        <button class="btn btn-secondary btn-full" onclick="editBet()">
-                            ✏️ Editar
-                        </button>
-                    </div>
                 </div>
+                <button class="btn-danger" id="logoutBtn">Salir</button>
             </div>
         </div>
     </div>
     
-    <!-- Input oculto para cámara -->
-    <input type="file" id="cameraInput" class="hidden" accept="image/*" capture="camera">
-    <input type="file" id="photoInput" class="hidden" accept="image/*">
-    
-    <!-- Botón de instalación -->
-    <button class="install-btn" id="installBtn" onclick="installPWA()">
-        📱 Instalar App
-    </button>
-    
     <script>
         // Variables globales
-        let currentUser = null;
-        let currentBet = null;
-        let deferredPrompt = null;
         let selectedUserId = null;
-        
-        // Contraseña única para ambos usuarios
+        let currentUser = null;
         const APP_PASSWORD = 'purrungui';
         
-        // Datos de usuarios
         const users = {
-            oscar: { name: 'Oscar', icon: '👨‍💼', photo: null },
-            txema: { name: 'Txema', icon: '👨‍🎓', photo: null }
+            oscar: { name: 'Oscar', icon: '👨‍💼' },
+            txema: { name: 'Txema', icon: '👨‍🎓' }
         };
         
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
-            loadUserData();
-            updateUI();
-            setupPWA();
-            setupCamera();
-            setupPasswordInput();
-        });
-        
-        // Setup del input de contraseña (MEJORADO)
-        function setupPasswordInput() {
-            const passwordInput = document.getElementById('passwordInput');
-            const loginButton = document.getElementById('loginButton');
+        // Función para seleccionar usuario
+        function selectUser(userId) {
+            console.log('Seleccionando usuario:', userId);
             
-            if (!passwordInput || !loginButton) {
-                console.error('Elementos no encontrados'); // Debug
+            // Limpiar selecciones anteriores
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar usuario
+            selectedUserId = userId;
+            document.getElementById(userId + 'Card').classList.add('selected');
+            
+            // Actualizar hint
+            document.querySelector(`#${userId}Card .user-hint`).textContent = 'Seleccionado ✓';
+            
+            // Mostrar sección de contraseña
+            document.getElementById('passwordSection').classList.add('show');
+            
+            // Focus en input
+            setTimeout(() => {
+                document.getElementById('passwordInput').focus();
+            }, 300);
+            
+            // Limpiar contraseña anterior
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginButton').disabled = true;
+        }
+        
+        // Función para intentar login
+        function attemptLogin() {
+            const password = document.getElementById('passwordInput').value.trim();
+            
+            if (!selectedUserId) {
+                alert('❌ Selecciona un usuario primero');
                 return;
             }
             
-            // Evento input para habilitar/deshabilitar botón
+            if (password !== APP_PASSWORD) {
+                alert('❌ Contraseña incorrecta\n\nInténtalo de nuevo.');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                return;
+            }
+            
+            // Login exitoso
+            currentUser = users[selectedUserId];
+            localStorage.setItem('hermandaz_user', selectedUserId);
+            
+            // Mostrar pantalla principal
+            showHome();
+            
+            alert(`✅ ¡Bienvenido ${currentUser.name}!\n\nYa puedes usar todas las funciones.`);
+        }
+        
+        // Función para mostrar pantalla principal
+        function showHome() {
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('homeScreen').classList.add('active');
+            
+            if (currentUser) {
+                document.getElementById('welcomeText').textContent = `Bienvenido, ${currentUser.name}`;
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.icon;
+            }
+        }
+        
+        // Función para volver al login
+        function showLogin() {
+            document.getElementById('homeScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.add('active');
+            
+            // Resetear formulario
+            selectedUserId = null;
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById('passwordSection').classList.remove('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginButton').disabled = true;
+            
+            // Resetear hints
+            document.querySelector('#oscarCard .user-hint').textContent = 'Toca para seleccionar';
+            document.querySelector('#txemaCard .user-hint').textContent = 'Toca para seleccionar';
+        }
+        
+        // Función para logout
+        function logout() {
+            if (confirm(`¿Seguro que quieres cerrar sesión, ${currentUser.name}?`)) {
+                currentUser = null;
+                localStorage.removeItem('hermandaz_user');
+                showLogin();
+                alert('👋 Sesión cerrada correctamente');
+            }
+        }
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si hay usuario guardado
+            const savedUser = localStorage.getItem('hermandaz_user');
+            if (savedUser && users[savedUser]) {
+                currentUser = users[savedUser];
+                showHome();
+            }
+            
+            // Clicks en usuarios
+            document.getElementById('oscarCard').addEventListener('click', () => selectUser('oscar'));
+            document.getElementById('txemaCard').addEventListener('click', () => selectUser('txema'));
+            
+            // Input de contraseña
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.getElementById('loginButton');
+            
             passwordInput.addEventListener('input', function() {
-                console.log('Password input:', passwordInput.value.length, 'Selected user:', selectedUserId); // Debug
-                
-                if (passwordInput.value.trim().length > 0 && selectedUserId) {
+                if (this.value.length > 0 && selectedUserId) {
                     loginButton.disabled = false;
                     loginButton.textContent = '🚀 Entrar a La Hermandaz';
                 } else {
@@ -860,427 +495,46 @@
                 }
             });
             
-            // Evento Enter para login
             passwordInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !loginButton.disabled) {
-                    console.log('Enter presionado'); // Debug
                     attemptLogin();
                 }
             });
             
-            // Eventos táctiles para móviles
-            passwordInput.addEventListener('touchstart', function() {
-                setTimeout(() => {
-                    this.focus();
-                }, 100);
+            // Botón de login
+            loginButton.addEventListener('click', attemptLogin);
+            
+            // Botón de logout
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            // Botón de volver
+            document.getElementById('backBtn').addEventListener('click', showLogin);
+            
+            // Menús (placeholders)
+            document.getElementById('uploadBtn').addEventListener('click', () => {
+                alert('🚧 Función en desarrollo: Subir Boleto');
             });
             
-            console.log('Password input configurado correctamente'); // Debug
-        }
-        
-        // PWA Setup
-        function setupPWA() {
-            // Detectar instalación disponible
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                document.getElementById('installBtn').classList.add('show');
+            document.getElementById('resultsBtn').addEventListener('click', () => {
+                alert('🚧 Función en desarrollo: Ver Resultados');
             });
             
-            // Detectar instalación completada
-            window.addEventListener('appinstalled', () => {
-                document.getElementById('installBtn').classList.remove('show');
-                updateUserInfo('App instalada correctamente', '📱 Funcionando como aplicación');
+            document.getElementById('statsBtn').addEventListener('click', () => {
+                alert('🚧 Función en desarrollo: Estadísticas');
             });
             
-            // Crear manifest dinámicamente
-            const manifest = {
-                name: "La Hermandaz",
-                short_name: "Hermandaz",
-                description: "Quinielas entre colegas",
-                start_url: "/",
-                display: "standalone",
-                background_color: "#1e293b",
-                theme_color: "#1e293b",
-                orientation: "portrait",
-                icons: [
-                    {
-                        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ccircle cx='96' cy='96' r='88' fill='%2310b981'/%3E%3Ctext x='96' y='130' font-size='80' text-anchor='middle' fill='white'%3E⚽%3C/text%3E%3C/svg%3E",
-                        sizes: "192x192",
-                        type: "image/svg+xml"
-                    },
-                    {
-                        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Ccircle cx='256' cy='256' r='240' fill='%2310b981'/%3E%3Ctext x='256' y='340' font-size='200' text-anchor='middle' fill='white'%3E⚽%3C/text%3E%3C/svg%3E",
-                        sizes: "512x512",
-                        type: "image/svg+xml"
-                    }
-                ]
-            };
-            
-            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-            const manifestURL = URL.createObjectURL(manifestBlob);
-            document.getElementById('manifest-placeholder').href = manifestURL;
-        }
-        
-        // Instalar PWA
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('PWA instalada');
-                    }
-                    deferredPrompt = null;
-                    document.getElementById('installBtn').classList.remove('show');
-                });
-            }
-        }
-        
-        // Navegación entre pantallas
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-        }
-        
-        function showUserSelect() { showScreen('userSelectScreen'); }
-        function showHome() { 
-            if (!currentUser) {
-                showUserSelect();
-                return;
-            }
-            showScreen('homeScreen'); 
-        }
-        
-        // Función para seleccionar usuario (MEJORADA)
-        function selectUser(userId) {
-            console.log('Seleccionando usuario:', userId); // Debug
-            
-            // Limpiar selección anterior
-            document.querySelectorAll('.user-card').forEach(card => {
-                card.classList.remove('selected');
+            document.getElementById('historyBtn').addEventListener('click', () => {
+                alert('🚧 Función en desarrollo: Historial');
             });
             
-            // Seleccionar nuevo usuario
-            selectedUserId = userId;
-            const selectedCard = document.getElementById(userId + 'Card');
-            selectedCard.classList.add('selected');
-            
-            // Mostrar sección de contraseña CON DELAY
-            const passwordSection = document.getElementById('passwordSection');
-            const passwordInput = document.getElementById('passwordInput');
-            const loginButton = document.getElementById('loginButton');
-            
-            setTimeout(() => {
-                passwordSection.classList.add('show');
-                
-                // Focus en el input después de la animación
-                setTimeout(() => {
-                    passwordInput.focus();
-                    
-                    // Mostrar teclado en móviles
-                    passwordInput.click();
-                }, 200);
-                
-            }, 100);
-            
-            // Actualizar hint del usuario
-            const userHint = selectedCard.querySelector('.user-hint');
-            userHint.textContent = 'Seleccionado ✓';
-            
-            // Resetear contraseña anterior
-            passwordInput.value = '';
-            loginButton.disabled = true;
-            
-            console.log('Usuario seleccionado correctamente'); // Debug
-        }
-        
-        // Función para intentar login con contraseña
-        function attemptLogin() {
-            const passwordInput = document.getElementById('passwordInput');
-            const enteredPassword = passwordInput.value.trim();
-            
-            if (!selectedUserId) {
-                alert('❌ Selecciona un usuario primero');
-                return;
-            }
-            
-            if (enteredPassword !== APP_PASSWORD) {
-                alert('❌ Contraseña incorrecta\n\nInténtalo de nuevo.');
-                passwordInput.value = '';
-                passwordInput.focus();
-                return;
-            }
-            
-            // Contraseña correcta - hacer login
-            const user = users[selectedUserId];
-            
-            currentUser = {
-                id: selectedUserId,
-                name: user.name,
-                icon: user.icon,
-                photo: user.photo
-            };
-            
-            // Guardar sesión
-            localStorage.setItem('hermandaz_user', JSON.stringify(currentUser));
-            
-            // Limpiar formulario de login
-            resetLoginForm();
-            
-            // Actualizar UI y mostrar menú principal
-            updateUI();
-            showScreen('homeScreen');
-            
-            // Mensaje de bienvenida
-            setTimeout(() => {
-                alert(`✅ ¡Bienvenido ${user.name}!\n\n🎯 Ya puedes:\n• Subir boletos\n• Ver resultados\n• Cambiar tu foto\n• Ver estadísticas`);
-            }, 300);
-        }
-        
-        // Función para resetear formulario de login (MEJORADA)
-        function resetLoginForm() {
-            console.log('Reseteando formulario de login'); // Debug
-            
-            selectedUserId = null;
-            
-            const passwordInput = document.getElementById('passwordInput');
-            const loginButton = document.getElementById('loginButton');
-            const passwordSection = document.getElementById('passwordSection');
-            
-            if (passwordInput) passwordInput.value = '';
-            if (loginButton) {
-                loginButton.disabled = true;
-                loginButton.textContent = '🔐 Entrar a La Hermandaz';
-            }
-            if (passwordSection) passwordSection.classList.remove('show');
-            
-            // Limpiar selecciones
-            document.querySelectorAll('.user-card').forEach(card => {
-                card.classList.remove('selected');
+            document.getElementById('photoBtn').addEventListener('click', () => {
+                alert('🚧 Función en desarrollo: Cambiar Foto');
             });
             
-            // Resetear hints
-            const oscarHint = document.querySelector('#oscarCard .user-hint');
-            const txemaHint = document.querySelector('#txemaCard .user-hint');
-            
-            if (oscarHint) oscarHint.textContent = 'Toca para seleccionar';
-            if (txemaHint) txemaHint.textContent = 'Toca para seleccionar';
-            
-            console.log('Formulario reseteado'); // Debug
-        }
-        
-        function showUpload() {
-            showScreen('uploadScreen');
-        }
-        
-        // Función para seleccionar usuario (CORREGIDA - POSICIÓN CORRECTA)
-        function selectUser(userId) {
-            console.log('Seleccionando usuario:', userId); // Debug
-            
-            // Limpiar selección anterior
-            document.querySelectorAll('.user-card').forEach(card => {
-                card.classList.remove('selected');
+            document.getElementById('infoBtn').addEventListener('click', () => {
+                alert('⚽ LA HERMANDAZ v4.2 SIMPLE\n\n✅ Funcionando:\n• Login con contraseña\n• Pantalla principal\n• Sesión persistente\n• Diseño profesional\n\nPróximo: Funcionalidades completas');
             });
-            
-            // Seleccionar nuevo usuario
-            selectedUserId = userId;
-            const selectedCard = document.getElementById(userId + 'Card');
-            if (!selectedCard) {
-                console.error('Card no encontrada:', userId + 'Card');
-                return;
-            }
-            
-            selectedCard.classList.add('selected');
-            
-            // Mostrar sección de contraseña CON DELAY
-            const passwordSection = document.getElementById('passwordSection');
-            const passwordInput = document.getElementById('passwordInput');
-            const loginButton = document.getElementById('loginButton');
-            
-            if (!passwordSection || !passwordInput || !loginButton) {
-                console.error('Elementos de contraseña no encontrados');
-                return;
-            }
-            
-            setTimeout(() => {
-                passwordSection.classList.add('show');
-                
-                // Focus en el input después de la animación
-                setTimeout(() => {
-                    passwordInput.focus();
-                    // Mostrar teclado en móviles
-                    passwordInput.click();
-                }, 200);
-                
-            }, 100);
-            
-            // Actualizar hint del usuario
-            const userHint = selectedCard.querySelector('.user-hint');
-            if (userHint) {
-                userHint.textContent = 'Seleccionado ✓';
-            }
-            
-            // Resetear contraseña anterior
-            passwordInput.value = '';
-            loginButton.disabled = true;
-            loginButton.textContent = '🔐 Entrar a La Hermandaz';
-            
-            console.log('Usuario seleccionado correctamente'); // Debug
-        }
-        
-        // Función para intentar login con contraseña
-        function attemptLogin() {
-            console.log('Intentando login...'); // Debug
-            
-            const passwordInput = document.getElementById('passwordInput');
-            const enteredPassword = passwordInput.value.trim();
-            
-            if (!selectedUserId) {
-                alert('❌ Selecciona un usuario primero');
-                return;
-            }
-            
-            if (enteredPassword !== APP_PASSWORD) {
-                alert('❌ Contraseña incorrecta\n\nInténtalo de nuevo.');
-                passwordInput.value = '';
-                passwordInput.focus();
-                return;
-            }
-            
-            // Contraseña correcta - hacer login
-            const user = users[selectedUserId];
-            
-            currentUser = {
-                id: selectedUserId,
-                name: user.name,
-                icon: user.icon,
-                photo: user.photo
-            };
-            
-            // Guardar sesión
-            localStorage.setItem('hermandaz_user', JSON.stringify(currentUser));
-            
-            // Limpiar formulario de login
-            resetLoginForm();
-            
-            // Actualizar UI y mostrar menú principal
-            updateUI();
-            showScreen('homeScreen');
-            
-            // Mensaje de bienvenida
-            setTimeout(() => {
-                alert(`✅ ¡Bienvenido ${user.name}!\n\n🎯 Ya puedes:\n• Subir boletos\n• Ver resultados\n• Cambiar tu foto\n• Ver estadísticas`);
-            }, 300);
-        }
-        
-        // Funciones placeholder para menús
-        function showResults() {
-            alert('🚧 Función en desarrollo: Ver Resultados\n\nAquí podrás ver las columnas oficiales y añadir resultados de partidos.');
-        }
-        
-        function showStats() {
-            alert('🚧 Función en desarrollo: Estadísticas\n\nAquí verás tus estadísticas de aciertos por temporada.');
-        }
-        
-        function showHistory() {
-            alert('🚧 Función en desarrollo: Historial\n\nAquí podrás ver el historial completo de todas las jornadas.');
-        }
-        
-        function showInfo() {
-            alert('⚽ LA HERMANDAZ v4.1 SEGURA\n\n🔐 SISTEMA DE SEGURIDAD:\n• Contraseña única para ambos usuarios\n• Sesión protegida\n• Solo Oscar y Txema pueden acceder\n\n✅ Funcionando:\n• Pantalla inicial con contraseña\n• Login seguro\n• Fotos de perfil\n• Subir boletos con cámara\n• OCR simulado\n• PWA instalable\n• Diseño profesional\n\n🚧 Próximo: Base de datos Supabase');
-        }
-        
-        // Sistema de usuarios y datos
-        function loadUserData() {
-            const savedUser = localStorage.getItem('hermandaz_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-            }
-            
-            // Cargar fotos guardadas
-            Object.keys(users).forEach(userId => {
-                const savedPhoto = localStorage.getItem(`hermandaz_photo_${userId}`);
-                if (savedPhoto) {
-                    users[userId].photo = savedPhoto;
-                }
-            });
-        }
-        
-        function updateUI() {
-            if (currentUser) {
-                // Actualizar información del usuario en menú principal
-                document.getElementById('userText').textContent = currentUser.name;
-                document.getElementById('userHint').textContent = 'Toca la foto para cambiarla';
-                document.getElementById('welcomeSubtitle').textContent = `Bienvenido, ${currentUser.name}`;
-                
-                // Actualizar avatar
-                const userPhoto = users[currentUser.id].photo;
-                if (userPhoto) {
-                    document.getElementById('userPhoto').src = userPhoto;
-                    document.getElementById('userPhoto').style.display = 'block';
-                    document.getElementById('userIcon').style.display = 'none';
-                } else {
-                    document.getElementById('userIcon').textContent = currentUser.icon;
-                    document.getElementById('userPhoto').style.display = 'none';
-                    document.getElementById('userIcon').style.display = 'block';
-                }
-                
-                // Actualizar fotos en pantalla de selección
-                updateSelectionScreen();
-                
-                // Mostrar menú principal si ya hay usuario
-                if (document.getElementById('userSelectScreen').classList.contains('active')) {
-                    showScreen('homeScreen');
-                }
-            } else {
-                // Mostrar pantalla de selección si no hay usuario
-                showScreen('userSelectScreen');
-            }
-            
-            updateSelectionScreen();
-        }
-        
-        function updateSelectionScreen() {
-            // Actualizar fotos en pantalla de selección
-            Object.keys(users).forEach(userId => {
-                const user = users[userId];
-                const photoElement = document.getElementById(`${userId}PhotoSelect`);
-                const avatarElement = document.getElementById(`${userId}AvatarSelect`).querySelector('span');
-                
-                if (user.photo && photoElement) {
-                    photoElement.src = user.photo;
-                    photoElement.style.display = 'block';
-                    avatarElement.style.display = 'none';
-                } else if (avatarElement) {
-                    photoElement.style.display = 'none';
-                    avatarElement.style.display = 'block';
-                }
-            });
-        }
-        
-        function logout() {
-            const confirmLogout = confirm(`👋 ¿Seguro que quieres cerrar sesión, ${currentUser.name}?`);
-            
-            if (confirmLogout) {
-                currentUser = null;
-                localStorage.removeItem('hermandaz_user');
-                resetLoginForm();
-                showScreen('userSelectScreen');
-                alert('👋 Sesión cerrada correctamente');
-            }
-        }
-        
-        function changePhoto() {
-            if (!currentUser) {
-                alert('🔒 Necesitas seleccionar usuario primero');
-                return;
-            }
-            
-            const confirmChange = confirm(`📸 ¿Quieres cambiar tu foto de perfil, ${currentUser.name}?`);
-            
-            if (confirmChange) {
-                document.getElementById('photoInput').click();
-            }
-        }
+        });
+    </script>
+</body>
+</html>
