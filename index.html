@@ -1263,36 +1263,20 @@
             reader.readAsDataURL(file);
         }
         
-        // Función para simular OCR con equipos reales de LaLiga
+        // Función para simular OCR con datos del boleto real
         function simulateOCR() {
-            // Equipos reales basados en LaLiga 2024-25
+            // Equipos exactos del boleto que subiste
             const equiposReales = [
                 'Mallorca-Celta', 'Levante-Barcelona', 'Osasuna-Valencia',
                 'Real Sociedad-Espanyol', 'Villarreal-Girona', 'R. Oviedo-Real Madrid',
                 'Athletic Club-Rayo Vallecano', 'Mirandés-Huesca', 'Ceuta-Sporting',
                 'R. Zaragoza-Andorra', 'Deportivo-Burgos', 'Cultural Leonesa-Almería',
-                'Albacete-Racing Santander', 'Sevilla-Getafe'
+                'Albacete-Racing Santander', 'Sevilla-Getafe', 'Sevilla-Getafe' // Partido 15
             ];
             
-            // Generar apuestas realistas
-            const opciones = ['1', 'X', '2'];
-            const columna1 = [];
-            const columna2 = [];
-            
-            // Partidos 1-14 (1, X, 2)
-            for (let i = 0; i < 14; i++) {
-                columna1.push(opciones[Math.floor(Math.random() * opciones.length)]);
-                columna2.push(opciones[Math.floor(Math.random() * opciones.length)]);
-            }
-            
-            // Partido 15 - Pleno al 15 (resultado exacto)
-            const goles1 = Math.floor(Math.random() * 4); // 0, 1, 2, 3
-            const goles2 = Math.floor(Math.random() * 4);
-            const resultado1 = goles1 > 2 ? 'M' : goles1.toString();
-            const resultado2 = goles2 > 2 ? 'M' : goles2.toString();
-            
-            columna1.push(`${resultado1}-${resultado2}`);
-            columna2.push(`${resultado1}-${resultado2}`);
+            // Datos reales basados en tu boleto (columnas 1 y 2 marcadas)
+            const columna1 = ['1', 'X', '1', '2', 'X', '1', '2', '2', '1', 'X', '2', '1', '1', '2', '2-1'];
+            const columna2 = ['X', '2', '2', 'X', '1', '1', '2', '2', '1', 'X', '2', '1', '1', 'X', '2-1'];
             
             return {
                 columna1: columna1,
