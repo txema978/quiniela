@@ -525,6 +525,28 @@
             gap: 12px;
         }
         
+        .boleto-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+        
         .boleto-user {
             display: flex;
             align-items: center;
@@ -830,7 +852,38 @@
         let extractedColumns = null;
         const APP_PASSWORD = 'purrungui';
         
-        // Función para cargar boletos desde Supabase
+        // Función para eliminar boleto
+        async function deleteBoleto(boletoId, jornada, userName) {
+            if (!confirm(`¿Seguro que quieres eliminar el boleto de la jornada ${jornada} de ${userName}?`)) {
+                return;
+            }
+            
+            try {
+                showPhotoStatus('Eliminando boleto...');
+                
+                const { error } = await supabase
+                    .from('boletos')
+                    .delete()
+                    .eq('id', boletoId);
+                
+                if (error) {
+                    console.error('Error eliminando boleto:', error);
+                    showPhotoStatus('Error al eliminar boleto');
+                    return;
+                }
+                
+                showPhotoStatus('Boleto eliminado correctamente');
+                
+                // Recargar historial
+                setTimeout(() => {
+                    loadAndShowBoletos();
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Error en deleteBoleto:', error);
+                showPhotoStatus('Error inesperado');
+            }
+        }
         async function loadBoletos() {
             try {
                 console.log('Cargando boletos desde Supabase...');
@@ -1095,9 +1148,16 @@
                             <div style="font-weight: 600; color: white;">${user.name}</div>
                         </div>
                     </div>
-                    <div class="boleto-info" style="text-align: right;">
-                        <div class="boleto-jornada">${boleto.jornada}</div>
-                        <div class="boleto-fecha">${fecha}</div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                        <div class="boleto-info">
+                            <div class="boleto-jornada">${boleto.jornada}</div>
+                            <div class="boleto-fecha">${fecha}</div>
+                        </div>
+                        <div class="boleto-actions">
+                            <button class="btn-delete" onclick="deleteBoleto(${boleto.id}, '${boleto.jornada}', '${user.name}')">
+                                Eliminar
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
