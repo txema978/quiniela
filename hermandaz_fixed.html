@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Hermandaz</title>
+    <meta name="theme-color" content="#1e293b">
+    <style>
+        html {
+            background: #1e293b;
+            min-height: 100vh;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+            background: transparent;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .user-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 24px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-2px);
+            border-color: #10b981;
+        }
+        
+        .user-card.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+            transform: translateY(-4px);
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .user-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .user-hint {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        
+        .password-section {
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+        
+        .password-section.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        
+        .password-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 18px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .password-input::placeholder {
+            color: #94a3b8;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-primary:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .menu-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-4px);
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .menu-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .menu-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-info-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .user-info-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .user-info-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            border: none;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .photo-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        
+        .photo-status.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #94a3b8;
+            border-radius: 50%;
+            border-top-color: #10b981;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .dedicatoria {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .dedicatoria p {
+            color: #94a3b8;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .processing {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para estadísticas */
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-container {
+                flex-direction: row;
+                gap: 30px;
+            }
+        }
+        
+        .user-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .user-stats-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .user-stats-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla de Login -->
+        <div id="loginScreen" class="screen active">
+            <div class="logo">⚽</div>
+            <h1 class="title">LA HERMANDAZ</h1>
+            <p class="subtitle">Quinielas entre colegas</p>
+            
+            <h2 style="font-size: 24px; margin-bottom: 30px;">¿Quién eres?</h2>
+            
+            <div class="user-grid">
+                <div class="user-card" id="oscarCard">
+                    <div class="user-avatar" id="oscarAvatar">
+                        <span id="oscarIcon">👨‍💼</span>
+                        <img id="oscarPhoto" class="hidden" alt="Oscar">
+                    </div>
+                    <div class="user-name">OSCAR</div>
+                    <div class="user-hint">Toca para seleccionar</div>
+                </div>
+                
+                <div class="user-card" id="txemaCard">
+                    <div class="user-avatar" id="txemaAvatar">
+                        <span id="txemaIcon">👨‍🎓</span>
+                        <img id="txemaPhoto" class="hidden" alt="Txema">
+                    </div>
+                    <div class="user-name">TXEMA</div>
+                    <div class="user-hint">Toca para seleccionar</div>
+                </div>
+            </div>
+            
+            <div class="password-section" id="passwordSection">
+                <input 
+                    type="password" 
+                    class="password-input" 
+                    id="passwordInput" 
+                    placeholder="Introduce la contraseña"
+                >
+                <button class="btn btn-primary" id="loginButton" disabled>
+                    🔐 Entrar a La Hermandaz
+                </button>
+            </div>
+            
+            <p style="color: #94a3b8; font-size: 14px; margin-top: 30px;">
+                👆 Selecciona tu usuario e introduce la contraseña
+            </p>
+            
+            <!-- Dedicatoria -->
+            <div class="dedicatoria">
+                <p>🙏 En Memoria de Modesto Feliu y Aluino Dean 🙏</p>
+            </div>
+        </div>
+        
+        <!-- Pantalla Principal -->
+        <div id="homeScreen" class="screen">
+            <button class="back-btn" id="backBtn">←</button>
+            
+            <div class="logo">⚽</div>
+            <h1 class="title">LA HERMANDAZ</h1>
+            <p class="subtitle" id="welcomeText">Bienvenido</p>
+            
+            <div class="menu-grid">
+                <div class="menu-item" id="uploadBtn">
+                    <span class="menu-icon">📷</span>
+                    <div class="menu-text">Subir Boleto</div>
+                </div>
+                
+                <div class="menu-item" id="resultsBtn">
+                    <span class="menu-icon">📊</span>
+                    <div class="menu-text">Resultados</div>
+                </div>
+                
+                <div class="menu-item" id="statsBtn">
+                    <span class="menu-icon">🏆</span>
+                    <div class="menu-text">Estadísticas</div>
+                </div>
+                
+                <div class="menu-item" id="historyBtn">
+                    <span class="menu-icon">📅</span>
+                    <div class="menu-text">Historial</div>
+                </div>
+                
+                <div class="menu-item" id="photoBtn">
+                    <span class="menu-icon">📸</span>
+                    <div class="menu-text">Mi Foto</div>
+                </div>
+                
+                <div class="menu-item" id="infoBtn">
+                    <span class="menu-icon">ℹ️</span>
+                    <div class="menu-text">Info</div>
+                </div>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-info-left">
+                    <div class="user-info-avatar" id="userAvatar" title="Toca para cambiar foto">
+                        <span id="userAvatarIcon">👨‍💼</span>
+                        <img id="userAvatarPhoto" class="hidden" alt="Foto usuario">
+                    </div>
+                    <div>
+                        <div style="font-weight: 600;" id="userName">Usuario</div>
+                        <div style="font-size: 12px; color: #94a3b8;">Toca la foto para cambiarla</div>
+                    </div>
+                </div>
+                <button class="btn-danger" id="logoutBtn">Salir</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Estadísticas -->
+        <div id="estadisticasScreen" class="screen">
+            <button class="back-btn" id="backFromEstadisticasBtn">←</button>
+            
+            <div class="logo">🏆</div>
+            <h1 class="title">ESTADÍSTICAS</h1>
+            <p class="subtitle">Rendimiento por usuario</p>
+            
+            <div id="estadisticasLoading" class="processing">
+                <div class="loading"></div>
+                <p>Calculando estadísticas...</p>
+            </div>
+            
+            <div id="estadisticasContent" class="hidden">
+                <div class="stats-container">
+                    <div class="user-stats" id="oscarStats">
+                        <div class="user-stats-header">
+                            <div class="stats-avatar">👨‍💼</div>
+                            <h3>Oscar</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarPorcentaje">-</div>
+                                <div class="stat-label">% Acierto</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarBoletos">0</div>
+                                <div class="stat-label">Boletos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarMejor">-</div>
+                                <div class="stat-label">Mejor Jornada</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarPeor">-</div>
+                                <div class="stat-label">Peor Jornada</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-stats" id="txemaStats">
+                        <div class="user-stats-header">
+                            <div class="stats-avatar">👨‍🎓</div>
+                            <h3>Txema</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaPorcentaje">-</div>
+                                <div class="stat-label">% Acierto</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaBoletos">0</div>
+                                <div class="stat-label">Boletos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaMejor">-</div>
+                                <div class="stat-label">Mejor Jornada</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaPeor">-</div>
+                                <div class="stat-label">Peor Jornada</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Input oculto para cambio de foto -->
+    <input type="file" id="photoInput" class="hidden" accept="image/*">
+    
+    <!-- Notificación de estado -->
+    <div class="photo-status" id="photoStatus">📸 Foto actualizada</div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://cpnrljznrveafzohnmwb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
+        
+        // Inicializar Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Variables globales
+        let selectedUserId = null;
+        let currentUser = null;
+        let users = {};
+        const APP_PASSWORD = 'purrungui';
+        
+        // Función para cargar boletos desde Supabase
+        async function loadBoletos() {
+            try {
+                console.log('Cargando boletos desde Supabase...');
+                const { data, error } = await supabase
+                    .from('boletos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error cargando boletos:', error);
+                    return [];
+                }
+                
+                console.log('Boletos cargados:', data);
+                return data || [];
+                
+            } catch (error) {
+                console.error('Error en loadBoletos:', error);
+                return [];
+            }
+        }
+        
+        // Función para cargar usuarios desde Supabase
+        async function loadUsers() {
+            try {
+                console.log('Cargando usuarios desde Supabase...');
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*');
+                
+                if (error) {
+                    console.error('Error cargando usuarios:', error);
+                    return;
+                }
+                
+                console.log('Datos recibidos de Supabase:', data);
+                
+                // Convertir array a objeto
+                users = {};
+                if (data && data.length > 0) {
+                    data.forEach(user => {
+                        users[user.user_id] = {
+                            id: user.user_id,
+                            name: user.name,
+                            icon: user.user_id === 'oscar' ? '👨‍💼' : '👨‍🎓',
+                            photo: user.photo_url
+                        };
+                    });
+                }
+                
+                console.log('Usuarios procesados:', users);
+                updateLoginAvatars();
+                
+            } catch (error) {
+                console.error('Error en loadUsers:', error);
+            }
+        }
+        
+        // Función para cargar resultados desde Supabase
+        async function loadResultados(boletoId) {
+            try {
+                const { data, error } = await supabase
+                    .from('resultados')
+                    .select('*')
+                    .eq('boleto_id', boletoId);
+                
+                if (error) {
+                    console.error('Error cargando resultados:', error);
+                    return {};
+                }
+                
+                const resultados = {};
+                data.forEach(resultado => {
+                    resultados[resultado.partido_numero] = resultado.resultado_real;
+                });
+                
+                return resultados;
+                
+            } catch (error) {
+                console.error('Error en loadResultados:', error);
+                return {};
+            }
+        }
+        
+        // Función para seleccionar usuario
+        function selectUser(userId) {
+            console.log('Seleccionando usuario:', userId);
+            
+            // Limpiar selecciones anteriores
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar usuario
+            selectedUserId = userId;
+            document.getElementById(userId + 'Card').classList.add('selected');
+            
+            // Actualizar hint
+            document.querySelector(`#${userId}Card .user-hint`).textContent = 'Seleccionado ✓';
+            
+            // Mostrar sección de contraseña
+            document.getElementById('passwordSection').classList.add('show');
+            
+            // Focus en input
+            setTimeout(() => {
+                document.getElementById('passwordInput').focus();
+            }, 300);
+            
+            // Limpiar contraseña anterior
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginButton').disabled = true;
+        }
+        
+        // Función para intentar login
+        async function attemptLogin() {
+            const password = document.getElementById('passwordInput').value.trim();
+            
+            if (!selectedUserId) {
+                alert('Selecciona un usuario primero');
+                return;
+            }
+            
+            if (password !== APP_PASSWORD) {
+                alert('Contraseña incorrecta\n\nInténtalo de nuevo.');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                return;
+            }
+            
+            // Verificar que el usuario existe
+            if (!users[selectedUserId]) {
+                console.log('Usuario no encontrado, recargando...');
+                await loadUsers();
+            }
+            
+            // Verificar de nuevo después de recargar
+            if (!users[selectedUserId]) {
+                alert('Error cargando usuario. Inténtalo de nuevo.');
+                return;
+            }
+            
+            // Login exitoso
+            currentUser = {
+                id: selectedUserId,
+                name: users[selectedUserId].name,
+                icon: users[selectedUserId].icon,
+                photo: users[selectedUserId].photo
+            };
+            
+            localStorage.setItem('hermandaz_user', selectedUserId);
+            
+            // Mostrar pantalla principal
+            showHome();
+            
+            alert(`Bienvenido ${currentUser.name}!\n\nYa puedes usar todas las funciones.`);
+        }
+        
+        // Función para mostrar pantalla principal
+        function showHome() {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById('homeScreen').classList.add('active');
+            
+            if (currentUser) {
+                document.getElementById('welcomeText').textContent = `Bienvenido, ${currentUser.name}`;
+                document.getElementById('userName').textContent = currentUser.name;
+                
+                // Actualizar avatar en menú principal
+                updateUserAvatar();
+            }
+        }
+        
+        // Función para mostrar estadísticas
+        function showEstadisticas() {
+            if (!currentUser) {
+                alert('Error: No hay usuario logueado');
+                return;
+            }
+            
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById('estadisticasScreen').classList.add('active');
+            
+            document.getElementById('estadisticasLoading').classList.remove('hidden');
+            document.getElementById('estadisticasContent').classList.add('hidden');
+            
+            calculateEstadisticas();
+        }
+        
+        // Función para calcular estadísticas
+        async function calculateEstadisticas() {
+            try {
+                const boletos = await loadBoletos();
+                const estadisticas = {
+                    oscar: { boletos: 0, aciertos: [], jornadas: [] },
+                    txema: { boletos: 0, aciertos: [], jornadas: [] }
+                };
+                
+                // Procesar cada boleto
+                for (const boleto of boletos) {
+                    const userId = boleto.user_id;
+                    if (estadisticas[userId]) {
+                        estadisticas[userId].boletos++;
+                        
+                        // Cargar resultados de este boleto
+                        const resultados = await loadResultados(boleto.id);
+                        
+                        // Calcular aciertos por columna
+                        let aciertosCol1 = 0, aciertosCol2 = 0;
+                        const columnas = boleto.columnas_apuestas;
+                        
+                        for (let i = 1; i <= 15; i++) {
+                            const resultado = resultados[i];
+                            if (resultado && columnas) {
+                                const apuesta1 = columnas.columna1?.[i-1];
+                                const apuesta2 = columnas.columna2?.[i-1];
+                                
+                                if (apuesta1 === resultado) aciertosCol1++;
+                                if (apuesta2 === resultado) aciertosCol2++;
+                            }
+                        }
+                        
+                        const totalAciertos = aciertosCol1 + aciertosCol2;
+                        estadisticas[userId].aciertos.push(totalAciertos);
+                        estadisticas[userId].jornadas.push({
+                            jornada: boleto.jornada,
+                            aciertos: totalAciertos
+                        });
+                    }
+                }
+                
+                // Calcular estadísticas finales
+                ['oscar', 'txema'].forEach(userId => {
+                    const stats = estadisticas[userId];
+                    
+                    // Porcentaje de acierto
+                    const totalAciertos = stats.aciertos.reduce((sum, a) => sum + a, 0);
+                    const totalPosibles = stats.boletos * 30; // 15 partidos x 2 columnas
+                    const porcentaje = totalPosibles > 0 ? Math.round((totalAciertos / totalPosibles) * 100) : 0;
+                    
+                    // Mejor y peor jornada
+                    let mejorJornada = '-', peorJornada = '-';
+                    if (stats.jornadas.length > 0) {
+                        stats.jornadas.sort((a, b) => b.aciertos - a.aciertos);
+                        mejorJornada = `${stats.jornadas[0].jornada} (${stats.jornadas[0].aciertos})`;
+                        peorJornada = `${stats.jornadas[stats.jornadas.length-1].jornada} (${stats.jornadas[stats.jornadas.length-1].aciertos})`;
+                    }
+                    
+                    // Actualizar UI
+                    document.getElementById(`${userId}Porcentaje`).textContent = `${porcentaje}%`;
+                    document.getElementById(`${userId}Boletos`).textContent = stats.boletos;
+                    document.getElementById(`${userId}Mejor`).textContent = mejorJornada;
+                    document.getElementById(`${userId}Peor`).textContent = peorJornada;
+                });
+                
+                // Ocultar loading y mostrar contenido
+                document.getElementById('estadisticasLoading').classList.add('hidden');
+                document.getElementById('estadisticasContent').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error calculando estadísticas:', error);
+                document.getElementById('estadisticasLoading').innerHTML = '<p>Error cargando estadísticas</p>';
+            }
+        }
+        
+        // Función para actualizar avatares en login
+        function updateLoginAvatars() {
+            ['oscar', 'txema'].forEach(userId => {
+                const user = users[userId];
+                if (user && user.photo) {
+                    const photoElement = document.getElementById(userId + 'Photo');
+                    const iconElement = document.getElementById(userId + 'Icon');
+                    
+                    if (photoElement && iconElement) {
+                        photoElement.src = user.photo;
+                        photoElement.classList.remove('hidden');
+                        iconElement.classList.add('hidden');
+                    }
+                }
+            });
+        }
+        
+        // Función para actualizar avatar del usuario actual
+        function updateUserAvatar() {
+            if (!currentUser) return;
+            
+            const avatarIcon = document.getElementById('userAvatarIcon');
+            const avatarPhoto = document.getElementById('userAvatarPhoto');
+            
+            if (currentUser.photo) {
+                avatarPhoto.src = currentUser.photo;
+                avatarPhoto.classList.remove('hidden');
+                avatarIcon.classList.add('hidden');
+            } else {
+                avatarIcon.textContent = currentUser.icon;
+                avatarIcon.classList.remove('hidden');
+                avatarPhoto.classList.add('hidden');
+            }
+        }
+        
+        // Función para mostrar notificación de estado
+        function showPhotoStatus(message, duration = 3000) {
+            const statusElement = document.getElementById('photoStatus');
+            statusElement.textContent = message;
+            statusElement.classList.add('show');
+            
+            setTimeout(() => {
+                statusElement.classList.remove('show');
+            }, duration);
+        }
+        
+        // Función para manejar logout
+        function handleLogout() {
+            if (confirm('¿Seguro que quieres cerrar sesión?')) {
+                currentUser = null;
+                selectedUserId = null;
+                localStorage.removeItem('hermandaz_user');
+                
+                // Resetear UI
+                document.getElementById('passwordSection').classList.remove('show');
+                document.querySelectorAll('.user-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                document.querySelectorAll('.user-hint').forEach(hint => {
+                    hint.textContent = 'Toca para seleccionar';
+                });
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('loginButton').disabled = true;
+                
+                // Volver al login
+                document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+                document.getElementById('loginScreen').classList.add('active');
+            }
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM cargado, inicializando...');
+            
+            // Cargar usuarios al inicio
+            await loadUsers();
+            
+            // Verificar si hay usuario guardado
+            const savedUserId = localStorage.getItem('hermandaz_user');
+            if (savedUserId && users[savedUserId]) {
+                currentUser = {
+                    id: savedUserId,
+                    name: users[savedUserId].name,
+                    icon: users[savedUserId].icon,
+                    photo: users[savedUserId].photo
+                };
+                showHome();
+            }
+            
+            // Login - Selección de usuario
+            document.getElementById('oscarCard').addEventListener('click', () => selectUser('oscar'));
+            document.getElementById('txemaCard').addEventListener('click', () => selectUser('txema'));
+            
+            // Login - Input de contraseña
+            document.getElementById('passwordInput').addEventListener('input', function() {
+                const hasValue = this.value.trim().length > 0;
+                document.getElementById('loginButton').disabled = !hasValue;
+            });
+            
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !document.getElementById('loginButton').disabled) {
+                    attemptLogin();
+                }
+            });
+            
+            // Login - Botón de login
+            document.getElementById('loginButton').addEventListener('click', attemptLogin);
+            
+            // Home - Botones del menú
+            document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Botones temporales para desarrollo
+            document.getElementById('uploadBtn').addEventListener('click', () => {
+                alert('Función en desarrollo: Subir Boleto');
+            });
+            
+            document.getElementById('resultsBtn').addEventListener('click', () => {
+                alert('Función en desarrollo: Resultados');
+            });
+            
+            document.getElementById('historyBtn').addEventListener('click', () => {
+                alert('Función en desarrollo: Historial');
+            });
+            
+            document.getElementById('photoBtn').addEventListener('click', () => {
+                alert('Función en desarrollo: Cambiar Foto');
+            });
+            
+            document.getElementById('infoBtn').addEventListener('click', () => {
+                alert('LA HERMANDAZ v1.0\n\nAplicación de quinielas entre colegas\n\nDesarrollado con ❤️');
+            });
+            
+            // Botones de volver atrás
+            document.getElementById('backBtn').addEventListener('click', handleLogout);
+            document.getElementById('backFromEstadisticasBtn').addEventListener('click', showHome);
+            
+            console.log('Aplicación inicializada correctamente');
+        });
+    </script>
+</body>
+</html>
