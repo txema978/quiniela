@@ -893,6 +893,43 @@
                     </div>
                 </div>
             </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Seguimiento -->
+        <div id="seguimientoScreen" class="screen">
+            <button class="back-btn" id="backFromSeguimientoBtn">←</button>
+            
+            <div class="logo">📊</div>
+            <h1 class="title">SEGUIMIENTO</h1>
+            <p class="subtitle">Resultados en tiempo real</p>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #10b981;">Seleccionar boleto:</label>
+                <select id="boletoSelector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                    <option value="">Cargando boletos...</option>
+                </select>
+            </div>
+            
+            <div id="seguimientoContent" class="hidden">
+                <div class="seguimiento-table">
+                    <div class="table-header">
+                        <div class="col-partido">Partido</div>
+                        <div class="col-apuesta">Col 1</div>
+                        <div class="col-apuesta">Col 2</div>
+                        <div class="col-resultado">Resultado</div>
+                        <div class="col-aciertos">Aciertos</div>
+                    </div>
+                    <div id="partidosContainer"></div>
+                    <div class="table-totals">
+                        <div class="col-partido">TOTAL</div>
+                        <div class="col-apuesta total-col1" id="totalCol1">0</div>
+                        <div class="col-apuesta total-col2" id="totalCol2">0</div>
+                        <div class="col-resultado"></div>
+                        <div class="col-aciertos"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Pantalla de Historial -->
