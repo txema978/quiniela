@@ -298,7 +298,7 @@
         }
         
         .hidden {
-            display: none;
+            display: none !important;
         }
         
         .photo-status {
@@ -351,51 +351,6 @@
             text-align: center;
             line-height: 1.5;
         }
-
-        /* Pantalla de subir boleto */
-        .upload-area {
-            border: 2px dashed #10b981;
-            border-radius: 16px;
-            padding: 40px 20px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(16, 185, 129, 0.05);
-        }
-        
-        .upload-area:hover {
-            border-color: #059669;
-            background: rgba(16, 185, 129, 0.1);
-        }
-        
-        .upload-area.dragover {
-            border-color: #f59e0b;
-            background: rgba(245, 158, 11, 0.1);
-        }
-        
-        .upload-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            color: #10b981;
-        }
-        
-        .upload-text {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        
-        .upload-hint {
-            font-size: 14px;
-            color: #94a3b8;
-        }
-        
-        .image-preview {
-            max-width: 100%;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
         
         .processing {
             text-align: center;
@@ -405,362 +360,6 @@
             margin-bottom: 20px;
         }
         
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            margin-top: 10px;
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        /* Estilos para formulario editable */
-        .editable-form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        
-        .columna-editable {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 12px;
-            padding: 16px;
-        }
-        
-        .columna-editable h4 {
-            color: #10b981;
-            margin-bottom: 12px;
-            font-size: 16px;
-        }
-        
-        .partido-editable {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .partido-numero {
-            font-weight: 600;
-            color: #10b981;
-            min-width: 30px;
-        }
-        
-        .equipos-input {
-            flex: 1;
-            min-width: 200px;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 14px;
-        }
-        
-        .equipos-input:focus {
-            outline: none;
-            border-color: #10b981;
-        }
-        
-        .resultado-select {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .resultado-select:focus {
-            outline: none;
-            border-color: #10b981;
-        }
-        
-        .pleno-container {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        
-        .pleno-input {
-            width: 60px;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .pleno-input:focus {
-            outline: none;
-            border-color: #10b981;
-        }
-
-        /* Estilos para historial */
-        .boleto-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .boleto-item:hover {
-            border-color: #10b981;
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .boleto-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        
-        .boleto-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .btn-delete {
-            background: #ef4444;
-            color: white;
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-delete:hover {
-            background: #dc2626;
-            transform: translateY(-1px);
-        }
-        
-        .boleto-user {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .boleto-user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            overflow: hidden;
-        }
-        
-        .boleto-user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        
-        .boleto-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        
-        .boleto-jornada {
-            color: #10b981;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .boleto-fecha {
-            color: #94a3b8;
-            font-size: 12px;
-        }
-        
-        .boleto-imagen {
-            width: 100%;
-            max-height: 300px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            object-fit: contain;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .boleto-imagen:hover {
-            transform: scale(1.02);
-        }
-        
-        .boleto-columnas {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        
-        @media (min-width: 400px) {
-            .boleto-columnas {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .columna-item {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-        }
-        
-        .columna-titulo {
-            color: #10b981;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        
-        .columna-apuestas {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        
-        .apuesta-item {
-            padding: 8px 12px;
-            background: rgba(16, 185, 129, 0.2);
-            border-radius: 6px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .apuesta-partido {
-            font-weight: 600;
-        }
-        
-        .apuesta-resultado {
-            color: #10b981;
-            font-weight: 700;
-        }
-
-        /* Estilos para tabla de seguimiento */
-        .seguimiento-table {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .table-header, .table-row, .table-totals {
-            display: grid;
-            grid-template-columns: minmax(200px, 300px) 50px 50px 60px 70px;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        @media (max-width: 768px) {
-            .table-header, .table-row, .table-totals {
-                grid-template-columns: 1fr 50px 50px 60px 70px;
-            }
-        }
-        
-        .table-header {
-            background: rgba(16, 185, 129, 0.2);
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .table-row {
-            transition: background-color 0.2s ease;
-        }
-        
-        .table-row:hover {
-            background: rgba(16, 185, 129, 0.15);
-        }
-        
-        .table-totals {
-            background: rgba(16, 185, 129, 0.3);
-            font-weight: 700;
-        }
-        
-        .col-partido, .col-apuesta, .col-resultado, .col-aciertos {
-            padding: 8px 4px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 13px;
-        }
-        
-        .table-row:hover .col-partido,
-        .table-row:hover .col-apuesta,
-        .table-row:hover .col-resultado,
-        .table-row:hover .col-aciertos {
-            background: rgba(16, 185, 129, 0.1);
-        }
-        
-        .col-partido {
-            justify-content: flex-start;
-            font-weight: 500;
-            padding-left: 8px;
-        }
-        
-        .resultado-input {
-            width: 55px;
-            padding: 4px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .resultado-input:focus {
-            outline: none;
-            border-color: #10b981;
-        }
-        
-        .acierto {
-            color: #10b981;
-            font-weight: 600;
-        }
-        
-        .fallo {
-            color: #ef4444;
-            font-weight: 600;
-        }
-        
-        .pendiente {
-            color: #94a3b8;
-        }
-        
-        .total-col1, .total-col2 {
-            color: #10b981;
-            font-size: 16px;
-        }
-
         /* Estilos para estadísticas */
         .stats-container {
             display: flex;
@@ -937,4 +536,577 @@
                         <img id="userAvatarPhoto" class="hidden" alt="Foto usuario">
                     </div>
                     <div>
-                        <div style="font-weight: 600;" id="userName">Usuario</div
+                        <div style="font-weight: 600;" id="userName">Usuario</div>
+                        <div style="font-size: 12px; color: #94a3b8;">Toca la foto para cambiarla</div>
+                    </div>
+                </div>
+                <button class="btn-danger" id="logoutBtn">Salir</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Estadísticas -->
+        <div id="estadisticasScreen" class="screen">
+            <button class="back-btn" id="backFromEstadisticasBtn">←</button>
+            
+            <div class="logo">🏆</div>
+            <h1 class="title">ESTADÍSTICAS</h1>
+            <p class="subtitle">Rendimiento por usuario</p>
+            
+            <div id="estadisticasLoading" class="processing">
+                <div class="loading"></div>
+                <p>Calculando estadísticas...</p>
+            </div>
+            
+            <div id="estadisticasContent" class="hidden">
+                <div class="stats-container">
+                    <div class="user-stats" id="oscarStats">
+                        <div class="user-stats-header">
+                            <div class="stats-avatar">👨‍💼</div>
+                            <h3>Oscar</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarPorcentaje">-</div>
+                                <div class="stat-label">% Acierto</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarBoletos">0</div>
+                                <div class="stat-label">Boletos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarMejor">-</div>
+                                <div class="stat-label">Mejor Jornada</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarPeor">-</div>
+                                <div class="stat-label">Peor Jornada</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-stats" id="txemaStats">
+                        <div class="user-stats-header">
+                            <div class="stats-avatar">👨‍🎓</div>
+                            <h3>Txema</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaPorcentaje">-</div>
+                                <div class="stat-label">% Acierto</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaBoletos">0</div>
+                                <div class="stat-label">Boletos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaMejor">-</div>
+                                <div class="stat-label">Mejor Jornada</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaPeor">-</div>
+                                <div class="stat-label">Peor Jornada</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Estadísticas -->
+        <div id="estadisticasScreen" class="screen">
+            <button class="back-btn" id="backFromEstadisticasBtn">←</button>
+            
+            <div class="logo">🏆</div>
+            <h1 class="title">ESTADÍSTICAS</h1>
+            <p class="subtitle">Rendimiento por usuario</p>
+            
+            <div id="estadisticasLoading" class="processing">
+                <div class="loading"></div>
+                <p>Calculando estadísticas...</p>
+            </div>
+            
+            <div id="estadisticasContent" class="hidden">
+                <div class="stats-container">
+                    <div class="user-stats" id="oscarStats">
+                        <div class="user-stats-header">
+                            <div class="stats-avatar">👨‍💼</div>
+                            <h3>Oscar</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarPorcentaje">-</div>
+                                <div class="stat-label">% Acierto</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarBoletos">0</div>
+                                <div class="stat-label">Boletos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarMejor">-</div>
+                                <div class="stat-label">Mejor Jornada</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="oscarPeor">-</div>
+                                <div class="stat-label">Peor Jornada</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-stats" id="txemaStats">
+                        <div class="user-stats-header">
+                            <div class="stats-avatar">👨‍🎓</div>
+                            <h3>Txema</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaPorcentaje">-</div>
+                                <div class="stat-label">% Acierto</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaBoletos">0</div>
+                                <div class="stat-label">Boletos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaMejor">-</div>
+                                <div class="stat-label">Mejor Jornada</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="txemaPeor">-</div>
+                                <div class="stat-label">Peor Jornada</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Input oculto para cambio de foto -->
+    <input type="file" id="photoInput" class="hidden" accept="image/*">
+    
+    <!-- Notificación de estado -->
+    <div class="photo-status" id="photoStatus">📸 Foto actualizada</div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://cpnrljznrveafzohnmwb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
+        
+        // Inicializar Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Variables globales
+        let selectedUserId = null;
+        let currentUser = null;
+        let users = {};
+        const APP_PASSWORD = 'purrungui';
+        
+        // Función para cargar boletos desde Supabase
+        async function loadBoletos() {
+            try {
+                console.log('Cargando boletos desde Supabase...');
+                const { data, error } = await supabase
+                    .from('boletos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error cargando boletos:', error);
+                    return [];
+                }
+                
+                console.log('Boletos cargados:', data);
+                return data || [];
+                
+            } catch (error) {
+                console.error('Error en loadBoletos:', error);
+                return [];
+            }
+        }
+        
+        // Función para cargar usuarios desde Supabase
+        async function loadUsers() {
+            try {
+                console.log('Cargando usuarios desde Supabase...');
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*');
+                
+                if (error) {
+                    console.error('Error cargando usuarios:', error);
+                    return;
+                }
+                
+                console.log('Datos recibidos de Supabase:', data);
+                
+                // Convertir array a objeto
+                users = {};
+                if (data && data.length > 0) {
+                    data.forEach(user => {
+                        users[user.user_id] = {
+                            id: user.user_id,
+                            name: user.name,
+                            icon: user.user_id === 'oscar' ? '👨‍💼' : '👨‍🎓',
+                            photo: user.photo_url
+                        };
+                    });
+                }
+                
+                console.log('Usuarios procesados:', users);
+                updateLoginAvatars();
+                
+            } catch (error) {
+                console.error('Error en loadUsers:', error);
+            }
+        }
+        
+        // Función para cargar resultados desde Supabase
+        async function loadResultados(boletoId) {
+            try {
+                const { data, error } = await supabase
+                    .from('resultados')
+                    .select('*')
+                    .eq('boleto_id', boletoId);
+                
+                if (error) {
+                    console.error('Error cargando resultados:', error);
+                    return {};
+                }
+                
+                const resultados = {};
+                data.forEach(resultado => {
+                    resultados[resultado.partido_numero] = resultado.resultado_real;
+                });
+                
+                return resultados;
+                
+            } catch (error) {
+                console.error('Error en loadResultados:', error);
+                return {};
+            }
+        }
+        
+        // Función para seleccionar usuario
+        function selectUser(userId) {
+            console.log('Seleccionando usuario:', userId);
+            
+            // Limpiar selecciones anteriores
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar usuario
+            selectedUserId = userId;
+            document.getElementById(userId + 'Card').classList.add('selected');
+            
+            // Actualizar hint
+            document.querySelector(`#${userId}Card .user-hint`).textContent = 'Seleccionado ✓';
+            
+            // Mostrar sección de contraseña
+            document.getElementById('passwordSection').classList.add('show');
+            
+            // Focus en input
+            setTimeout(() => {
+                document.getElementById('passwordInput').focus();
+            }, 300);
+            
+            // Limpiar contraseña anterior
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginButton').disabled = true;
+        }
+        
+        // Función para intentar login
+        async function attemptLogin() {
+            const password = document.getElementById('passwordInput').value.trim();
+            
+            if (!selectedUserId) {
+                alert('Selecciona un usuario primero');
+                return;
+            }
+            
+            if (password !== APP_PASSWORD) {
+                alert('Contraseña incorrecta\n\nInténtalo de nuevo.');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                return;
+            }
+            
+            // Verificar que el usuario existe
+            if (!users[selectedUserId]) {
+                console.log('Usuario no encontrado, recargando...');
+                await loadUsers();
+            }
+            
+            // Verificar de nuevo después de recargar
+            if (!users[selectedUserId]) {
+                alert('Error cargando usuario. Inténtalo de nuevo.');
+                return;
+            }
+            
+            // Login exitoso
+            currentUser = {
+                id: selectedUserId,
+                name: users[selectedUserId].name,
+                icon: users[selectedUserId].icon,
+                photo: users[selectedUserId].photo
+            };
+            
+            localStorage.setItem('hermandaz_user', selectedUserId);
+            
+            // Mostrar pantalla principal
+            showHome();
+            
+            alert(`Bienvenido ${currentUser.name}!\n\nYa puedes usar todas las funciones.`);
+        }
+        
+        // Función para mostrar pantalla principal
+        function showHome() {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById('homeScreen').classList.add('active');
+            
+            if (currentUser) {
+                document.getElementById('welcomeText').textContent = `Bienvenido, ${currentUser.name}`;
+                document.getElementById('userName').textContent = currentUser.name;
+                
+                // Actualizar avatar en menú principal
+                updateUserAvatar();
+            }
+        }
+        
+        // Función para mostrar estadísticas
+        function showEstadisticas() {
+            if (!currentUser) {
+                alert('Error: No hay usuario logueado');
+                return;
+            }
+            
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById('estadisticasScreen').classList.add('active');
+            
+            document.getElementById('estadisticasLoading').classList.remove('hidden');
+            document.getElementById('estadisticasContent').classList.add('hidden');
+            
+            calculateEstadisticas();
+        }
+        
+        // Función para calcular estadísticas
+        async function calculateEstadisticas() {
+            try {
+                const boletos = await loadBoletos();
+                const estadisticas = {
+                    oscar: { boletos: 0, aciertos: [], jornadas: [] },
+                    txema: { boletos: 0, aciertos: [], jornadas: [] }
+                };
+                
+                // Procesar cada boleto
+                for (const boleto of boletos) {
+                    const userId = boleto.user_id;
+                    if (estadisticas[userId]) {
+                        estadisticas[userId].boletos++;
+                        
+                        // Cargar resultados de este boleto
+                        const resultados = await loadResultados(boleto.id);
+                        
+                        // Calcular aciertos por columna
+                        let aciertosCol1 = 0, aciertosCol2 = 0;
+                        const columnas = boleto.columnas_apuestas;
+                        
+                        for (let i = 1; i <= 15; i++) {
+                            const resultado = resultados[i];
+                            if (resultado && columnas) {
+                                const apuesta1 = columnas.columna1?.[i-1];
+                                const apuesta2 = columnas.columna2?.[i-1];
+                                
+                                if (apuesta1 === resultado) aciertosCol1++;
+                                if (apuesta2 === resultado) aciertosCol2++;
+                            }
+                        }
+                        
+                        const totalAciertos = aciertosCol1 + aciertosCol2;
+                        estadisticas[userId].aciertos.push(totalAciertos);
+                        estadisticas[userId].jornadas.push({
+                            jornada: boleto.jornada,
+                            aciertos: totalAciertos
+                        });
+                    }
+                }
+                
+                // Calcular estadísticas finales
+                ['oscar', 'txema'].forEach(userId => {
+                    const stats = estadisticas[userId];
+                    
+                    // Porcentaje de acierto
+                    const totalAciertos = stats.aciertos.reduce((sum, a) => sum + a, 0);
+                    const totalPosibles = stats.boletos * 30; // 15 partidos x 2 columnas
+                    const porcentaje = totalPosibles > 0 ? Math.round((totalAciertos / totalPosibles) * 100) : 0;
+                    
+                    // Mejor y peor jornada
+                    let mejorJornada = '-', peorJornada = '-';
+                    if (stats.jornadas.length > 0) {
+                        stats.jornadas.sort((a, b) => b.aciertos - a.aciertos);
+                        mejorJornada = `${stats.jornadas[0].jornada} (${stats.jornadas[0].aciertos})`;
+                        peorJornada = `${stats.jornadas[stats.jornadas.length-1].jornada} (${stats.jornadas[stats.jornadas.length-1].aciertos})`;
+                    }
+                    
+                    // Actualizar UI
+                    document.getElementById(`${userId}Porcentaje`).textContent = `${porcentaje}%`;
+                    document.getElementById(`${userId}Boletos`).textContent = stats.boletos;
+                    document.getElementById(`${userId}Mejor`).textContent = mejorJornada;
+                    document.getElementById(`${userId}Peor`).textContent = peorJornada;
+                });
+                
+                // Ocultar loading y mostrar contenido
+                document.getElementById('estadisticasLoading').classList.add('hidden');
+                document.getElementById('estadisticasContent').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error calculando estadísticas:', error);
+                document.getElementById('estadisticasLoading').innerHTML = '<p>Error cargando estadísticas</p>';
+            }
+        }
+        
+        // Función para actualizar avatares en login
+        function updateLoginAvatars() {
+            ['oscar', 'txema'].forEach(userId => {
+                const user = users[userId];
+                if (user && user.photo) {
+                    const photoElement = document.getElementById(userId + 'Photo');
+                    const iconElement = document.getElementById(userId + 'Icon');
+                    
+                    if (photoElement && iconElement) {
+                        photoElement.src = user.photo;
+                        photoElement.classList.remove('hidden');
+                        iconElement.classList.add('hidden');
+                    }
+                }
+            });
+        }
+        
+        // Función para actualizar avatar del usuario actual
+        function updateUserAvatar() {
+            if (!currentUser) return;
+            
+            const avatarIcon = document.getElementById('userAvatarIcon');
+            const avatarPhoto = document.getElementById('userAvatarPhoto');
+            
+            if (currentUser.photo) {
+                avatarPhoto.src = currentUser.photo;
+                avatarPhoto.classList.remove('hidden');
+                avatarIcon.classList.add('hidden');
+            } else {
+                avatarIcon.textContent = currentUser.icon;
+                avatarIcon.classList.remove('hidden');
+                avatarPhoto.classList.add('hidden');
+            }
+        }
+        
+        // Función para mostrar notificación de estado
+        function showPhotoStatus(message, duration = 3000) {
+            const statusElement = document.getElementById('photoStatus');
+            statusElement.textContent = message;
+            statusElement.classList.add('show');
+            
+            setTimeout(() => {
+                statusElement.classList.remove('show');
+            }, duration);
+        }
+        
+        // Función para manejar logout
+        function handleLogout() {
+            if (confirm('¿Seguro que quieres cerrar sesión?')) {
+                currentUser = null;
+                selectedUserId = null;
+                localStorage.removeItem('hermandaz_user');
+                
+                // Resetear UI
+                document.getElementById('passwordSection').classList.remove('show');
+                document.querySelectorAll('.user-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                document.querySelectorAll('.user-hint').forEach(hint => {
+                    hint.textContent = 'Toca para seleccionar';
+                });
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('loginButton').disabled = true;
+                
+                // Volver al login
+                document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+                document.getElementById('loginScreen').classList.add('active');
+            }
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM cargado, inicializando...');
+            
+            // Cargar usuarios al inicio
+            await loadUsers();
+            
+            // Verificar si hay usuario guardado
+            const savedUserId = localStorage.getItem('hermandaz_user');
+            if (savedUserId && users[savedUserId]) {
+                currentUser = {
+                    id: savedUserId,
+                    name: users[savedUserId].name,
+                    icon: users[savedUserId].icon,
+                    photo: users[savedUserId].photo
+                };
+                showHome();
+            }
+            
+            // Login - Selección de usuario
+            document.getElementById('oscarCard').addEventListener('click', () => selectUser('oscar'));
+            document.getElementById('txemaCard').addEventListener('click', () => selectUser('txema'));
+            
+            // Login - Input de contraseña
+            document.getElementById('passwordInput').addEventListener('input', function() {
+                const hasValue = this.value.trim().length > 0;
+                document.getElementById('loginButton').disabled = !hasValue;
+            });
+            
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !document.getElementById('loginButton').disabled) {
+                    attemptLogin();
+                }
+            });
+            
+            // Login - Botón de login
+            document.getElementById('loginButton').addEventListener('click', attemptLogin);
+            
+            // Home - Botones del menú
+            document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Botones temporales para desarrollo
+            document.getElementById('uploadBtn').addEventListener('click', () => {
+                alert('Función en desarrollo: Subir Boleto');
+            });
+            
+            document.getElementById('resultsBtn').addEventListener('click', () => {
+                alert('Función en desarrollo: Resultados');
+            });
+            
+            document.getElementById('historyBtn').addEventListener('click', () => {
+                alert('Función en desarrollo: Historial');
+            });
+            
+            document.getElementById('photoBtn').addEventListener('click', () => {
+                alert('Función en desarrollo: Cambiar Foto');
+            });
+            
+            document.getElementById('infoBtn').addEventListener('click', () => {
+                alert('LA HERMANDAZ v1.0\n\nAplicación de quinielas entre colegas\n\nDesarrollado con amor');
+            });
+            
+            // Botones de volver atrás
+            document.getElementById('backBtn').addEventListener('click', handleLogout);
+            document.getElementById('backFromEstadisticasBtn').addEventListener('click', showHome);
+            
+            console.log('Aplicación inicializada correctamente');
+        });
+    </script>
+</body>
+</html>
