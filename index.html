@@ -530,9 +530,15 @@
         
         .table-header, .table-row, .table-totals {
             display: grid;
-            grid-template-columns: 1fr 50px 50px 60px 70px;
+            grid-template-columns: minmax(200px, 300px) 50px 50px 60px 70px;
             gap: 8px;
             background: rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .table-header, .table-row, .table-totals {
+                grid-template-columns: 1fr 50px 50px 60px 70px;
+            }
         }
         
         .table-header {
@@ -1169,12 +1175,19 @@
             calculateTotals();
         }
         
-        // Función para actualizar resultado
-        async function updateResultado(boletoId, partidoNumero, valor) {
+        // Función para actualizar resultado - CORREGIDA
+        window.updateResultado = async function(boletoId, partidoNumero, valor) {
+            console.log(`Actualizando partido ${partidoNumero} con valor: ${valor}`);
+            
             resultadosActuales[partidoNumero] = valor;
             
-            if (valor) {
-                await saveResultado(boletoId, partidoNumero, valor);
+            if (valor && valor !== '') {
+                const success = await saveResultado(boletoId, partidoNumero, valor);
+                if (success) {
+                    console.log('Resultado guardado en Supabase');
+                } else {
+                    console.error('Error guardando resultado');
+                }
             }
             
             const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
