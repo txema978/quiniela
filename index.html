@@ -1034,25 +1034,50 @@
             }
         }
         
-        // Función para guardar resultado en Supabase
+        // Función para guardar resultado en Supabase - CORREGIDA
         async function saveResultado(boletoId, partidoNumero, resultadoReal) {
             try {
-                const { data, error } = await supabase
+                // Primero verificar si ya existe
+                const { data: existing, error: selectError } = await supabase
                     .from('resultados')
-                    .upsert({
-                        boleto_id: boletoId,
-                        partido_numero: partidoNumero,
-                        resultado_real: resultadoReal,
-                        usuario_que_marco: currentUser.id
-                    }, {
-                        onConflict: 'boleto_id,partido_numero'
-                    });
+                    .select('id')
+                    .eq('boleto_id', boletoId)
+                    .eq('partido_numero', partidoNumero)
+                    .single();
                 
-                if (error) {
-                    console.error('Error guardando resultado:', error);
+                if (selectError && selectError.code !== 'PGRST116') {
+                    console.error('Error verificando resultado existente:', selectError);
                     return false;
                 }
                 
+                let result;
+                if (existing) {
+                    // Actualizar existente
+                    result = await supabase
+                        .from('resultados')
+                        .update({
+                            resultado_real: resultadoReal,
+                            usuario_que_marco: currentUser.id
+                        })
+                        .eq('id', existing.id);
+                } else {
+                    // Insertar nuevo
+                    result = await supabase
+                        .from('resultados')
+                        .insert({
+                            boleto_id: boletoId,
+                            partido_numero: partidoNumero,
+                            resultado_real: resultadoReal,
+                            usuario_que_marco: currentUser.id
+                        });
+                }
+                
+                if (result.error) {
+                    console.error('Error guardando resultado:', result.error);
+                    return false;
+                }
+                
+                console.log('Resultado guardado correctamente');
                 return true;
                 
             } catch (error) {
