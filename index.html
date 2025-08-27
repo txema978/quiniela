@@ -1115,12 +1115,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // CÓDIGO EXACTO DEL ORIGINAL QUE FUNCIONABA + ESTADÍSTICAS
+        // Configuración de Supabase
         const SUPABASE_URL = 'https://cpnrljznrveafzohnmwb.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
+        // Variables globales
         let selectedUserId = null;
         let currentUser = null;
         let users = {};
@@ -1131,7 +1132,7 @@
         let currentBoletoSeguimiento = null;
         let resultadosActuales = {};
         
-        // NUEVA FUNCIÓN PARA ESTADÍSTICAS
+        // FUNCIONES DE ESTADÍSTICAS
         function showEstadisticas() {
             if (!currentUser) {
                 alert('Error: No hay usuario logueado');
@@ -1147,7 +1148,6 @@
             calculateEstadisticas();
         }
         
-        // NUEVA FUNCIÓN PARA CALCULAR ESTADÍSTICAS
         async function calculateEstadisticas() {
             try {
                 const boletos = await loadBoletos();
@@ -1214,3 +1214,455 @@
                 document.getElementById('estadisticasLoading').innerHTML = '<p>Error cargando estadísticas</p>';
             }
         }
+        
+        // FUNCIONES DE RESULTADOS Y SEGUIMIENTO
+        async function loadResultados(boletoId) {
+            try {
+                const { data, error } = await supabase
+                    .from('resultados')
+                    .select('*')
+                    .eq('boleto_id', boletoId);
+                
+                if (error) {
+                    console.error('Error cargando resultados:', error);
+                    return {};
+                }
+                
+                const resultados = {};
+                data.forEach(resultado => {
+                    resultados[resultado.partido_numero] = resultado.resultado_real;
+                });
+                
+                return resultados;
+                
+            } catch (error) {
+                console.error('Error en loadResultados:', error);
+                return {};
+            }
+        }
+        
+        async function saveResultado(boletoId, partidoNumero, resultadoReal) {
+            try {
+                const { data, error } = await supabase
+                    .from('resultados')
+                    .upsert({
+                        boleto_id: boletoId,
+                        partido_numero: partidoNumero,
+                        resultado_real: resultadoReal,
+                        usuario_que_marco: currentUser.id
+                    }, {
+                        onConflict: 'boleto_id,partido_numero'
+                    });
+                
+                if (error) {
+                    console.error('Error guardando resultado:', error);
+                    return false;
+                }
+                
+                return true;
+                
+            } catch (error) {
+                console.error('Error en saveResultado:', error);
+                return false;
+            }
+        }
+        
+        function showSeguimiento() {
+            if (!currentUser) {
+                alert('Error: No hay usuario logueado');
+                return;
+            }
+            
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById('seguimientoScreen').classList.add('active');
+            
+            loadBoletoSelector();
+        }
+        
+        async function loadBoletoSelector() {
+            try {
+                const boletos = await loadBoletos();
+                const selector = document.getElementById('boletoSelector');
+                
+                selector.innerHTML = '<option value="">Selecciona un boleto...</option>';
+                
+                boletos.forEach((boleto, index) => {
+                    const option = document.createElement('option');
+                    option.value = boleto.id;
+                    option.textContent = `${boleto.jornada} - ${users[boleto.user_id]?.name || boleto.user_id}`;
+                    
+                    if (index === 0) {
+                        option.selected = true;
+                        loadSeguimientoBoleto(boleto.id);
+                    }
+                    
+                    selector.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Error cargando selector:', error);
+            }
+        }
+        
+        async function loadSeguimientoBoleto(boletoId) {
+            if (!boletoId) {
+                document.getElementById('seguimientoContent').classList.add('hidden');
+                return;
+            }
+            
+            try {
+                const { data: boleto, error } = await supabase
+                    .from('boletos')
+                    .select('*')
+                    .eq('id', boletoId)
+                    .single();
+                
+                if (error || !boleto) {
+                    console.error('Error cargando boleto:', error);
+                    return;
+                }
+                
+                currentBoletoSeguimiento = boleto;
+                resultadosActuales = await loadResultados(boletoId);
+                
+                createSeguimientoTable();
+                document.getElementById('seguimientoContent').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error en loadSeguimientoBoleto:', error);
+            }
+        }
+        
+        function createSeguimientoTable() {
+            const container = document.getElementById('partidosContainer');
+            container.innerHTML = '';
+            
+            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
+            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
+            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
+            
+            for (let i = 0; i < 15; i++) {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                
+                const partido = equipos[i] || `Partido ${i + 1}`;
+                const apuesta1 = columna1[i] || '-';
+                const apuesta2 = columna2[i] || '-';
+                const resultadoActual = resultadosActuales[i + 1] || '';
+                
+                row.innerHTML = `
+                    <div class="col-partido">${i + 1}. ${partido}</div>
+                    <div class="col-apuesta">${apuesta1}</div>
+                    <div class="col-apuesta">${apuesta2}</div>
+                    <div class="col-resultado">
+                        ${i < 14 ? 
+                            `<select class="resultado-input" onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">
+                                <option value="">-</option>
+                                <option value="1" ${resultadoActual === '1' ? 'selected' : ''}>1</option>
+                                <option value="X" ${resultadoActual === 'X' ? 'selected' : ''}>X</option>
+                                <option value="2" ${resultadoActual === '2' ? 'selected' : ''}>2</option>
+                            </select>` :
+                            `<input type="text" class="resultado-input" placeholder="0-1" value="${resultadoActual}" 
+                                   onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">`
+                        }
+                    </div>
+                    <div class="col-aciertos" id="aciertos-${i + 1}"></div>
+                `;
+                
+                container.appendChild(row);
+                updateAciertos(i + 1, apuesta1, apuesta2, resultadoActual);
+            }
+            
+            calculateTotals();
+        }
+        
+        window.updateResultado = async function(boletoId, partidoNumero, valor) {
+            resultadosActuales[partidoNumero] = valor;
+            
+            if (valor && valor !== '') {
+                await saveResultado(boletoId, partidoNumero, valor);
+            }
+            
+            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
+            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
+            
+            updateAciertos(partidoNumero, columna1[partidoNumero - 1], columna2[partidoNumero - 1], valor);
+            calculateTotals();
+        }
+        
+        function updateAciertos(partidoNumero, apuesta1, apuesta2, resultado) {
+            const container = document.getElementById(`aciertos-${partidoNumero}`);
+            if (!container) return;
+            
+            if (!resultado) {
+                container.innerHTML = '<span class="pendiente">-</span>';
+                return;
+            }
+            
+            let acierto1 = apuesta1 === resultado;
+            let acierto2 = apuesta2 === resultado;
+            
+            const icon1 = acierto1 ? '✓' : '✗';
+            const icon2 = acierto2 ? '✓' : '✗';
+            const class1 = acierto1 ? 'acierto' : 'fallo';
+            const class2 = acierto2 ? 'acierto' : 'fallo';
+            
+            container.innerHTML = `
+                <span class="${class1}">${icon1}</span> 
+                <span class="${class2}">${icon2}</span>
+            `;
+        }
+        
+        function calculateTotals() {
+            let total1 = 0;
+            let total2 = 0;
+            
+            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
+            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
+            
+            for (let i = 1; i <= 15; i++) {
+                const resultado = resultadosActuales[i];
+                if (resultado) {
+                    if (columna1[i - 1] === resultado) total1++;
+                    if (columna2[i - 1] === resultado) total2++;
+                }
+            }
+            
+            document.getElementById('totalCol1').textContent = total1;
+            document.getElementById('totalCol2').textContent = total2;
+        }
+        
+        // FUNCIONES DE BOLETOS Y DATOS
+        async function loadBoletos() {
+            try {
+                const { data, error } = await supabase
+                    .from('boletos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error cargando boletos:', error);
+                    return [];
+                }
+                
+                return data || [];
+                
+            } catch (error) {
+                console.error('Error en loadBoletos:', error);
+                return [];
+            }
+        }
+        
+        async function loadUsers() {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*');
+                
+                if (error) {
+                    console.error('Error cargando usuarios:', error);
+                    return;
+                }
+                
+                users = {};
+                if (data && data.length > 0) {
+                    data.forEach(user => {
+                        users[user.user_id] = {
+                            id: user.user_id,
+                            name: user.name,
+                            icon: user.user_id === 'oscar' ? '👨‍💼' : '👨‍🎓',
+                            photo: user.photo_url
+                        };
+                    });
+                }
+                
+                updateLoginAvatars();
+                
+            } catch (error) {
+                console.error('Error en loadUsers:', error);
+            }
+        }
+        
+        async function saveBoleto(boletoData) {
+            try {
+                const { data, error } = await supabase
+                    .from('boletos')
+                    .insert([boletoData])
+                    .select();
+                
+                if (error) {
+                    console.error('Error guardando boleto:', error);
+                    return false;
+                }
+                
+                return true;
+                
+            } catch (error) {
+                console.error('Error en saveBoleto:', error);
+                return false;
+            }
+        }
+        
+        async function deleteBoleto(boletoId, jornada, userName) {
+            if (!confirm(`¿Seguro que quieres eliminar el boleto de la jornada ${jornada} de ${userName}?`)) {
+                return;
+            }
+            
+            try {
+                showPhotoStatus('Eliminando boleto...');
+                
+                const { error } = await supabase
+                    .from('boletos')
+                    .delete()
+                    .eq('id', boletoId);
+                
+                if (error) {
+                    console.error('Error eliminando boleto:', error);
+                    showPhotoStatus('Error al eliminar boleto');
+                    return;
+                }
+                
+                showPhotoStatus('Boleto eliminado correctamente');
+                
+                setTimeout(() => {
+                    loadAndShowBoletos();
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Error en deleteBoleto:', error);
+                showPhotoStatus('Error inesperado');
+            }
+        }
+        
+        // FUNCIONES DE LOGIN Y USUARIOS
+        function selectUser(userId) {
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            selectedUserId = userId;
+            document.getElementById(userId + 'Card').classList.add('selected');
+            
+            document.querySelector(`#${userId}Card .user-hint`).textContent = 'Seleccionado ✓';
+            
+            document.getElementById('passwordSection').classList.add('show');
+            
+            setTimeout(() => {
+                document.getElementById('passwordInput').focus();
+            }, 300);
+            
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginButton').disabled = true;
+        }
+        
+        async function attemptLogin() {
+            const password = document.getElementById('passwordInput').value.trim();
+            
+            if (!selectedUserId) {
+                alert('⚠️ Selecciona un usuario primero');
+                return;
+            }
+            
+            if (password !== APP_PASSWORD) {
+                alert('⚠️ Contraseña incorrecta\n\nInténtalo de nuevo.');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                return;
+            }
+            
+            if (!users[selectedUserId]) {
+                await loadUsers();
+            }
+            
+            if (!users[selectedUserId]) {
+                alert('⚠️ Error cargando usuario. Inténtalo de nuevo.');
+                return;
+            }
+            
+            currentUser = {
+                id: selectedUserId,
+                name: users[selectedUserId].name,
+                icon: users[selectedUserId].icon,
+                photo: users[selectedUserId].photo
+            };
+            
+            localStorage.setItem('hermandaz_user', selectedUserId);
+            
+            showHome();
+            
+            alert(`✅ ¡Bienvenido ${currentUser.name}!\n\nYa puedes usar todas las funciones.`);
+        }
+        
+        function showHome() {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById('homeScreen').classList.add('active');
+            
+            if (currentUser) {
+                document.getElementById('welcomeText').textContent = `Bienvenido, ${currentUser.name}`;
+                document.getElementById('userName').textContent = currentUser.name;
+                
+                updateUserAvatar();
+            }
+        }
+        
+        function showLogin() {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById('loginScreen').classList.add('active');
+            
+            selectedUserId = null;
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById('passwordSection').classList.remove('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginButton').disabled = true;
+            
+            document.querySelector('#oscarCard .user-hint').textContent = 'Toca para seleccionar';
+            document.querySelector('#txemaCard .user-hint').textContent = 'Toca para seleccionar';
+        }
+        
+        function logout() {
+            if (confirm(`Seguro que quieres cerrar sesión, ${currentUser.name}?`)) {
+                currentUser = null;
+                localStorage.removeItem('hermandaz_user');
+                showLogin();
+            }
+        }
+        
+        // FUNCIONES DE FOTOS
+        async function updateUserPhoto(userId, photoUrl) {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .update({ photo_url: photoUrl })
+                    .eq('user_id', userId)
+                    .select();
+                
+                if (error) {
+                    console.error('Error actualizando foto:', error);
+                    return false;
+                }
+                
+                return true;
+                
+            } catch (error) {
+                console.error('Error en updateUserPhoto:', error);
+                return false;
+            }
+        }
+        
+        function changePhoto() {
+            if (!currentUser) {
+                alert('Error: No hay usuario logueado');
+                return;
+            }
+            
+            const confirmChange = confirm(`Quieres cambiar tu foto de perfil, ${currentUser.name}?`);
+            if (confirmChange) {
+                document.getElementById('photoInput').click();
+            }
+        }
+        
+        async function handlePhotoChange(event) {
+            const file = event.target.files[0];
+            if (!file || !currentUser)
