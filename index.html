@@ -1536,23 +1536,47 @@
         
         // FUNCIONES DE LOGIN Y USUARIOS
         function selectUser(userId) {
+            console.log('selectUser llamado con:', userId);
+            
             document.querySelectorAll('.user-card').forEach(card => {
                 card.classList.remove('selected');
             });
             
             selectedUserId = userId;
-            document.getElementById(userId + 'Card').classList.add('selected');
+            const userCard = document.getElementById(userId + 'Card');
+            console.log('Tarjeta encontrada:', userCard);
             
-            document.querySelector(`#${userId}Card .user-hint`).textContent = 'Seleccionado ✓';
+            if (userCard) {
+                userCard.classList.add('selected');
+            }
             
-            document.getElementById('passwordSection').classList.add('show');
+            const userHint = document.querySelector(`#${userId}Card .user-hint`);
+            if (userHint) {
+                userHint.textContent = 'Seleccionado ✓';
+            }
+            
+            const passwordSection = document.getElementById('passwordSection');
+            if (passwordSection) {
+                passwordSection.classList.add('show');
+                console.log('Sección de password mostrada');
+            }
             
             setTimeout(() => {
-                document.getElementById('passwordInput').focus();
+                const passwordInput = document.getElementById('passwordInput');
+                if (passwordInput) {
+                    passwordInput.focus();
+                }
             }, 300);
             
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('loginButton').disabled = true;
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.getElementById('loginButton');
+            
+            if (passwordInput) {
+                passwordInput.value = '';
+            }
+            if (loginButton) {
+                loginButton.disabled = true;
+            }
         }
         
         async function attemptLogin() {
