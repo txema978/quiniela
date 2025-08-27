@@ -78,6 +78,13 @@
             <h1 class="title">HISTORIAL</h1>
             <p class="subtitle">Boletos subidos por Oscar y Txema</p>
             
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #10b981;">Seleccionar boleto:</label>
+                <select id="historialSelector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                    <option value="">Cargando boletos...</option>
+                </select>
+            </div>
+            
             <div id="historialLoading" class="processing">
                 <div class="loading"></div>
                 <p>Cargando boletos...</p>
@@ -762,7 +769,76 @@
             document.getElementById('historialLoading').classList.remove('hidden');
             document.getElementById('historialContent').classList.add('hidden');
             
-            loadAndShowBoletos();
+            loadHistorialSelector();
+        }
+        
+        // NUEVA FUNCIÓN PARA CARGAR SELECTOR DE HISTORIAL
+        async function loadHistorialSelector() {
+            try {
+                const boletos = await loadBoletos();
+                const selector = document.getElementById('historialSelector');
+                
+                selector.innerHTML = '<option value="">Selecciona un boleto...</option>';
+                
+                boletos.forEach((boleto, index) => {
+                    const option = document.createElement('option');
+                    option.value = boleto.id;
+                    option.textContent = `${boleto.jornada} - ${users[boleto.user_id]?.name || boleto.user_id}`;
+                    
+                    // Seleccionar el más reciente por defecto
+                    if (index === 0) {
+                        option.selected = true;
+                        loadSingleBoleto(boleto.id);
+                    }
+                    
+                    selector.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Error cargando selector historial:', error);
+                // Fallback al comportamiento anterior si hay error
+                loadAndShowBoletos();
+            }
+        }
+        
+        // NUEVA FUNCIÓN PARA MOSTRAR UN BOLETO ESPECÍFICO
+        async function loadSingleBoleto(boletoId) {
+            if (!boletoId) {
+                document.getElementById('historialLoading').classList.add('hidden');
+                document.getElementById('historialContent').classList.remove('hidden');
+                document.getElementById('boletosLista').innerHTML = '';
+                document.getElementById('noBoletosMessage').classList.remove('hidden');
+                return;
+            }
+            
+            try {
+                const boletos = await loadBoletos();
+                const boleto = boletos.find(b => b.id == boletoId);
+                
+                document.getElementById('historialLoading').classList.add('hidden');
+                document.getElementById('historialContent').classList.remove('hidden');
+                
+                const listaContainer = document.getElementById('boletosLista');
+                const noBoletosMessage = document.getElementById('noBoletosMessage');
+                
+                if (!boleto) {
+                    listaContainer.innerHTML = '';
+                    noBoletosMessage.classList.remove('hidden');
+                    return;
+                }
+                
+                noBoletosMessage.classList.add('hidden');
+                listaContainer.innerHTML = '';
+                
+                const boletoElement = createBoletoElement(boleto);
+                listaContainer.appendChild(boletoElement);
+                
+            } catch (error) {
+                console.error('Error cargando boleto específico:', error);
+                document.getElementById('historialLoading').classList.add('hidden');
+                document.getElementById('historialContent').classList.remove('hidden');
+                document.getElementById('boletosLista').innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">Error cargando boleto</div>';
+            }
         }
         
         async function loadAndShowBoletos() {
@@ -1384,6 +1460,11 @@
             
             document.getElementById('boletoSelector').addEventListener('change', function(e) {
                 loadSeguimientoBoleto(e.target.value);
+            });
+            
+            // NUEVO EVENT LISTENER PARA HISTORIAL
+            document.getElementById('historialSelector').addEventListener('change', function(e) {
+                loadSingleBoleto(e.target.value);
             });
         });
     </script>
