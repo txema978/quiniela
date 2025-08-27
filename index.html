@@ -1978,6 +1978,8 @@
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
         }
         
         .table-header, .table-row, .table-totals {
@@ -1990,6 +1992,10 @@
         @media (max-width: 768px) {
             .table-header, .table-row, .table-totals {
                 grid-template-columns: 1fr 50px 50px 60px 70px;
+            }
+            
+            .seguimiento-table {
+                max-width: 100%;
             }
         }
         
