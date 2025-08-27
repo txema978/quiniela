@@ -749,12 +749,12 @@
             const password = document.getElementById('passwordInput').value.trim();
             
             if (!selectedUserId) {
-                alert('⚠️ Selecciona un usuario primero');
+                showToast('Error', 'Selecciona un usuario primero', 'warning');
                 return;
             }
             
             if (password !== APP_PASSWORD) {
-                alert('⚠️ Contraseña incorrecta\n\nInténtalo de nuevo.');
+                showToast('Contraseña incorrecta', 'Inténtalo de nuevo', 'error');
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordInput').focus();
                 return;
@@ -766,7 +766,7 @@
             }
             
             if (!users[selectedUserId]) {
-                alert('⚠️ Error cargando usuario. Inténtalo de nuevo.');
+                showToast('Error', 'Error cargando usuario. Inténtalo de nuevo', 'error');
                 return;
             }
             
@@ -781,7 +781,7 @@
             
             showHome();
             
-            alert(`✅ ¡Bienvenido ${currentUser.name}!\n\nYa puedes usar todas las funciones.`);
+            showToast('¡Bienvenido!', `Hola ${currentUser.name}, ya puedes usar todas las funciones`, 'success');
         }
         
         function showHome() {
@@ -989,7 +989,7 @@
         
         function showUpload() {
             if (!currentUser) {
-                alert('Error: No hay usuario logueado');
+                showToast('Error', 'No hay usuario logueado', 'error');
                 return;
             }
             
@@ -1012,12 +1012,12 @@
         
         function processBoletoImage(file) {
             if (!file.type.startsWith('image/')) {
-                alert('Solo se permiten imágenes');
+                showToast('Archivo no válido', 'Solo se permiten imágenes', 'error');
                 return;
             }
             
             if (file.size > 5 * 1024 * 1024) {
-                alert('La imagen es demasiado grande');
+                showToast('Archivo muy grande', 'La imagen debe ser menor a 5MB', 'error');
                 return;
             }
             
@@ -1168,7 +1168,7 @@
         
         async function saveBoletoFinal() {
             if (!currentUser || !currentBoletoImage) {
-                alert('Error: Faltan datos para guardar el boleto');
+                showToast('Error', 'Faltan datos para guardar el boleto', 'error');
                 return;
             }
             
@@ -1225,16 +1225,16 @@
                 const success = await saveBoleto(boletoData);
                 
                 if (success) {
-                    showPhotoStatus('Boleto guardado correctamente');
+                    showToast('¡Boleto guardado!', `Jornada ${jornada} guardada correctamente`, 'success');
                     setTimeout(() => {
                         showHome();
                     }, 1500);
                 } else {
-                    showPhotoStatus('Error al guardar boleto');
+                    showToast('Error', 'No se pudo guardar el boleto', 'error');
                 }
             } catch (error) {
                 console.error('Error guardando boleto:', error);
-                showPhotoStatus('Error inesperado');
+                showToast('Error inesperado', 'Inténtalo de nuevo', 'error');
             }
         }
         
@@ -1313,12 +1313,12 @@
             if (!file || !currentUser) return;
             
             if (!file.type.startsWith('image/')) {
-                alert('Solo se permiten imágenes');
+                showToast('Archivo no válido', 'Solo se permiten imágenes', 'error');
                 return;
             }
             
             if (file.size > 2 * 1024 * 1024) {
-                alert('La imagen es demasiado grande');
+                showToast('Archivo muy grande', 'La imagen debe ser menor a 2MB', 'error');
                 return;
             }
             
@@ -1338,21 +1338,21 @@
                         updateUserAvatar();
                         updateLoginAvatars();
                         
-                        showPhotoStatus('Foto actualizada correctamente');
+                        showToast('¡Foto actualizada!', 'Tu foto de perfil se ha sincronizado correctamente', 'success');
                     } else {
-                        showPhotoStatus('Error al actualizar foto');
+                        showToast('Error', 'No se pudo actualizar la foto', 'error');
                     }
                 };
                 
                 reader.onerror = function() {
-                    showPhotoStatus('Error al leer la imagen');
+                    showToast('Error', 'Error al leer la imagen', 'error');
                 };
                 
                 reader.readAsDataURL(file);
                 
             } catch (error) {
                 console.error('Error en handlePhotoChange:', error);
-                showPhotoStatus('Error inesperado');
+                showToast('Error inesperado', 'Inténtalo de nuevo', 'error');
             }
             
             event.target.value = '';
@@ -1366,6 +1366,34 @@
             setTimeout(() => {
                 statusElement.classList.remove('show');
             }, 3000);
+        }
+        
+        // NUEVA FUNCIÓN PARA NOTIFICACIONES TOAST
+        function showToast(title, message, type = 'info') {
+            const toastId = 'toast-' + Date.now();
+            const toastHtml = `
+                <div class="toast ${type}" id="${toastId}">
+                    <div class="toast-icon">
+                        ${type === 'success' ? '✅' : 
+                          type === 'error' ? '❌' : 
+                          type === 'warning' ? '⚠️' : 'ℹ️'}
+                    </div>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        ${message ? `<div class="toast-message">${message}</div>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', toastHtml);
+            const toast = document.getElementById(toastId);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
         }
         
         function setupRealtimeSubscription() {
