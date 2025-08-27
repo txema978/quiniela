@@ -202,7 +202,28 @@
             document.getElementById('estadisticasLoading').classList.remove('hidden');
             document.getElementById('estadisticasContent').classList.add('hidden');
             
+            // Actualizar avatares con fotos reales
+            updateStatsAvatars();
+            
             calculateEstadisticas();
+        }
+        
+        // NUEVA FUNCIÓN PARA ACTUALIZAR AVATARES EN ESTADÍSTICAS
+        function updateStatsAvatars() {
+            ['oscar', 'txema'].forEach(userId => {
+                const user = users[userId];
+                const avatarElement = document.querySelector(`#${userId}Stats .stats-avatar`);
+                
+                if (avatarElement && user) {
+                    if (user.photo) {
+                        // Mostrar foto real
+                        avatarElement.innerHTML = `<img src="${user.photo}" alt="${user.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                    } else {
+                        // Fallback al emoji
+                        avatarElement.textContent = user.icon;
+                    }
+                }
+            });
         }
         
         // NUEVA FUNCIÓN PARA CALCULAR ESTADÍSTICAS
