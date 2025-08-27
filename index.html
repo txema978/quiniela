@@ -1111,7 +1111,38 @@
             document.getElementById('processingArea').classList.add('hidden');
             document.getElementById('extractedData').classList.remove('hidden');
             
+            // Auto-detectar siguiente jornada
+            autoDetectNextJornada();
+            
             createEditableForm();
+        }
+        
+        // NUEVA FUNCIÓN PARA AUTO-DETECTAR SIGUIENTE JORNADA
+        async function autoDetectNextJornada() {
+            try {
+                const boletos = await loadBoletos();
+                let ultimaJornada = 1;
+                
+                if (boletos.length > 0) {
+                    // Buscar la jornada más alta
+                    boletos.forEach(boleto => {
+                        const jornadaNum = parseInt(boleto.jornada.replace('J', ''));
+                        if (jornadaNum > ultimaJornada) {
+                            ultimaJornada = jornadaNum;
+                        }
+                    });
+                }
+                
+                const siguienteJornada = ultimaJornada + 1;
+                document.getElementById('jornadaInput').value = siguienteJornada;
+                
+                console.log(`Auto-detectado: Última jornada ${ultimaJornada}, siguiente: ${siguienteJornada}`);
+                
+            } catch (error) {
+                console.error('Error detectando jornada:', error);
+                // Fallback a jornada 2 si hay error
+                document.getElementById('jornadaInput').value = 2;
+            }
         }
         
         function createEditableForm() {
