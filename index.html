@@ -236,10 +236,15 @@
                         }
                         
                         const totalAciertos = aciertosCol1 + aciertosCol2;
+                        const mejorColumna = Math.max(aciertosCol1, aciertosCol2);
+                        const peorColumna = Math.min(aciertosCol1, aciertosCol2);
+                        
                         estadisticas[userId].aciertos.push(totalAciertos);
                         estadisticas[userId].jornadas.push({
                             jornada: boleto.jornada,
-                            aciertos: totalAciertos
+                            aciertos: totalAciertos,
+                            mejorColumna: mejorColumna,
+                            peorColumna: peorColumna
                         });
                     }
                 }
@@ -253,9 +258,17 @@
                     
                     let mejorJornada = '-', peorJornada = '-';
                     if (stats.jornadas.length > 0) {
-                        stats.jornadas.sort((a, b) => b.aciertos - a.aciertos);
-                        mejorJornada = `${stats.jornadas[0].jornada} (${stats.jornadas[0].aciertos})`;
-                        peorJornada = `${stats.jornadas[stats.jornadas.length-1].jornada} (${stats.jornadas[stats.jornadas.length-1].aciertos})`;
+                        // Mejor jornada: la que tiene la mejor de sus columnas más alta
+                        const jornadaConMejorColumna = stats.jornadas.reduce((mejor, actual) => 
+                            actual.mejorColumna > mejor.mejorColumna ? actual : mejor
+                        );
+                        mejorJornada = `${jornadaConMejorColumna.jornada} (${jornadaConMejorColumna.mejorColumna})`;
+                        
+                        // Peor jornada: la que tiene la peor de sus columnas más baja
+                        const jornadaConPeorColumna = stats.jornadas.reduce((peor, actual) => 
+                            actual.peorColumna < peor.peorColumna ? actual : peor
+                        );
+                        peorJornada = `${jornadaConPeorColumna.jornada} (${jornadaConPeorColumna.peorColumna})`;
                     }
                     
                     document.getElementById(`${userId}Porcentaje`).textContent = `${porcentaje}%`;
