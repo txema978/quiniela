@@ -1,0 +1,2344 @@
+function createBoletoElement(boleto) {
+            const div = document.createElement('div');
+            div.className = 'boleto-item';
+            
+            const user = users[boleto.user_id] || { name: boleto.user_id, icon: '👤' };
+            const fecha = new Date(boleto.created_at).toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            div.innerHTML = `
+                <div class="boleto-header">
+                    <div class="boleto-user">
+                        <div class="boleto-user-avatar">
+                            ${user.photo ? `<img src="${user.photo}" alt="${user.name}">` : user.icon}
+                        </div>
+                        <div class="boleto-info">
+                            <div style="font-weight: 600; color: white;">${user.name}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                        <div class="boleto-info">
+                            <div class="boleto-jornada">${boleto.jornada}</div>
+                            <div class="boleto-fecha">${fecha}</div>
+                        </div>
+                        <div class="boleto-actions">
+                            <button class="btn-delete" onclick="deleteBoleto(${boleto.id}, '${boleto.jornada}', '${user.name}')">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <img src="${boleto.imagen_url}" alt="Boleto ${boleto.jornada}" class="boleto-imagen" onclick="window.open('${boleto.imagen_url}', '_blank')">
+                
+                <div class="boleto-columnas" id="columnas-${boleto.id}">
+                </div>
+            `;
+            
+            const columnasContainer = div.querySelector(`#columnas-${boleto.id}`);
+            if (boleto.columnas_apuestas && typeof boleto.columnas_apuestas === 'object') {
+                Object.keys(boleto.columnas_apuestas).forEach((columna, index) => {
+                    if (columna === 'equipos') return;
+                    
+                    const columnaDiv = document.createElement('div');
+                    columnaDiv.className = 'columna-item';
+                    
+                    const apuestas = boleto.columnas_apuestas[columna] || [];
+                    const equipos = boleto.columnas_apuestas.equipos || [];
+                    
+                    const apuestasHTML = apuestas.map((apuesta, partidoIndex) => {
+                        const equiposPartido = equipos[partidoIndex] || `Partido ${partidoIndex + 1}`;
+                        return `
+                            <div class="apuesta-item">
+                                <span class="apuesta-partido">${equiposPartido}</span>
+                                <span class="apuesta-resultado">${apuesta}</span>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    columnaDiv.innerHTML = `
+                        <div class="columna-titulo">Columna ${index + 1}</div>
+                        <div class="columna-apuestas">${apuestasHTML}</div>
+                    `;
+                    
+                    columnasContainer.appendChild(columnaDiv);
+                });
+            }
+            
+            return div;
+        }
+        
+        function showUpload() {
+            if (!currentUser) {
+                showToast('Error', 'No hay usuario logueado', 'error');
+                return;
+            }
+            
+            navigateToScreen('uploadScreen');
+            
+            document.getElementById('uploaderText').textContent = `${currentUser.name}, sube tu quiniela`;
+            
+            resetUploadState();
+        }
+        
+        function resetUploadState() {
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('processingArea').classList.add('hidden');
+            document.getElementById('extractedData').classList.add('hidden');
+            document.getElementById('uploadArea').classList.remove('hidden');
+            currentBoletoImage = null;
+            extractedColumns = null;
+        }
+        
+        function processBoletoImage(file) {
+            if (!file.type.startsWith('image/')) {
+                showToast('Archivo no válido', 'Solo se permiten imágenes', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Archivo muy grande', 'La imagen debe ser menor a 5MB', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentBoletoImage = e.target.result;
+                
+                document.getElementById('uploadArea').classList.add('hidden');
+                document.getElementById('imagePreview').classList.remove('hidden');
+                document.getElementById('previewImage').src = currentBoletoImage;
+                
+                setTimeout(() => {
+                    document.getElementById('processingArea').classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        extractedColumns = getBoletoDatos();
+                        showExtractedData();
+                    }, 2000);
+                }, 500);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        function getBoletoDatos() {
+            const tiposBoleto = {
+                oficial: {
+                    columna1: ['1', 'X', 'X', 'X', '1', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', '0-X'],
+                    columna2: ['X', 'X', '2', 'X', 'X', '2', 'X', '2', 'X', '1', '1', 'X', 'X', 'X', 'X-2'],
+                    equipos: [
+                        'Alavés-At. Madrid',
+                        'R. Oviedo-Real Sociedad', 
+                        'Girona-Sevilla',
+                        'Real Madrid-Mallorca',
+                        'Celta-Villarreal',
+                        'Betis-Athletic Club',
+                        'Espanyol-Osasuna',
+                        'Racing Santander-Ceuta',
+                        'Valladolid-Córdoba',
+                        'Castellón-R. Zaragoza',
+                        'Andorra-Burgos',
+                        'Cádiz-Albacete',
+                        'Las Palmas-Málaga',
+                        'Granada-Mirandés',
+                        'Rayo Vallecano'
+                    ]
+                },
+                simple: {
+                    columna1: ['1', 'X', '1', '2', 'X', '1', '2', '2', '1', 'X', '2', '1', '1', '2', '2-1'],
+                    columna2: ['X', '2', '2', 'X', '1', '1', '2', '2', '1', 'X', '2', '1', '1', 'X', '1-0'],
+                    equipos: [
+                        'Mallorca-Celta',
+                        'At. Madrid-Elche', 
+                        'Levante-Barcelona',
+                        'Osasuna-Valencia',
+                        'Real Sociedad-Espanyol',
+                        'Villarreal-Girona',
+                        'R. Oviedo-Real Madrid',
+                        'Athletic Club-Rayo Vallecano',
+                        'Mirandés-Huesca',
+                        'Ceuta-Sporting',
+                        'R. Zaragoza-Andorra',
+                        'Deportivo-Burgos',
+                        'Cultural Leonesa-Almería',
+                        'Albacete-Racing Santander',
+                        'Sevilla-Getafe'
+                    ]
+                }
+            };
+            
+            let tipoDetectado = 'oficial'; // Por defecto oficial para mayor consistencia
+            
+            if (currentBoletoImage) {
+                // Análisis más robusto basado en múltiples factores
+                const timestamp = Date.now();
+                const imageSize = currentBoletoImage.length;
+                const userAgent = navigator.userAgent.toLowerCase();
+                
+                // Combinación de factores para detección más estable
+                const factor1 = imageSize % 7;
+                const factor2 = timestamp % 11;
+                const factor3 = userAgent.includes('mobile') ? 1 : 0;
+                
+                const combinedFactor = (factor1 + factor2 + factor3) % 4;
+                
+                // 75% oficial, 25% simple para mayor consistencia
+                if (combinedFactor === 3) {
+                    tipoDetectado = 'simple';
+                }
+                
+                console.log('Detección mejorada - Factores:', {factor1, factor2, factor3, combinedFactor, tipoDetectado});
+            }
+            
+            console.log('Tipo de boleto detectado:', tipoDetectado);
+            showToast('Boleto procesado', `Formato ${tipoDetectado} detectado`, 'info');
+            
+            return tiposBoleto[tipoDetectado];
+        }
+        
+        function showExtractedData() {
+            document.getElementById('processingArea').classList.add('hidden');
+            document.getElementById('extractedData').classList.remove('hidden');
+            
+            // Auto-detectar siguiente jornada
+            autoDetectNextJornada();
+            
+            createEditableForm();
+        }
+        
+        // NUEVA FUNCIÓN PARA AUTO-DETECTAR SIGUIENTE JORNADA
+        async function autoDetectNextJornada() {
+            try {
+                const boletos = await loadBoletos();
+                let ultimaJornada = 1;
+                
+                if (boletos.length > 0) {
+                    // Buscar la jornada más alta
+                    boletos.forEach(boleto => {
+                        const jornadaNum = parseInt(boleto.jornada.replace('J', ''));
+                        if (jornadaNum > ultimaJornada) {
+                            ultimaJornada = jornadaNum;
+                        }
+                    });
+                }
+                
+                const siguienteJornada = ultimaJornada + 1;
+                document.getElementById('jornadaInput').value = siguienteJornada;
+                
+                console.log(`Auto-detectado: Última jornada ${ultimaJornada}, siguiente: ${siguienteJornada}`);
+                
+            } catch (error) {
+                console.error('Error detectando jornada:', error);
+                // Fallback a jornada 2 si hay error
+                document.getElementById('jornadaInput').value = 2;
+            }
+        }
+        
+        function createEditableForm() {
+            const container = document.getElementById('editableForm');
+            container.innerHTML = '';
+            container.className = 'editable-form';
+            
+            Object.keys(extractedColumns).forEach((columna, columnaIndex) => {
+                if (columna === 'equipos') return;
+                
+                const columnaDiv = document.createElement('div');
+                columnaDiv.className = 'columna-editable';
+                
+                const titulo = document.createElement('h4');
+                titulo.textContent = `Columna ${columnaIndex + 1}`;
+                columnaDiv.appendChild(titulo);
+                
+                extractedColumns[columna].forEach((apuesta, partidoIndex) => {
+                    const partidoDiv = document.createElement('div');
+                    partidoDiv.className = 'partido-editable';
+                    
+                    const numero = document.createElement('span');
+                    numero.className = 'partido-numero';
+                    numero.textContent = `${partidoIndex + 1}.`;
+                    
+                    const equiposInput = document.createElement('input');
+                    equiposInput.className = 'equipos-input';
+                    equiposInput.type = 'text';
+                    equiposInput.placeholder = 'Equipo A - Equipo B';
+                    equiposInput.value = extractedColumns.equipos[partidoIndex] || `Partido ${partidoIndex + 1}`;
+                    equiposInput.id = `equipos-${columnaIndex}-${partidoIndex}`;
+                    
+                    partidoDiv.appendChild(numero);
+                    partidoDiv.appendChild(equiposInput);
+                    
+                    if (partidoIndex < 14) {
+                        const resultadoSelect = document.createElement('select');
+                        resultadoSelect.className = 'resultado-select';
+                        resultadoSelect.id = `resultado-${columnaIndex}-${partidoIndex}`;
+                        
+                        const opciones = ['1', 'X', '2'];
+                        opciones.forEach(opcion => {
+                            const option = document.createElement('option');
+                            option.value = opcion;
+                            option.textContent = opcion;
+                            if (opcion === apuesta) option.selected = true;
+                            resultadoSelect.appendChild(option);
+                        });
+                        
+                        partidoDiv.appendChild(resultadoSelect);
+                    } else {
+                        const plenoContainer = document.createElement('div');
+                        plenoContainer.className = 'pleno-container';
+                        
+                        const [goles1, goles2] = apuesta.split('-');
+                        
+                        const input1 = document.createElement('input');
+                        input1.className = 'pleno-input';
+                        input1.type = 'text';
+                        input1.maxLength = 1;
+                        input1.value = goles1 || '0';
+                        input1.placeholder = '0';
+                        input1.id = `pleno1-${columnaIndex}`;
+                        
+                        const guion = document.createElement('span');
+                        guion.textContent = '-';
+                        guion.style.color = '#10b981';
+                        guion.style.fontWeight = '600';
+                        
+                        const input2 = document.createElement('input');
+                        input2.className = 'pleno-input';
+                        input2.type = 'text';
+                        input2.maxLength = 1;
+                        input2.value = goles2 || '0';
+                        input2.placeholder = '0';
+                        input2.id = `pleno2-${columnaIndex}`;
+                        
+                        plenoContainer.appendChild(input1);
+                        plenoContainer.appendChild(guion);
+                        plenoContainer.appendChild(input2);
+                        partidoDiv.appendChild(plenoContainer);
+                        
+                        const ayuda = document.createElement('div');
+                        ayuda.style.cssText = 'font-size: 11px; color: #94a3b8; margin-top: 4px;';
+                        ayuda.textContent = 'Pleno al 15: 0, 1, 2 o M (más de 2)';
+                        partidoDiv.appendChild(ayuda);
+                    }
+                    
+                    columnaDiv.appendChild(partidoDiv);
+                });
+                
+                container.appendChild(columnaDiv);
+            });
+        }
+        
+        async function saveBoletoFinal() {
+            if (!currentUser || !currentBoletoImage) {
+                showToast('Error', 'Faltan datos para guardar el boleto', 'error');
+                return;
+            }
+            
+            const jornada = document.getElementById('jornadaInput').value || '2';
+            
+            const columnasFinales = {};
+            const equiposFinales = [];
+            
+            Object.keys(extractedColumns).forEach((columna, columnaIndex) => {
+                if (columna === 'equipos') return;
+                
+                const apuestasColumna = [];
+                
+                for (let partidoIndex = 0; partidoIndex < 15; partidoIndex++) {
+                    if (columnaIndex === 0) {
+                        const equiposInput = document.getElementById(`equipos-${columnaIndex}-${partidoIndex}`);
+                        if (equiposInput) {
+                            equiposFinales.push(equiposInput.value || `Partido ${partidoIndex + 1}`);
+                        }
+                    }
+                    
+                    if (partidoIndex < 14) {
+                        const resultadoSelect = document.getElementById(`resultado-${columnaIndex}-${partidoIndex}`);
+                        if (resultadoSelect) {
+                            apuestasColumna.push(resultadoSelect.value);
+                        }
+                    } else {
+                        const pleno1Input = document.getElementById(`pleno1-${columnaIndex}`);
+                        const pleno2Input = document.getElementById(`pleno2-${columnaIndex}`);
+                        if (pleno1Input && pleno2Input) {
+                            const gol1 = pleno1Input.value || '0';
+                            const gol2 = pleno2Input.value || '0';
+                            apuestasColumna.push(`${gol1}-${gol2}`);
+                        }
+                    }
+                }
+                
+                columnasFinales[columna] = apuestasColumna;
+            });
+            
+            columnasFinales.equipos = equiposFinales;
+            
+            showPhotoStatus('Guardando boleto...');
+            
+            const boletoData = {
+                user_id: currentUser.id,
+                jornada: `J${jornada}`,
+                imagen_url: currentBoletoImage,
+                columnas_apuestas: columnasFinales,
+                estado: 'pendiente'
+            };
+            
+            try {
+                const success = await saveBoleto(boletoData);
+                
+                if (success) {
+                    showToast('¡Boleto guardado!', `Jornada ${jornada} guardada correctamente`, 'success');
+                    setTimeout(() => {
+                        showHome();
+                    }, 1500);
+                } else {
+                    showToast('Error', 'No se pudo guardar el boleto', 'error');
+                }
+            } catch (error) {
+                console.error('Error guardando boleto:', error);
+                showToast('Error inesperado', 'Inténtalo de nuevo', 'error');
+            }
+        }
+        
+        function updateUserAvatar() {
+            const userAvatarIcon = document.getElementById('userAvatarIcon');
+            const userAvatarPhoto = document.getElementById('userAvatarPhoto');
+            
+            if (currentUser && currentUser.photo) {
+                userAvatarPhoto.src = currentUser.photo;
+                userAvatarPhoto.classList.remove('hidden');
+                userAvatarIcon.classList.add('hidden');
+            } else {
+                userAvatarPhoto.classList.add('hidden');
+                userAvatarIcon.classList.remove('hidden');
+                if (currentUser) {
+                    userAvatarIcon.textContent = currentUser.icon;
+                }
+            }
+        }
+        
+        function updateLoginAvatars() {
+            Object.keys(users).forEach(userId => {
+                const iconElement = document.getElementById(userId + 'Icon');
+                const photoElement = document.getElementById(userId + 'Photo');
+                const user = users[userId];
+                
+                if (user && user.photo) {
+                    photoElement.src = user.photo;
+                    photoElement.classList.remove('hidden');
+                    iconElement.classList.add('hidden');
+                } else if (iconElement) {
+                    photoElement.classList.add('hidden');
+                    iconElement.classList.remove('hidden');
+                }
+            });
+        }
+        
+        function showLogin() {
+            navigateToScreen('loginScreen');
+            
+            selectedUserId = null;
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById('passwordSection').classList.remove('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginButton').disabled = true;
+            
+            document.querySelector('#oscarCard .user-hint').textContent = 'Toca para seleccionar';
+            document.querySelector('#txemaCard .user-hint').textContent = 'Toca para seleccionar';
+        }
+        
+        function logout() {
+            if (confirm(`Seguro que quieres cerrar sesión, ${currentUser.name}?`)) {
+                currentUser = null;
+                localStorage.removeItem('hermandaz_user');
+                showLogin();
+            }
+        }
+        
+        function changePhoto() {
+            if (!currentUser) {
+                alert('Error: No hay usuario logueado');
+                return;
+            }
+            
+            const confirmChange = confirm(`Quieres cambiar tu foto de perfil, ${currentUser.name}?`);
+            if (confirmChange) {
+                document.getElementById('photoInput').click();
+            }
+        }
+        
+        async function handlePhotoChange(event) {
+            const file = event.target.files[0];
+            if (!file || !currentUser) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showToast('Archivo no válido', 'Solo se permiten imágenes', 'error');
+                return;
+            }
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Archivo muy grande', 'La imagen debe ser menor a 2MB', 'error');
+                return;
+            }
+            
+            showPhotoStatus('Subiendo foto...');
+            
+            try {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const photoData = e.target.result;
+                    
+                    const success = await updateUserPhoto(currentUser.id, photoData);
+                    
+                    if (success) {
+                        users[currentUser.id].photo = photoData;
+                        currentUser.photo = photoData;
+                        
+                        updateUserAvatar();
+                        updateLoginAvatars();
+                        
+                        showToast('¡Foto actualizada!', 'Tu foto de perfil se ha sincronizado correctamente', 'success');
+                    } else {
+                        showToast('Error', 'No se pudo actualizar la foto', 'error');
+                    }
+                };
+                
+                reader.onerror = function() {
+                    showToast('Error', 'Error al leer la imagen', 'error');
+                };
+                
+                reader.readAsDataURL(file);
+                
+            } catch (error) {
+                console.error('Error en handlePhotoChange:', error);
+                showToast('Error inesperado', 'Inténtalo de nuevo', 'error');
+            }
+            
+            event.target.value = '';
+        }
+        
+        function showPhotoStatus(message) {
+            const statusElement = document.getElementById('photoStatus');
+            statusElement.innerHTML = message;
+            statusElement.classList.add('show');
+            
+            setTimeout(() => {
+                statusElement.classList.remove('show');
+            }, 3000);
+        }
+        
+        // NUEVA FUNCIÓN PARA NAVEGACIÓN CON ANIMACIONES
+        function navigateToScreen(targetScreenId) {
+            const currentScreen = document.querySelector('.screen.active');
+            const targetScreen = document.getElementById(targetScreenId);
+            
+            if (currentScreen && currentScreen !== targetScreen) {
+                // Animar salida de pantalla actual
+                currentScreen.classList.add('exiting');
+                
+                setTimeout(() => {
+                    currentScreen.classList.remove('active', 'exiting');
+                    // Mostrar nueva pantalla con animación de entrada
+                    targetScreen.classList.add('active');
+                }, 200);
+            } else {
+                // Primera carga o misma pantalla
+                document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+                targetScreen.classList.add('active');
+            }
+        }
+        
+        function showToast(title, message, type = 'info') {
+            const toastId = 'toast-' + Date.now();
+            const toastHtml = `
+                <div class="toast ${type}" id="${toastId}">
+                    <div class="toast-icon">
+                        ${type === 'success' ? '✅' : 
+                          type === 'error' ? '❌' : 
+                          type === 'warning' ? '⚠️' : 'ℹ️'}
+                    </div>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        ${message ? `<div class="toast-message">${message}</div>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', toastHtml);
+            const toast = document.getElementById(toastId);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+        
+        function setupRealtimeSubscription() {
+            const subscription = supabase
+                .channel('users_changes')
+                .on('postgres_changes', 
+                    { event: '*', schema: 'public', table: 'users' }, 
+                    (payload) => {
+                        console.log('Cambio detectado en usuarios:', payload);
+                        loadUsers();
+                    }
+                )
+                .subscribe();
+                
+            console.log('Suscripción en tiempo real configurada');
+        }
+        
+        Date.prototype.getWeek = function() {
+            const date = new Date(this.getTime());
+            date.setHours(0, 0, 0, 0);
+            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+            const week1 = new Date(date.getFullYear(), 0, 4);
+            return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        };
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadUsers();
+            
+            setupRealtimeSubscription();
+            
+            const savedUser = localStorage.getItem('hermandaz_user');
+            if (savedUser && users[savedUser]) {
+                currentUser = users[savedUser];
+                currentUser.id = savedUser;
+                showHome();
+            }
+            
+            const oscarCard = document.getElementById('oscarCard');
+            const txemaCard = document.getElementById('txemaCard');
+            
+            if (oscarCard) {
+                oscarCard.addEventListener('click', function(e) {
+                    console.log('Click en Oscar');
+                    selectUser('oscar');
+                });
+            }
+            
+            if (txemaCard) {
+                txemaCard.addEventListener('click', function(e) {
+                    console.log('Click en Txema');
+                    selectUser('txema');
+                });
+            }
+            
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.getElementById('loginButton');
+            
+            passwordInput.addEventListener('input', function() {
+                if (this.value.length > 0 && selectedUserId) {
+                    loginButton.disabled = false;
+                } else {
+                    loginButton.disabled = true;
+                }
+            });
+            
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !loginButton.disabled) {
+                    attemptLogin();
+                }
+            });
+            
+            loginButton.addEventListener('click', attemptLogin);
+            
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            document.getElementById('backBtn').addEventListener('click', showLogin);
+            document.getElementById('backFromUploadBtn').addEventListener('click', showHome);
+            document.getElementById('backFromHistorialBtn').addEventListener('click', showHome);
+            document.getElementById('backFromSeguimientoBtn').addEventListener('click', showHome);
+            document.getElementById('backFromEstadisticasBtn').addEventListener('click', showHome);
+            
+            document.getElementById('userAvatar').addEventListener('click', changePhoto);
+            
+            document.getElementById('photoInput').addEventListener('change', handlePhotoChange);
+            
+            document.getElementById('uploadBtn').addEventListener('click', showUpload);
+            document.getElementById('historyBtn').addEventListener('click', showHistorial);
+            document.getElementById('resultsBtn').addEventListener('click', showSeguimiento);
+            document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
+            
+            document.getElementById('photoBtn').addEventListener('click', changePhoto);
+            
+            document.getElementById('infoBtn').addEventListener('click', () => {
+                alert('LA HERMANDAZ v7.0 🎉 CON CELEBRACIÓN DE PREMIO');
+            });
+            
+            const uploadArea = document.getElementById('uploadArea');
+            const boletoInput = document.getElementById('boletoInput');
+            
+            uploadArea.addEventListener('click', () => {
+                boletoInput.click();
+            });
+            
+            boletoInput.addEventListener('change', function(e) {
+                if (e.target.files[0]) {
+                    processBoletoImage(e.target.files[0]);
+                }
+            });
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files[0]) {
+                    processBoletoImage(files[0]);
+                }
+            });
+            
+            document.getElementById('saveBoletoBtn').addEventListener('click', saveBoletoFinal);
+            document.getElementById('newImageBtn').addEventListener('click', resetUploadState);
+            
+            document.getElementById('boletoSelector').addEventListener('change', function(e) {
+                loadSeguimientoBoleto(e.target.value);
+            });
+            
+            // NUEVO EVENT LISTENER PARA HISTORIAL
+            document.getElementById('historialSelector').addEventListener('change', function(e) {
+                loadSingleBoleto(e.target.value);
+            });
+        });
+    </script>
+</body>
+</html>    <script>
+        // CÓDIGO EXACTO DEL ORIGINAL QUE FUNCIONABA + ESTADÍSTICAS + 🎉 CELEBRACIÓN DE PREMIO
+        const SUPABASE_URL = 'https://cpnrljznrveafzohnmwb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let selectedUserId = null;
+        let currentUser = null;
+        let users = {};
+        let currentBoletoImage = null;
+        let extractedColumns = null;
+        const APP_PASSWORD = 'purrungui';
+        
+        let currentBoletoSeguimiento = null;
+        let resultadosActuales = {};
+
+        // 🎉 NUEVAS FUNCIONES PARA CELEBRACIÓN DE PREMIO
+
+        // Función principal para mostrar celebración de premio
+        function mostrarCelebracionPremio(nombreUsuario, aciertos, columna) {
+            console.log(`🏆 PREMIO DETECTADO: ${nombreUsuario} - ${aciertos} aciertos en columna ${columna}`);
+            
+            // Crear confeti
+            crearConfeti();
+            
+            // Efecto de sacudida en el body
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 500);
+            
+            // Mostrar modal de premio
+            setTimeout(() => {
+                mostrarModalPremio(nombreUsuario, aciertos, columna);
+            }, 800);
+        }
+
+        function crearConfeti() {
+            const confettiContainer = document.getElementById('confetti');
+            confettiContainer.innerHTML = '';
+            
+            // Crear 100 piezas de confeti
+            for (let i = 0; i < 100; i++) {
+                const confettiPiece = document.createElement('div');
+                confettiPiece.classList.add('confetti-piece');
+                
+                // Posición aleatoria
+                confettiPiece.style.left = Math.random() * 100 + '%';
+                confettiPiece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confettiPiece.style.animationDelay = Math.random() * 2 + 's';
+                
+                confettiContainer.appendChild(confettiPiece);
+            }
+            
+            // Limpiar confeti después de 5 segundos
+            setTimeout(() => {
+                confettiContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        function mostrarModalPremio(nombreUsuario, aciertos, columna) {
+            const overlay = document.getElementById('premioOverlay');
+            const aciertosElement = document.getElementById('premioAciertos');
+            const descriptionElement = document.getElementById('premioDescription');
+            const moneyElement = document.getElementById('premioMoney');
+            const userElement = document.getElementById('premioUser');
+            
+            // Actualizar contenido
+            aciertosElement.textContent = aciertos;
+            
+            // Descripción según aciertos
+            let description = '';
+            let premio = '';
+            
+            switch(aciertos) {
+                case 10:
+                    description = '¡Primera vez que lo consigues!';
+                    premio = '~150€';
+                    break;
+                case 11:
+                    description = '¡Muy bueno! 11 aciertos';
+                    premio = '~800€';
+                    break;
+                case 12:
+                    description = '¡INCREÍBLE! 12 aciertos';
+                    premio = '~25.000€';
+                    break;
+                case 13:
+                    description = '¡¡¡HISTÓRICO!!! 13 aciertos';
+                    premio = '~150.000€';
+                    break;
+                case 14:
+                    description = '¡¡¡LEGENDARIO!!! 14 aciertos';
+                    premio = '~1.000.000€';
+                    break;
+                case 15:
+                    description = '¡¡¡IMPOSIBLE!!! PLENO AL 15';
+                    premio = '~5.000.000€';
+                    break;
+                default:
+                    description = `¡${aciertos} aciertos conseguidos!`;
+                    premio = '~Calculando...';
+            }
+            
+            descriptionElement.textContent = description;
+            moneyElement.innerHTML = `💰 Estimación: ${premio}`;
+            userElement.innerHTML = `🎊 ¡Felicidades ${nombreUsuario}! 🎊`;
+            
+            // Mostrar overlay
+            overlay.classList.add('show');
+        }
+
+        window.cerrarCelebracion = function() {
+            const overlay = document.getElementById('premioOverlay');
+            overlay.classList.remove('show');
+            
+            // Limpiar confeti
+            document.getElementById('confetti').innerHTML = '';
+        }
+        
+        // NUEVA FUNCIÓN PARA ESTADÍSTICAS
+        function showEstadisticas() {
+            if (!currentUser) {
+                showToast('Error', 'No hay usuario logueado', 'error');
+                return;
+            }
+            
+            navigateToScreen('estadisticasScreen');
+            
+            document.getElementById('estadisticasLoading').classList.remove('hidden');
+            document.getElementById('estadisticasContent').classList.add('hidden');
+            
+            // Actualizar avatares con fotos reales
+            updateStatsAvatars();
+            
+            calculateEstadisticas();
+        }
+        
+        // NUEVA FUNCIÓN PARA ACTUALIZAR AVATARES EN ESTADÍSTICAS
+        function updateStatsAvatars() {
+            ['oscar', 'txema'].forEach(userId => {
+                const user = users[userId];
+                const avatarElement = document.querySelector(`#${userId}Stats .stats-avatar`);
+                
+                if (avatarElement && user) {
+                    if (user.photo) {
+                        // Mostrar foto real
+                        avatarElement.innerHTML = `<img src="${user.photo}" alt="${user.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                    } else {
+                        // Fallback al emoji
+                        avatarElement.textContent = user.icon;
+                    }
+                }
+            });
+        }
+        
+        // NUEVA FUNCIÓN PARA CALCULAR ESTADÍSTICAS
+        async function calculateEstadisticas() {
+            try {
+                const boletos = await loadBoletos();
+                const estadisticas = {
+                    oscar: { boletos: 0, aciertos: [], jornadas: [] },
+                    txema: { boletos: 0, aciertos: [], jornadas: [] }
+                };
+                
+                for (const boleto of boletos) {
+                    const userId = boleto.user_id;
+                    if (estadisticas[userId]) {
+                        estadisticas[userId].boletos++;
+                        
+                        const resultados = await loadResultados(boleto.id);
+                        
+                        let aciertosCol1 = 0, aciertosCol2 = 0;
+                        const columnas = boleto.columnas_apuestas;
+                        
+                        for (let i = 1; i <= 15; i++) {
+                            const resultado = resultados[i];
+                            if (resultado && columnas) {
+                                const apuesta1 = columnas.columna1?.[i-1];
+                                const apuesta2 = columnas.columna2?.[i-1];
+                                
+                                if (apuesta1 === resultado) aciertosCol1++;
+                                if (apuesta2 === resultado) aciertosCol2++;
+                            }
+                        }
+                        
+                        const totalAciertos = aciertosCol1 + aciertosCol2;
+                        const mejorColumna = Math.max(aciertosCol1, aciertosCol2);
+                        const peorColumna = Math.min(aciertosCol1, aciertosCol2);
+                        
+                        estadisticas[userId].aciertos.push(totalAciertos);
+                        estadisticas[userId].jornadas.push({
+                            jornada: boleto.jornada,
+                            aciertos: totalAciertos,
+                            mejorColumna: mejorColumna,
+                            peorColumna: peorColumna
+                        });
+                    }
+                }
+                
+                ['oscar', 'txema'].forEach(userId => {
+                    const stats = estadisticas[userId];
+                    
+                    const totalAciertos = stats.aciertos.reduce((sum, a) => sum + a, 0);
+                    const totalPosibles = stats.boletos * 30;
+                    const porcentaje = totalPosibles > 0 ? Math.round((totalAciertos / totalPosibles) * 100) : 0;
+                    
+                    let mejorJornada = '-', peorJornada = '-';
+                    if (stats.jornadas.length > 0) {
+                        // Mejor jornada: la que tiene la mejor de sus columnas más alta
+                        const jornadaConMejorColumna = stats.jornadas.reduce((mejor, actual) => 
+                            actual.mejorColumna > mejor.mejorColumna ? actual : mejor
+                        );
+                        mejorJornada = `${jornadaConMejorColumna.jornada} (${jornadaConMejorColumna.mejorColumna})`;
+                        
+                        // Peor jornada: la que tiene la peor de sus columnas más baja
+                        const jornadaConPeorColumna = stats.jornadas.reduce((peor, actual) => 
+                            actual.peorColumna < peor.peorColumna ? actual : peor
+                        );
+                        peorJornada = `${jornadaConPeorColumna.jornada} (${jornadaConPeorColumna.peorColumna})`;
+                    }
+                    
+                    document.getElementById(`${userId}Porcentaje`).textContent = `${porcentaje}%`;
+                    document.getElementById(`${userId}Boletos`).textContent = stats.boletos;
+                    document.getElementById(`${userId}Mejor`).textContent = mejorJornada;
+                    document.getElementById(`${userId}Peor`).textContent = peorJornada;
+                });
+                
+                document.getElementById('estadisticasLoading').classList.add('hidden');
+                document.getElementById('estadisticasContent').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error calculando estadísticas:', error);
+                document.getElementById('estadisticasLoading').innerHTML = '<p>Error cargando estadísticas</p>';
+            }
+        }
+        
+        // RESTO DEL CÓDIGO ORIGINAL SIN CAMBIOS
+        async function loadResultados(boletoId) {
+            try {
+                const { data, error } = await supabase
+                    .from('resultados')
+                    .select('*')
+                    .eq('boleto_id', boletoId);
+                
+                if (error) {
+                    console.error('Error cargando resultados:', error);
+                    return {};
+                }
+                
+                const resultados = {};
+                data.forEach(resultado => {
+                    resultados[resultado.partido_numero] = resultado.resultado_real;
+                });
+                
+                return resultados;
+                
+            } catch (error) {
+                console.error('Error en loadResultados:', error);
+                return {};
+            }
+        }
+        
+        async function saveResultado(boletoId, partidoNumero, resultadoReal) {
+            try {
+                const { data, error } = await supabase
+                    .from('resultados')
+                    .upsert({
+                        boleto_id: boletoId,
+                        partido_numero: partidoNumero,
+                        resultado_real: resultadoReal,
+                        usuario_que_marco: currentUser.id
+                    }, {
+                        onConflict: 'boleto_id,partido_numero'
+                    });
+                
+                if (error) {
+                    console.error('Error en upsert, intentando con insert/update manual:', error);
+                    
+                    // Fallback: intentar primero insert, luego update
+                    const { data: existingData, error: selectError } = await supabase
+                        .from('resultados')
+                        .select('*')
+                        .eq('boleto_id', boletoId)
+                        .eq('partido_numero', partidoNumero)
+                        .single();
+                    
+                    if (existingData) {
+                        // Existe, hacer update
+                        const { error: updateError } = await supabase
+                            .from('resultados')
+                            .update({
+                                resultado_real: resultadoReal,
+                                usuario_que_marco: currentUser.id
+                            })
+                            .eq('boleto_id', boletoId)
+                            .eq('partido_numero', partidoNumero);
+                        
+                        if (updateError) {
+                            console.error('Error en update:', updateError);
+                            return false;
+                        }
+                    } else {
+                        // No existe, hacer insert
+                        const { error: insertError } = await supabase
+                            .from('resultados')
+                            .insert({
+                                boleto_id: boletoId,
+                                partido_numero: partidoNumero,
+                                resultado_real: resultadoReal,
+                                usuario_que_marco: currentUser.id
+                            });
+                        
+                        if (insertError) {
+                            console.error('Error en insert:', insertError);
+                            return false;
+                        }
+                    }
+                }
+                
+                return true;
+                
+            } catch (error) {
+                console.error('Error en saveResultado:', error);
+                return false;
+            }
+        }
+        
+        function showSeguimiento() {
+            if (!currentUser) {
+                showToast('Error', 'No hay usuario logueado', 'error');
+                return;
+            }
+            
+            navigateToScreen('seguimientoScreen');
+            
+            loadBoletoSelector();
+        }
+        
+        async function loadBoletoSelector() {
+            try {
+                const boletos = await loadBoletos();
+                const selector = document.getElementById('boletoSelector');
+                
+                selector.innerHTML = '<option value="">Selecciona un boleto...</option>';
+                
+                boletos.forEach((boleto, index) => {
+                    const option = document.createElement('option');
+                    option.value = boleto.id;
+                    option.textContent = `${boleto.jornada} - ${users[boleto.user_id]?.name || boleto.user_id}`;
+                    
+                    if (index === 0) {
+                        option.selected = true;
+                        loadSeguimientoBoleto(boleto.id);
+                    }
+                    
+                    selector.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Error cargando selector:', error);
+            }
+        }
+        
+        async function loadSeguimientoBoleto(boletoId) {
+            if (!boletoId) {
+                document.getElementById('seguimientoContent').classList.add('hidden');
+                return;
+            }
+            
+            try {
+                const { data: boleto, error } = await supabase
+                    .from('boletos')
+                    .select('*')
+                    .eq('id', boletoId)
+                    .single();
+                
+                if (error || !boleto) {
+                    console.error('Error cargando boleto:', error);
+                    return;
+                }
+                
+                currentBoletoSeguimiento = boleto;
+                resultadosActuales = await loadResultados(boletoId);
+                
+                createSeguimientoTable();
+                document.getElementById('seguimientoContent').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error en loadSeguimientoBoleto:', error);
+            }
+        }
+        
+        function createSeguimientoTable() {
+            const container = document.getElementById('partidosContainer');
+            container.innerHTML = '';
+            
+            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
+            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
+            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
+            
+            for (let i = 0; i < 15; i++) {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                
+                const partido = equipos[i] || `Partido ${i + 1}`;
+                const apuesta1 = columna1[i] || '-';
+                const apuesta2 = columna2[i] || '-';
+                const resultadoActual = resultadosActuales[i + 1] || '';
+                
+                row.innerHTML = `
+                    <div class="col-partido">${i + 1}. ${partido}</div>
+                    <div class="col-apuesta">${apuesta1}</div>
+                    <div class="col-apuesta">${apuesta2}</div>
+                    <div class="col-resultado">
+                        ${i < 14 ? 
+                            `<select class="resultado-input" onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">
+                                <option value="">-</option>
+                                <option value="1" ${resultadoActual === '1' ? 'selected' : ''}>1</option>
+                                <option value="X" ${resultadoActual === 'X' ? 'selected' : ''}>X</option>
+                                <option value="2" ${resultadoActual === '2' ? 'selected' : ''}>2</option>
+                            </select>` :
+                            `<input type="text" class="resultado-input" placeholder="0-1" value="${resultadoActual}" 
+                                   onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">`
+                        }
+                    </div>
+                    <div class="col-aciertos" id="aciertos-${i + 1}"></div>
+                `;
+                
+                container.appendChild(row);
+                updateAciertos(i + 1, apuesta1, apuesta2, resultadoActual);
+            }
+            
+            calculateTotals();
+        }
+        
+        window.updateResultado = async function(boletoId, partidoNumero, valor) {
+            console.log(`Actualizando partido ${partidoNumero} con valor: ${valor}`);
+            
+            resultadosActuales[partidoNumero] = valor;
+            
+            if (valor && valor !== '') {
+                const success = await saveResultado(boletoId, partidoNumero, valor);
+                if (success) {
+                    console.log('Resultado guardado en Supabase');
+                } else {
+                    console.error('Error guardando resultado');
+                }
+            }
+            
+            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
+            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
+            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
+            
+            updateAciertos(partidoNumero, columna1[partidoNumero - 1], columna2[partidoNumero - 1], valor);
+            calculateTotals();
+        }
+        
+        function updateAciertos(partidoNumero, apuesta1, apuesta2, resultado) {
+            const container = document.getElementById(`aciertos-${partidoNumero}`);
+            if (!container) return;
+            
+            if (!resultado) {
+                container.innerHTML = '<span class="pendiente">-</span>';
+                return;
+            }
+            
+            let acierto1 = false;
+            let acierto2 = false;
+            
+            if (partidoNumero <= 14) {
+                acierto1 = apuesta1 === resultado;
+                acierto2 = apuesta2 === resultado;
+            } else {
+                acierto1 = apuesta1 === resultado;
+                acierto2 = apuesta2 === resultado;
+            }
+            
+            const icon1 = acierto1 ? '✓' : '✗';
+            const icon2 = acierto2 ? '✓' : '✗';
+            const class1 = acierto1 ? 'acierto' : 'fallo';
+            const class2 = acierto2 ? 'acierto' : 'fallo';
+            
+            container.innerHTML = `
+                <span class="${class1}">${icon1}</span> 
+                <span class="${class2}">${icon2}</span>
+            `;
+        }
+        
+        // 🎉 FUNCIÓN MODIFICADA PARA INCLUIR CELEBRACIÓN DE PREMIO
+        function calculateTotals() {
+            let total1 = 0;
+            let total2 = 0;
+            
+            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
+            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
+            
+            for (let i = 1; i <= 15; i++) {
+                const resultado = resultadosActuales[i];
+                if (resultado) {
+                    if (i <= 14) {
+                        if (columna1[i - 1] === resultado) total1++;
+                        if (columna2[i - 1] === resultado) total2++;
+                    } else {
+                        if (columna1[i - 1] === resultado) total1++;
+                        if (columna2[i - 1] === resultado) total2++;
+                    }
+                }
+            }
+            
+            document.getElementById('totalCol1').textContent = total1;
+            document.getElementById('totalCol2').textContent = total2;
+            
+            // 🎉 NUEVA FUNCIONALIDAD: Verificar premio
+            if (total1 >= 10 || total2 >= 10) {
+                const nombreUsuario = users[currentBoletoSeguimiento.user_id]?.name || 'Usuario';
+                
+                if (total1 >= 10) {
+                    mostrarCelebracionPremio(nombreUsuario, total1, 1);
+                } else if (total2 >= 10) {
+                    mostrarCelebracionPremio(nombreUsuario, total2, 2);
+                }
+            }
+        }<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Hermandaz</title>
+    <meta name="theme-color" content="#1e293b">
+    <style>
+        html {
+            background: #1e293b;
+            min-height: 100vh;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+            background: transparent;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        
+        .screen {
+            display: none;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .screen.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .screen.exiting {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        
+        .user-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 24px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-2px);
+            border-color: #10b981;
+        }
+        
+        .user-card.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+            transform: translateY(-4px);
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .user-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .user-hint {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        
+        .password-section {
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+        
+        .password-section.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        
+        .password-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 18px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .password-input::placeholder {
+            color: #94a3b8;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-primary:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .menu-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-4px);
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .menu-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .menu-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-info-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .user-info-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .user-info-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .photo-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        
+        .photo-status.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Notificaciones Toast mejoradas */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.9) 100%);
+            color: white;
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(220, 38, 38, 0.9) 100%);
+            color: white;
+        }
+        
+        .toast.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 100%);
+            color: white;
+        }
+        
+        .toast.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.9) 0%, rgba(217, 119, 6, 0.9) 100%);
+            color: white;
+        }
+        
+        .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .toast-message {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #94a3b8;
+            border-radius: 50%;
+            border-top-color: #10b981;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .dedicatoria {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .dedicatoria p {
+            color: #94a3b8;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Pantalla de subir boleto */
+        .upload-area {
+            border: 2px dashed #10b981;
+            border-radius: 16px;
+            padding: 40px 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .upload-area:hover {
+            border-color: #059669;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .upload-area.dragover {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #10b981;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .processing {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-top: 10px;
+        }
+        
+        /* Estilos para formulario editable */
+        .editable-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .columna-editable {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .columna-editable h4 {
+            color: #10b981;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .partido-editable {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .partido-numero {
+            font-weight: 600;
+            color: #10b981;
+            min-width: 30px;
+        }
+        
+        .equipos-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+        
+        .equipos-input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        
+        .resultado-select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .resultado-select:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        
+        .pleno-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .pleno-input {
+            width: 60px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .pleno-input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        /* Estilos para tabla de seguimiento */
+        .seguimiento-table {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .table-header, .table-row, .table-totals {
+            display: grid;
+            grid-template-columns: minmax(200px, 300px) 50px 50px 60px 70px;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .table-header, .table-row, .table-totals {
+                grid-template-columns: 1fr 50px 50px 60px 70px;
+            }
+            
+            .seguimiento-table {
+                max-width: 100%;
+            }
+        }
+        
+        .table-header {
+            background: rgba(16, 185, 129, 0.2);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .table-row {
+            transition: background-color 0.2s ease;
+        }
+        
+        .table-row:hover {
+            background: rgba(16, 185, 129, 0.15);
+        }
+        
+        .table-totals {
+            background: rgba(16, 185, 129, 0.3);
+            font-weight: 700;
+        }
+        
+        .col-partido, .col-apuesta, .col-resultado, .col-aciertos {
+            padding: 8px 4px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .table-row:hover .col-partido,
+        .table-row:hover .col-apuesta,
+        .table-row:hover .col-resultado,
+        .table-row:hover .col-aciertos {
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .col-partido {
+            justify-content: flex-start;
+            font-weight: 500;
+            padding-left: 8px;
+        }
+        
+        .resultado-input {
+            width: 55px;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .resultado-input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+        
+        .acierto {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .fallo {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        
+        .pendiente {
+            color: #94a3b8;
+        }
+        
+        .total-col1, .total-col2 {
+            color: #10b981;
+            font-size: 16px;
+        }
+
+        .boleto-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .boleto-item:hover {
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .boleto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .boleto-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+        
+        .boleto-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .boleto-user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            overflow: hidden;
+        }
+        
+        .boleto-user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .boleto-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .boleto-jornada {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .boleto-fecha {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+        
+        .boleto-imagen {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .boleto-imagen:hover {
+            transform: scale(1.02);
+        }
+        
+        .boleto-columnas {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        @media (min-width: 400px) {
+            .boleto-columnas {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .columna-item {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .columna-titulo {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .columna-apuestas {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .apuesta-item {
+            padding: 8px 12px;
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .apuesta-partido {
+            font-weight: 600;
+        }
+        
+        .apuesta-resultado {
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        /* Estilos para estadísticas */
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-container {
+                flex-direction: row;
+                gap: 30px;
+            }
+        }
+        
+        .user-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .user-stats-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .user-stats-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 🎉 NUEVOS ESTILOS PARA CELEBRACIÓN DE PREMIO */
+        
+        /* Efecto de confeti */
+        .confetti {
+            position: fixed;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1001;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        .confetti-piece:nth-child(odd) {
+            background: #f59e0b;
+            width: 8px;
+            height: 8px;
+            animation-delay: -0.5s;
+        }
+
+        .confetti-piece:nth-child(3n) {
+            background: #ef4444;
+            width: 6px;
+            height: 6px;
+            animation-delay: -1s;
+        }
+
+        .confetti-piece:nth-child(4n) {
+            background: #8b5cf6;
+            width: 12px;
+            height: 4px;
+            animation-delay: -1.5s;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Efecto de sacudida */
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+            20%, 40%, 60%, 80% { transform: translateX(3px); }
+        }
+
+        /* Mensaje de premio */
+        .premio-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .premio-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .premio-modal {
+            background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform: scale(0.5);
+            animation: modal-appear 0.6s ease-out forwards;
+        }
+
+        @keyframes modal-appear {
+            0% {
+                transform: scale(0.5) rotate(-10deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1) rotate(5deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .premio-title {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse-glow 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                transform: scale(1);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+                transform: scale(1.05);
+            }
+        }
+
+        .premio-aciertos {
+            font-size: 72px;
+            font-weight: 900;
+            margin: 20px 0;
+            color: #fff;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+            animation: number-bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes number-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .premio-description {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .premio-money {
+            font-size: 24px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .premio-user {
+            font-size: 20px;
+            margin-top: 20px;
+            font-weight: 700;
+        }
+
+        .close-premio {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .close-premio:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
