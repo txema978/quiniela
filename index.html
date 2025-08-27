@@ -199,12 +199,11 @@
         // NUEVA FUNCIÓN PARA ESTADÍSTICAS
         function showEstadisticas() {
             if (!currentUser) {
-                alert('Error: No hay usuario logueado');
+                showToast('Error', 'No hay usuario logueado', 'error');
                 return;
             }
             
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById('estadisticasScreen').classList.add('active');
+            navigateToScreen('estadisticasScreen');
             
             document.getElementById('estadisticasLoading').classList.remove('hidden');
             document.getElementById('estadisticasContent').classList.add('hidden');
@@ -407,12 +406,11 @@
         
         function showSeguimiento() {
             if (!currentUser) {
-                alert('Error: No hay usuario logueado');
+                showToast('Error', 'No hay usuario logueado', 'error');
                 return;
             }
             
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById('seguimientoScreen').classList.add('active');
+            navigateToScreen('seguimientoScreen');
             
             loadBoletoSelector();
         }
@@ -785,8 +783,7 @@
         }
         
         function showHome() {
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById('homeScreen').classList.add('active');
+            navigateToScreen('homeScreen');
             
             if (currentUser) {
                 document.getElementById('welcomeText').textContent = `Bienvenido, ${currentUser.name}`;
@@ -798,12 +795,11 @@
         
         function showHistorial() {
             if (!currentUser) {
-                alert('Error: No hay usuario logueado');
+                showToast('Error', 'No hay usuario logueado', 'error');
                 return;
             }
             
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById('historialScreen').classList.add('active');
+            navigateToScreen('historialScreen');
             
             document.getElementById('historialLoading').classList.remove('hidden');
             document.getElementById('historialContent').classList.add('hidden');
@@ -993,8 +989,7 @@
                 return;
             }
             
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById('uploadScreen').classList.add('active');
+            navigateToScreen('uploadScreen');
             
             document.getElementById('uploaderText').textContent = `${currentUser.name}, sube tu quiniela`;
             
@@ -1273,8 +1268,7 @@
         }
         
         function showLogin() {
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById('loginScreen').classList.add('active');
+            navigateToScreen('loginScreen');
             
             selectedUserId = null;
             document.querySelectorAll('.user-card').forEach(card => {
@@ -1368,7 +1362,26 @@
             }, 3000);
         }
         
-        // NUEVA FUNCIÓN PARA NOTIFICACIONES TOAST
+        // NUEVA FUNCIÓN PARA NAVEGACIÓN CON ANIMACIONES
+        function navigateToScreen(targetScreenId) {
+            const currentScreen = document.querySelector('.screen.active');
+            const targetScreen = document.getElementById(targetScreenId);
+            
+            if (currentScreen && currentScreen !== targetScreen) {
+                // Animar salida de pantalla actual
+                currentScreen.classList.add('exiting');
+                
+                setTimeout(() => {
+                    currentScreen.classList.remove('active', 'exiting');
+                    // Mostrar nueva pantalla con animación de entrada
+                    targetScreen.classList.add('active');
+                }, 200);
+            } else {
+                // Primera carga o misma pantalla
+                document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+                targetScreen.classList.add('active');
+            }
+        }
         function showToast(title, message, type = 'info') {
             const toastId = 'toast-' + Date.now();
             const toastHtml = `
@@ -1600,10 +1613,20 @@
         
         .screen {
             display: none;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
         .screen.active {
             display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .screen.exiting {
+            opacity: 0;
+            transform: translateX(-100%);
         }
         
         .user-grid {
