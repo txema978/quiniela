@@ -354,8 +354,47 @@
                     });
                 
                 if (error) {
-                    console.error('Error guardando resultado:', error);
-                    return false;
+                    console.error('Error en upsert, intentando con insert/update manual:', error);
+                    
+                    // Fallback: intentar primero insert, luego update
+                    const { data: existingData, error: selectError } = await supabase
+                        .from('resultados')
+                        .select('*')
+                        .eq('boleto_id', boletoId)
+                        .eq('partido_numero', partidoNumero)
+                        .single();
+                    
+                    if (existingData) {
+                        // Existe, hacer update
+                        const { error: updateError } = await supabase
+                            .from('resultados')
+                            .update({
+                                resultado_real: resultadoReal,
+                                usuario_que_marco: currentUser.id
+                            })
+                            .eq('boleto_id', boletoId)
+                            .eq('partido_numero', partidoNumero);
+                        
+                        if (updateError) {
+                            console.error('Error en update:', updateError);
+                            return false;
+                        }
+                    } else {
+                        // No existe, hacer insert
+                        const { error: insertError } = await supabase
+                            .from('resultados')
+                            .insert({
+                                boleto_id: boletoId,
+                                partido_numero: partidoNumero,
+                                resultado_real: resultadoReal,
+                                usuario_que_marco: currentUser.id
+                            });
+                        
+                        if (insertError) {
+                            console.error('Error en insert:', insertError);
+                            return false;
+                        }
+                    }
                 }
                 
                 return true;
