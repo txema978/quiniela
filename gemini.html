@@ -538,7 +538,7 @@
             border-color: #10b981;
         }
         
-        /* --- NUEVOS ESTILOS PARA BOTONES DE RESULTADO --- */
+        /* --- ESTILOS PARA BOTONES DE RESULTADO --- */
         .resultado-buttons {
             display: flex;
             gap: 6px;
@@ -1394,8 +1394,8 @@
                 document.getElementById('previewImage').src = currentBoletoImage;
                 document.getElementById('processingArea').classList.remove('hidden');
                 
-                setTimeout(() => { // Simula el análisis
-                    extractedColumns = getBoletoDatos(); // Usamos datos de ejemplo
+                setTimeout(() => { 
+                    extractedColumns = getBoletoDatos();
                     showExtractedData();
                 }, 1500);
             };
@@ -1403,8 +1403,6 @@
         }
 
         function getBoletoDatos() {
-            // Se mantienen los datos simulados, ya que el OCR real no es viable
-            // El usuario corregirá estos datos fácilmente con la nueva interfaz.
             return {
                 columna1: ['1', 'X', 'X', 'X', '1', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', '0-M'],
                 columna2: ['X', 'X', '2', 'X', 'X', '2', 'X', '2', 'X', '1', '1', 'X', 'X', 'X', '1-2'],
@@ -1421,7 +1419,7 @@
             document.getElementById('processingArea').classList.add('hidden');
             document.getElementById('extractedData').classList.remove('hidden');
             
-            try { // Auto-detectar siguiente jornada
+            try { 
                 const { data, error } = await supabase.from('boletos').select('jornada').order('created_at', { ascending: false }).limit(1);
                 if(error) throw error;
                 const lastJornada = data.length > 0 ? parseInt(data[0].jornada.replace('J', '')) : 0;
@@ -1433,7 +1431,6 @@
             createEditableForm();
         }
 
-        // --- FUNCIÓN MODIFICADA PARA CREAR EL FORMULARIO ---
         function createEditableForm() {
             const container = document.getElementById('editableForm');
             container.innerHTML = '';
@@ -1458,7 +1455,7 @@
                     equiposInput.id = `equipos-${columnaIndex}-${partidoIndex}`;
                     partidoDiv.appendChild(equiposInput);
 
-                    if (partidoIndex < 14) { // Partidos 1 al 14
+                    if (partidoIndex < 14) { 
                         const buttonsContainer = document.createElement('div');
                         buttonsContainer.className = 'resultado-buttons';
                         buttonsContainer.id = `resultado-${columnaIndex}-${partidoIndex}`;
@@ -1476,7 +1473,7 @@
                             buttonsContainer.appendChild(button);
                         });
                         partidoDiv.appendChild(buttonsContainer);
-                    } else { // Pleno al 15
+                    } else { 
                         const plenoContainer = document.createElement('div');
                         plenoContainer.className = 'pleno-container';
                         const [goles1, goles2] = apuesta.split('-');
@@ -1492,14 +1489,12 @@
             });
         }
         
-        // --- FUNCIÓN MODIFICADA PARA GUARDAR EL BOLETO ---
         async function saveBoletoFinal() {
             showPhotoStatus('Guardando boleto...');
             const jornada = document.getElementById('jornadaInput').value;
             const columnasFinales = { columna1: [], columna2: [], equipos: [] };
 
             for (let i = 0; i < 15; i++) {
-                // Solo leemos los nombres de equipo de la primera columna para evitar duplicados
                 const equipoInput = document.getElementById(`equipos-0-${i}`);
                 columnasFinales.equipos.push(equipoInput.value);
 
@@ -1546,6 +1541,7 @@
                 if (boletos.length === 0) {
                     document.getElementById('noBoletosMessage').classList.remove('hidden');
                     document.getElementById('boletosLista').innerHTML = '';
+                    selector.innerHTML = '<option value="">No hay boletos</option>';
                     return;
                 }
                 
@@ -1608,14 +1604,14 @@
         }
 
         function createColumnHTML(columna, equipos, num) {
-            if (!columna) return '';
+            if (!columna || !equipos) return '';
             return `
                 <div class="columna-item">
                     <div class="columna-titulo">Columna ${num}</div>
                     ${equipos.map((eq, i) => `
                         <div class="apuesta-item">
                             <span class="apuesta-partido">${i + 1}. ${eq.split('-')[0]}</span>
-                            <span class="apuesta-resultado">${columna[i]}</span>
+                            <span class="apuesta-resultado">${columna[i] || '-'}</span>
                         </div>
                     `).join('')}
                 </div>`;
@@ -1628,7 +1624,7 @@
                 showToast('Error', 'No se pudo eliminar el boleto', 'error');
             } else {
                 showToast('Boleto eliminado', '', 'success');
-                showHistorial(); // Recargar la vista
+                showHistorial();
             }
         }
         
@@ -1652,7 +1648,6 @@
                 option.textContent = `${b.jornada} - ${users[b.user_id]?.name}`;
                 selector.appendChild(option);
             });
-            // Cargar el más reciente por defecto
             if (data.length > 0) {
                 selector.value = data[0].id;
                 loadSeguimientoBoleto(data[0].id);
@@ -1742,60 +1737,126 @@
             document.getElementById('totalCol2').textContent = total2;
         }
         
-        // --- SECCIÓN ESTADÍSTICAS ---
-        async function showEstadisticas() {
-            navigateToScreen('estadisticasScreen');
-            document.getElementById('estadisticasLoading').classList.remove('hidden');
-            document.getElementById('estadisticasContent').classList.add('hidden');
+        // --- SECCIÓN ESTADÍSTICAS (CORREGIDA) ---
 
-            const { data: boletos } = await supabase.from('boletos').select('*, resultados(*)');
-            
-            const stats = { oscar: { aciertos: 0, posibles: 0, boletos: 0, jornadas: [] }, txema: { aciertos: 0, posibles: 0, boletos: 0, jornadas: [] } };
-
-            for (const boleto of boletos) {
-                const user = boleto.user_id;
-                stats[user].boletos++;
-                let aciertosJornada = 0;
-                
-                const { columna1, columna2 } = boleto.columnas_apuestas;
-
-                boleto.resultados.forEach(res => {
-                    const idx = res.partido_numero - 1;
-                    if (columna1[idx] === res.resultado_real) { stats[user].aciertos++; aciertosJornada++; }
-                    if (columna2[idx] === res.resultado_real) { stats[user].aciertos++; aciertosJornada++; }
-                    stats[user].posibles += 2;
-                });
-                if(boleto.resultados.length > 0) {
-                     stats[user].jornadas.push({ jornada: boleto.jornada, aciertos: aciertosJornada, posibles: boleto.resultados.length * 2 });
-                }
+        async function loadBoletos() {
+            const { data, error } = await supabase
+                .from('boletos')
+                .select('*')
+                .order('created_at', { ascending: false });
+            if (error) {
+                console.error('Error cargando boletos:', error);
+                return [];
             }
-            
-            ['oscar', 'txema'].forEach(user => {
-                const s = stats[user];
-                const porcentaje = s.posibles > 0 ? Math.round((s.aciertos / s.posibles) * 100) : 0;
-                
-                let mejor = { aciertos: -1 }, peor = { aciertos: Infinity };
-                s.jornadas.forEach(j => {
-                    if (j.aciertos > mejor.aciertos) mejor = j;
-                    if (j.aciertos < peor.aciertos) peor = j;
-                });
-                
-                document.getElementById(`${user}Porcentaje`).textContent = `${porcentaje}%`;
-                document.getElementById(`${user}Boletos`).textContent = s.boletos;
-                document.getElementById(`${user}Mejor`).textContent = mejor.aciertos > -1 ? `${mejor.jornada} (${mejor.aciertos})` : '-';
-                document.getElementById(`${user}Peor`).textContent = peor.aciertos !== Infinity ? `${peor.jornada} (${peor.aciertos})` : '-';
-                 const avatarElement = document.querySelector(`#${user}Stats .stats-avatar`);
-                 if(users[user]?.photo){
-                     avatarElement.innerHTML = `<img src="${users[user].photo}" style="width:100%; height:100%; object-fit:cover;">`;
-                 } else {
-                     avatarElement.textContent = users[user]?.icon || '👤';
-                 }
-            });
-
-            document.getElementById('estadisticasLoading').classList.add('hidden');
-            document.getElementById('estadisticasContent').classList.remove('hidden');
+            return data || [];
         }
 
+        async function loadResultados(boletoId) {
+            const { data, error } = await supabase
+                .from('resultados')
+                .select('*')
+                .eq('boleto_id', boletoId);
+            if (error) {
+                console.error('Error cargando resultados:', error);
+                return {};
+            }
+            const resultados = {};
+            data.forEach(resultado => {
+                resultados[resultado.partido_numero] = resultado.resultado_real;
+            });
+            return resultados;
+        }
+        
+        async function showEstadisticas() {
+            navigateToScreen('estadisticasScreen');
+            const loadingEl = document.getElementById('estadisticasLoading');
+            const contentEl = document.getElementById('estadisticasContent');
+            
+            loadingEl.classList.remove('hidden');
+            contentEl.classList.add('hidden');
+            // Asegurarse de que el mensaje de carga está visible
+            loadingEl.innerHTML = '<div class="loading"></div><p>Calculando estadísticas...</p>';
+
+
+            try {
+                const boletos = await loadBoletos();
+                const estadisticas = {
+                    oscar: { boletos: 0, aciertos: 0, posibles: 0, jornadas: [] },
+                    txema: { boletos: 0, aciertos: 0, posibles: 0, jornadas: [] }
+                };
+
+                for (const boleto of boletos) {
+                    const userId = boleto.user_id;
+                    if (estadisticas[userId]) {
+                        estadisticas[userId].boletos++;
+                        
+                        const resultados = await loadResultados(boleto.id);
+                        const columnas = boleto.columnas_apuestas;
+                        
+                        let aciertosCol1 = 0;
+                        let aciertosCol2 = 0;
+                        let partidosConResultado = 0;
+
+                        if (columnas && columnas.columna1 && columnas.columna2) {
+                            for (let i = 1; i <= 15; i++) {
+                                const resultado = resultados[i];
+                                if (resultado) {
+                                    partidosConResultado++;
+                                    if (columnas.columna1[i - 1] === resultado) aciertosCol1++;
+                                    if (columnas.columna2[i - 1] === resultado) aciertosCol2++;
+                                }
+                            }
+                        }
+                        
+                        const totalAciertosJornada = aciertosCol1 + aciertosCol2;
+                        estadisticas[userId].aciertos += totalAciertosJornada;
+                        estadisticas[userId].posibles += partidosConResultado * 2;
+                        
+                        if (partidosConResultado > 0) {
+                             estadisticas[userId].jornadas.push({
+                                jornada: boleto.jornada,
+                                mejorColumna: Math.max(aciertosCol1, aciertosCol2),
+                                peorColumna: Math.min(aciertosCol1, aciertosCol2),
+                             });
+                        }
+                    }
+                }
+
+                ['oscar', 'txema'].forEach(userId => {
+                    const stats = estadisticas[userId];
+                    const porcentaje = stats.posibles > 0 ? Math.round((stats.aciertos / stats.posibles) * 100) : 0;
+                    
+                    let mejorJornada = { mejorColumna: -1, jornada: '-' };
+                    let peorJornada = { peorColumna: Infinity, jornada: '-' };
+
+                    if (stats.jornadas.length > 0) {
+                        stats.jornadas.forEach(j => {
+                            if(j.mejorColumna > mejorJornada.mejorColumna) mejorJornada = j;
+                            if(j.peorColumna < peorJornada.peorColumna) peorJornada = j;
+                        });
+                    }
+                   
+                    document.getElementById(`${userId}Porcentaje`).textContent = `${porcentaje}%`;
+                    document.getElementById(`${userId}Boletos`).textContent = stats.boletos;
+                    document.getElementById(`${userId}Mejor`).textContent = mejorJornada.jornada !== '-' ? `${mejorJornada.jornada} (${mejorJornada.mejorColumna})` : '-';
+                    document.getElementById(`${userId}Peor`).textContent = peorJornada.jornada !== '-' ? `${peorJornada.jornada} (${peorJornada.peorColumna})` : '-';
+                    
+                    const avatarElement = document.querySelector(`#${userId}Stats .stats-avatar`);
+                    if (users[userId]?.photo) {
+                        avatarElement.innerHTML = `<img src="${users[userId].photo}" style="width:100%; height:100%; object-fit:cover;">`;
+                    } else {
+                        avatarElement.textContent = users[userId]?.icon || '👤';
+                    }
+                });
+
+                loadingEl.classList.add('hidden');
+                contentEl.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error calculando estadísticas:', error);
+                loadingEl.innerHTML = '<p style="color: #ef4444;">Error al cargar las estadísticas.</p>';
+            }
+        }
 
         // --- INICIALIZACIÓN Y EVENTOS ---
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1826,7 +1887,7 @@
             document.getElementById('resultsBtn').addEventListener('click', showSeguimiento);
             document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
             document.getElementById('photoBtn').addEventListener('click', changePhoto);
-            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v8.0'));
+            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v8.1'));
 
             const uploadArea = document.getElementById('uploadArea');
             const boletoInput = document.getElementById('boletoInput');
