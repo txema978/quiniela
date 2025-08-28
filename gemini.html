@@ -1696,14 +1696,42 @@
             document.getElementById('seguimientoContent').classList.remove('hidden');
         }
 
+        // --- FUNCIÓN DE GUARDADO DE RESULTADO (CORREGIDA) ---
         window.updateResultado = async function(partidoNum, valor) {
             resultadosActuales[partidoNum] = valor;
-            await supabase.from('resultados').upsert({
-                boleto_id: currentBoletoSeguimiento.id,
-                partido_numero: partidoNum,
-                resultado_real: valor,
-                usuario_que_marco: currentUser.id
-            }, { onConflict: 'boleto_id,partido_numero' });
+
+            // Primero, borramos cualquier resultado previo para este partido
+            const { error: deleteError } = await supabase
+                .from('resultados')
+                .delete()
+                .match({ 
+                    boleto_id: currentBoletoSeguimiento.id, 
+                    partido_numero: partidoNum 
+                });
+
+            if (deleteError) {
+                console.error('Error al borrar resultado antiguo:', deleteError);
+                showToast('Error', 'No se pudo actualizar el resultado.', 'error');
+                return; // Detenemos la ejecución si falla el borrado
+            }
+
+            // Si el valor no está vacío (es decir, no se seleccionó '-'), insertamos el nuevo
+            if (valor && valor !== '') {
+                const { error: insertError } = await supabase.from('resultados').insert({
+                    boleto_id: currentBoletoSeguimiento.id,
+                    partido_numero: partidoNum,
+                    resultado_real: valor,
+                    usuario_que_marco: currentUser.id
+                });
+
+                if (insertError) {
+                    console.error('Error al insertar nuevo resultado:', insertError);
+                    showToast('Error', 'No se pudo guardar el nuevo resultado.', 'error');
+                    return; // Detenemos si falla la inserción
+                }
+            }
+            
+            // Finalmente, actualizamos la interfaz de aciertos y totales
             updateAciertos(partidoNum);
             calculateTotals();
         }
@@ -1737,8 +1765,7 @@
             document.getElementById('totalCol2').textContent = total2;
         }
         
-        // --- SECCIÓN ESTADÍSTICAS (CORREGIDA) ---
-
+        // --- SECCIÓN ESTADÍSTICAS ---
         async function loadBoletos() {
             const { data, error } = await supabase
                 .from('boletos')
@@ -1774,9 +1801,7 @@
             
             loadingEl.classList.remove('hidden');
             contentEl.classList.add('hidden');
-            // Asegurarse de que el mensaje de carga está visible
             loadingEl.innerHTML = '<div class="loading"></div><p>Calculando estadísticas...</p>';
-
 
             try {
                 const boletos = await loadBoletos();
@@ -1793,9 +1818,7 @@
                         const resultados = await loadResultados(boleto.id);
                         const columnas = boleto.columnas_apuestas;
                         
-                        let aciertosCol1 = 0;
-                        let aciertosCol2 = 0;
-                        let partidosConResultado = 0;
+                        let aciertosCol1 = 0, aciertosCol2 = 0, partidosConResultado = 0;
 
                         if (columnas && columnas.columna1 && columnas.columna2) {
                             for (let i = 1; i <= 15; i++) {
@@ -1808,8 +1831,7 @@
                             }
                         }
                         
-                        const totalAciertosJornada = aciertosCol1 + aciertosCol2;
-                        estadisticas[userId].aciertos += totalAciertosJornada;
+                        estadisticas[userId].aciertos += aciertosCol1 + aciertosCol2;
                         estadisticas[userId].posibles += partidosConResultado * 2;
                         
                         if (partidosConResultado > 0) {
@@ -1887,7 +1909,7 @@
             document.getElementById('resultsBtn').addEventListener('click', showSeguimiento);
             document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
             document.getElementById('photoBtn').addEventListener('click', changePhoto);
-            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v8.1'));
+            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v8.2'));
 
             const uploadArea = document.getElementById('uploadArea');
             const boletoInput = document.getElementById('boletoInput');
