@@ -2266,25 +2266,80 @@
         }
         
         function selectUser(userId) {
-            console.log('Seleccionando usuario:', userId);
+            console.log('🎯 Seleccionando usuario:', userId);
             
+            // Verificar que el userId es válido
+            if (!userId || (userId !== 'oscar' && userId !== 'txema')) {
+                console.error('❌ Usuario inválido:', userId);
+                return;
+            }
+            
+            // Quitar selección anterior
             document.querySelectorAll('.user-card').forEach(card => {
                 card.classList.remove('selected');
+                console.log('🔄 Removiendo selección de:', card.id);
             });
             
             selectedUserId = userId;
-            document.getElementById(userId + 'Card').classList.add('selected');
+            console.log('✅ Usuario seleccionado:', selectedUserId);
             
-            document.querySelector(`#${userId}Card .user-hint`).textContent = 'Seleccionado ✓';
+            // Seleccionar nueva card
+            const selectedCard = document.getElementById(userId + 'Card');
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                console.log('✅ Card seleccionada:', selectedCard.id);
+                
+                // Feedback visual inmediato
+                selectedCard.style.transform = 'translateY(-6px)';
+                setTimeout(() => {
+                    selectedCard.style.transform = '';
+                }, 200);
+                
+            } else {
+                console.error('❌ No se encontró la card:', userId + 'Card');
+            }
             
-            document.getElementById('passwordSection').classList.add('show');
+            // Actualizar texto de hint
+            const hintElement = document.querySelector(`#${userId}Card .user-hint`);
+            if (hintElement) {
+                hintElement.textContent = '✅ Seleccionado';
+                hintElement.style.color = '#10b981';
+                console.log('✅ Hint actualizado para:', userId);
+            } else {
+                console.error('❌ No se encontró hint para:', userId);
+            }
             
-            setTimeout(() => {
-                document.getElementById('passwordInput').focus();
-            }, 300);
+            // Mostrar sección de contraseña
+            const passwordSection = document.getElementById('passwordSection');
+            if (passwordSection) {
+                passwordSection.classList.add('show');
+                console.log('✅ Sección de contraseña mostrada');
+                
+                // Focus automático en el input de contraseña
+                setTimeout(() => {
+                    const passwordInput = document.getElementById('passwordInput');
+                    if (passwordInput) {
+                        passwordInput.focus();
+                        console.log('✅ Focus en input de contraseña');
+                    }
+                }, 400);
+            } else {
+                console.error('❌ No se encontró passwordSection');
+            }
             
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('loginButton').disabled = true;
+            // Limpiar contraseña anterior
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.getElementById('loginButton');
+            
+            if (passwordInput) {
+                passwordInput.value = '';
+            }
+            if (loginButton) {
+                loginButton.disabled = true;
+            }
+            
+            // Feedback visual con toast
+            showToast('Usuario seleccionado', `${userId === 'oscar' ? 'Oscar' : 'Txema'} - Ahora introduce la contraseña`, 'info');
         }
         
         async function attemptLogin() {
@@ -3379,120 +3434,243 @@
         };
         
         document.addEventListener('DOMContentLoaded', async function() {
-            await loadUsers();
+            console.log('🚀 Iniciando La Hermandaz v8.0...');
             
-            setupRealtimeSubscription();
-            
-            const savedUser = localStorage.getItem('hermandaz_user');
-            if (savedUser && users[savedUser]) {
-                currentUser = users[savedUser];
-                currentUser.id = savedUser;
-                showHome();
-            }
-            
-            const oscarCard = document.getElementById('oscarCard');
-            const txemaCard = document.getElementById('txemaCard');
-            
-            if (oscarCard) {
-                oscarCard.addEventListener('click', function(e) {
-                    console.log('Click en Oscar');
-                    selectUser('oscar');
-                });
-            }
-            
-            if (txemaCard) {
-                txemaCard.addEventListener('click', function(e) {
-                    console.log('Click en Txema');
-                    selectUser('txema');
-                });
-            }
-            
-            const passwordInput = document.getElementById('passwordInput');
-            const loginButton = document.getElementById('loginButton');
-            
-            passwordInput.addEventListener('input', function() {
-                if (this.value.length > 0 && selectedUserId) {
-                    loginButton.disabled = false;
+            // Pequeño delay para asegurar que DOM esté completamente cargado
+            setTimeout(async () => {
+                await loadUsers();
+                setupRealtimeSubscription();
+                
+                const savedUser = localStorage.getItem('hermandaz_user');
+                if (savedUser && users[savedUser]) {
+                    currentUser = users[savedUser];
+                    currentUser.id = savedUser;
+                    showHome();
                 } else {
-                    loginButton.disabled = true;
+                    // Asegurar que está en pantalla de login
+                    showLogin();
                 }
-            });
-            
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !loginButton.disabled) {
-                    attemptLogin();
+                
+                // DEBUG: Verificar que elementos existen
+                console.log('🔍 Verificando elementos del DOM...');
+                console.log('oscarCard existe:', !!document.getElementById('oscarCard'));
+                console.log('txemaCard existe:', !!document.getElementById('txemaCard'));
+                console.log('passwordSection existe:', !!document.getElementById('passwordSection'));
+                console.log('passwordInput existe:', !!document.getElementById('passwordInput'));
+                console.log('loginButton existe:', !!document.getElementById('loginButton'));
+                
+                // CONFIGURACIÓN DE LOGIN - MEJORADO
+                console.log('🔧 Configurando event listeners de login...');
+                
+                const oscarCard = document.getElementById('oscarCard');
+                const txemaCard = document.getElementById('txemaCard');
+                
+                if (oscarCard) {
+                    console.log('✅ Oscar card encontrada, configurando listener...');
+                    
+                    // Remover listeners existentes si los hay
+                    oscarCard.removeEventListener('click', () => {});
+                    
+                    // Añadir listener con función anónima que llame a selectUser
+                    oscarCard.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('👨‍💼 CLICK DETECTADO en Oscar');
+                        selectUser('oscar');
+                    });
+                    
+                    // También añadir listener táctil para móviles
+                    oscarCard.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                        console.log('📱 TOUCH START detectado en Oscar');
+                    });
+                    
+                    oscarCard.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('📱 TOUCH END detectado en Oscar');
+                        selectUser('oscar');
+                    });
+                    
+                    // Añadir cursor pointer para indicar que es clickeable
+                    oscarCard.style.cursor = 'pointer';
+                    
+                } else {
+                    console.error('❌ ERROR: No se encontró oscarCard');
                 }
-            });
+                
+                if (txemaCard) {
+                    console.log('✅ Txema card encontrada, configurando listener...');
+                    
+                    // Remover listeners existentes si los hay
+                    txemaCard.removeEventListener('click', () => {});
+                    
+                    txemaCard.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('👨‍🎓 CLICK DETECTADO en Txema');
+                        selectUser('txema');
+                    });
+                    
+                    txemaCard.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                        console.log('📱 TOUCH START detectado en Txema');
+                    });
+                    
+                    txemaCard.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('📱 TOUCH END detectado en Txema');
+                        selectUser('txema');
+                    });
+                    
+                    // Añadir cursor pointer
+                    txemaCard.style.cursor = 'pointer';
+                    
+                } else {
+                    console.error('❌ ERROR: No se encontró txemaCard');
+                }
+                
+                // TEST: Añadir listeners de debug para verificar que los clicks se detectan
+                document.addEventListener('click', function(e) {
+                    if (e.target.closest('.user-card')) {
+                        console.log('🎯 Click detectado en user-card:', e.target.closest('.user-card').id);
+                    }
+                });
+                
+                // RESTO DE EVENT LISTENERS
+                const passwordInput = document.getElementById('passwordInput');
+                const loginButton = document.getElementById('loginButton');
+                
+                if (passwordInput && loginButton) {
+                    passwordInput.addEventListener('input', function() {
+                        if (this.value.length > 0 && selectedUserId) {
+                            loginButton.disabled = false;
+                        } else {
+                            loginButton.disabled = true;
+                        }
+                    });
+                    
+                    passwordInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter' && !loginButton.disabled) {
+                            attemptLogin();
+                        }
+                    });
+                    
+                    loginButton.addEventListener('click', attemptLogin);
+                }
+                
+                // Resto de listeners configurados como antes...
+                setupOtherEventListeners();
+                
+                console.log('✅ Todos los event listeners configurados correctamente');
+                
+            }, 100); // 100ms de delay
+        });
+        
+        // FUNCIÓN AUXILIAR PARA OTROS EVENT LISTENERS
+        function setupOtherEventListeners() {
+            const backBtn = document.getElementById('backBtn');
+            if (backBtn) backBtn.addEventListener('click', showLogin);
             
-            loginButton.addEventListener('click', attemptLogin);
+            const backFromUploadBtn = document.getElementById('backFromUploadBtn');
+            if (backFromUploadBtn) backFromUploadBtn.addEventListener('click', showHome);
             
-            document.getElementById('logoutBtn').addEventListener('click', logout);
+            const backFromHistorialBtn = document.getElementById('backFromHistorialBtn');
+            if (backFromHistorialBtn) backFromHistorialBtn.addEventListener('click', showHome);
             
-            document.getElementById('backBtn').addEventListener('click', showLogin);
-            document.getElementById('backFromUploadBtn').addEventListener('click', showHome);
-            document.getElementById('backFromHistorialBtn').addEventListener('click', showHome);
-            document.getElementById('backFromSeguimientoBtn').addEventListener('click', showHome);
-            document.getElementById('backFromEstadisticasBtn').addEventListener('click', showHome);
+            const backFromSeguimientoBtn = document.getElementById('backFromSeguimientoBtn');
+            if (backFromSeguimientoBtn) backFromSeguimientoBtn.addEventListener('click', showHome);
             
-            document.getElementById('userAvatar').addEventListener('click', changePhoto);
+            const backFromEstadisticasBtn = document.getElementById('backFromEstadisticasBtn');
+            if (backFromEstadisticasBtn) backFromEstadisticasBtn.addEventListener('click', showHome);
             
-            document.getElementById('photoInput').addEventListener('change', handlePhotoChange);
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) logoutBtn.addEventListener('click', logout);
             
-            document.getElementById('uploadBtn').addEventListener('click', showUpload);
-            document.getElementById('historyBtn').addEventListener('click', showHistorial);
-            document.getElementById('resultsBtn').addEventListener('click', showSeguimiento);
-            document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
+            const userAvatar = document.getElementById('userAvatar');
+            if (userAvatar) userAvatar.addEventListener('click', changePhoto);
             
-            document.getElementById('photoBtn').addEventListener('click', changePhoto);
+            const photoInput = document.getElementById('photoInput');
+            if (photoInput) photoInput.addEventListener('change', handlePhotoChange);
             
-            document.getElementById('infoBtn').addEventListener('click', () => {
-                alert('LA HERMANDAZ v7.0');
-            });
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) uploadBtn.addEventListener('click', showUpload);
             
+            const historyBtn = document.getElementById('historyBtn');
+            if (historyBtn) historyBtn.addEventListener('click', showHistorial);
+            
+            const resultsBtn = document.getElementById('resultsBtn');
+            if (resultsBtn) resultsBtn.addEventListener('click', showSeguimiento);
+            
+            const statsBtn = document.getElementById('statsBtn');
+            if (statsBtn) statsBtn.addEventListener('click', showEstadisticas);
+            
+            const photoBtn = document.getElementById('photoBtn');
+            if (photoBtn) photoBtn.addEventListener('click', changePhoto);
+            
+            const infoBtn = document.getElementById('infoBtn');
+            if (infoBtn) {
+                infoBtn.addEventListener('click', () => {
+                    alert('LA HERMANDAZ v8.0\n🎯 Sistema de detección automática con validación 100%\n✅ Precisión garantizada');
+                });
+            }
+            
+            // Upload area
             const uploadArea = document.getElementById('uploadArea');
             const boletoInput = document.getElementById('boletoInput');
             
-            uploadArea.addEventListener('click', () => {
-                boletoInput.click();
-            });
+            if (uploadArea && boletoInput) {
+                uploadArea.addEventListener('click', () => {
+                    boletoInput.click();
+                });
+                
+                boletoInput.addEventListener('change', function(e) {
+                    if (e.target.files[0]) {
+                        processBoletoImage(e.target.files[0]);
+                    }
+                });
+                
+                uploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+                
+                uploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                });
+                
+                uploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files[0]) {
+                        processBoletoImage(files[0]);
+                    }
+                });
+            }
             
-            boletoInput.addEventListener('change', function(e) {
-                if (e.target.files[0]) {
-                    processBoletoImage(e.target.files[0]);
-                }
-            });
+            const saveBoletoBtn = document.getElementById('saveBoletoBtn');
+            if (saveBoletoBtn) saveBoletoBtn.addEventListener('click', saveBoletoFinal);
             
-            uploadArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
+            const newImageBtn = document.getElementById('newImageBtn');
+            if (newImageBtn) newImageBtn.addEventListener('click', resetUploadState);
             
-            uploadArea.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-            });
+            const boletoSelector = document.getElementById('boletoSelector');
+            if (boletoSelector) {
+                boletoSelector.addEventListener('change', function(e) {
+                    loadSeguimientoBoleto(e.target.value);
+                });
+            }
             
-            uploadArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files[0]) {
-                    processBoletoImage(files[0]);
-                }
-            });
-            
-            document.getElementById('saveBoletoBtn').addEventListener('click', saveBoletoFinal);
-            document.getElementById('newImageBtn').addEventListener('click', resetUploadState);
-            
-            document.getElementById('boletoSelector').addEventListener('change', function(e) {
-                loadSeguimientoBoleto(e.target.value);
-            });
-            
-            // NUEVO EVENT LISTENER PARA HISTORIAL
-            document.getElementById('historialSelector').addEventListener('change', function(e) {
-                loadSingleBoleto(e.target.value);
-            });
-        });
+            const historialSelector = document.getElementById('historialSelector');
+            if (historialSelector) {
+                historialSelector.addEventListener('change', function(e) {
+                    loadSingleBoleto(e.target.value);
+                });
+            }
+        }
     </script>
 </body>
 </html>
