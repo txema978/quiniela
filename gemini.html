@@ -483,7 +483,6 @@
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
             color: white;
-            margin-top: 10px;
         }
         
         /* Estilos para formulario editable */
@@ -510,8 +509,8 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 12px;
-            padding: 12px;
+            margin-bottom: 4px;
+            padding: 8px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
             flex-wrap: wrap;
@@ -520,12 +519,12 @@
         .partido-numero {
             font-weight: 600;
             color: #10b981;
-            min-width: 30px;
+            min-width: 25px;
         }
         
         .equipos-input {
             flex: 1;
-            min-width: 200px;
+            min-width: 150px;
             padding: 8px;
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -539,19 +538,36 @@
             border-color: #10b981;
         }
         
-        .resultado-select {
-            padding: 8px 12px;
-            border-radius: 6px;
+        /* --- NUEVOS ESTILOS PARA BOTONES DE RESULTADO --- */
+        .resultado-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .resultado-buttons button {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.1);
             color: white;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
         
-        .resultado-select:focus {
-            outline: none;
+        .resultado-buttons button:hover {
+            background: rgba(255, 255, 255, 0.2);
             border-color: #10b981;
+        }
+
+        .resultado-buttons button.selected {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transform: scale(1.05);
         }
         
         .pleno-container {
@@ -561,7 +577,7 @@
         }
         
         .pleno-input {
-            width: 60px;
+            width: 40px;
             padding: 8px;
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -582,78 +598,59 @@
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 900px;
-            margin: 0 auto;
         }
         
         .table-header, .table-row, .table-totals {
             display: grid;
-            grid-template-columns: minmax(200px, 300px) 50px 50px 60px 70px;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        @media (max-width: 768px) {
-            .table-header, .table-row, .table-totals {
-                grid-template-columns: 1fr 50px 50px 60px 70px;
-            }
-            
-            .seguimiento-table {
-                max-width: 100%;
-            }
+            grid-template-columns: 1fr 40px 40px 65px 60px;
+            align-items: center;
+            gap: 5px;
+            padding: 4px;
         }
         
         .table-header {
             background: rgba(16, 185, 129, 0.2);
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
+            padding: 8px 4px;
         }
         
-        .table-row {
-            transition: background-color 0.2s ease;
-        }
-        
-        .table-row:hover {
-            background: rgba(16, 185, 129, 0.15);
+        .table-row:nth-child(even) {
+            background: rgba(255, 255, 255, 0.03);
         }
         
         .table-totals {
             background: rgba(16, 185, 129, 0.3);
             font-weight: 700;
+            margin-top: 5px;
         }
         
         .col-partido, .col-apuesta, .col-resultado, .col-aciertos {
             padding: 8px 4px;
-            background: rgba(255, 255, 255, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-size: 13px;
-        }
-        
-        .table-row:hover .col-partido,
-        .table-row:hover .col-apuesta,
-        .table-row:hover .col-resultado,
-        .table-row:hover .col-aciertos {
-            background: rgba(16, 185, 129, 0.1);
+            min-height: 40px;
         }
         
         .col-partido {
             justify-content: flex-start;
             font-weight: 500;
-            padding-left: 8px;
+            text-align: left;
         }
         
         .resultado-input {
-            width: 55px;
-            padding: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 4px;
             border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.1);
             color: white;
             text-align: center;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
         }
         
@@ -662,24 +659,10 @@
             border-color: #10b981;
         }
         
-        .acierto {
-            color: #10b981;
-            font-weight: 600;
-        }
-        
-        .fallo {
-            color: #ef4444;
-            font-weight: 600;
-        }
-        
-        .pendiente {
-            color: #94a3b8;
-        }
-        
-        .total-col1, .total-col2 {
-            color: #10b981;
-            font-size: 16px;
-        }
+        .acierto { color: #10b981; font-weight: 700; }
+        .fallo { color: #ef4444; }
+        .pendiente { color: #94a3b8; }
+        .total-col1, .total-col2 { color: #10b981; font-size: 16px; }
 
         .boleto-item {
             background: rgba(255, 255, 255, 0.05);
@@ -698,9 +681,8 @@
         .boleto-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 16px;
-            flex-wrap: wrap;
             gap: 12px;
         }
         
@@ -729,54 +711,51 @@
         .boleto-user {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
         
         .boleto-user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 18px;
             overflow: hidden;
+            flex-shrink: 0;
         }
         
         .boleto-user-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 50%;
-        }
-        
-        .boleto-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
         }
         
         .boleto-jornada {
+            background-color: rgba(16, 185, 129, 0.2);
             color: #10b981;
-            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
             font-size: 14px;
         }
         
         .boleto-fecha {
             color: #94a3b8;
             font-size: 12px;
+            margin-top: 4px;
+            text-align: right;
         }
         
         .boleto-imagen {
             width: 100%;
-            max-height: 300px;
             border-radius: 12px;
             margin-bottom: 16px;
-            object-fit: contain;
             cursor: pointer;
             transition: transform 0.3s ease;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0,0,0,0.2);
         }
         
         .boleto-imagen:hover {
@@ -786,7 +765,7 @@
         .boleto-columnas {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
+            gap: 16px;
         }
         
         @media (min-width: 400px) {
@@ -796,8 +775,7 @@
         }
         
         .columna-item {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(0,0,0,0.2);
             border-radius: 8px;
             padding: 12px;
         }
@@ -809,32 +787,26 @@
             margin-bottom: 8px;
         }
         
-        .columna-apuestas {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        
         .apuesta-item {
-            padding: 8px 12px;
-            background: rgba(16, 185, 129, 0.2);
-            border-radius: 6px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 13px;
+            padding: 4px 0;
         }
         
         .apuesta-partido {
-            font-weight: 600;
+            opacity: 0.8;
         }
         
         .apuesta-resultado {
-            color: #10b981;
             font-weight: 700;
+            font-family: monospace;
+            font-size: 14px;
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
         /* Estilos para estadísticas */
@@ -842,15 +814,6 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        @media (min-width: 768px) {
-            .stats-container {
-                flex-direction: row;
-                gap: 30px;
-            }
         }
         
         .user-stats {
@@ -877,12 +840,12 @@
             align-items: center;
             justify-content: center;
             font-size: 24px;
+            overflow: hidden;
         }
         
         .user-stats-header h3 {
             font-size: 20px;
             font-weight: 700;
-            color: white;
         }
         
         .stats-grid {
@@ -893,10 +856,9 @@
         
         .stat-item {
             text-align: center;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0,0,0,0.2);
             border-radius: 12px;
             padding: 16px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .stat-value {
@@ -910,85 +872,7 @@
             font-size: 12px;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-
-        /* Nuevos estilos para el formulario visual */
-        #visualFormContainer {
-            position: relative;
-        }
-
-        .visual-form-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px; /* Ajusta el espacio entre columnas si es necesario */
-            padding: 20px; /* Espacio para que no se pegue al borde de la imagen */
-            box-sizing: border-box;
-        }
-
-        .visual-column {
-            display: flex;
-            flex-direction: column;
-            gap: 12px; /* Espacio entre los partidos */
-        }
-        
-        .visual-partido {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 4px;
-            height: 28px; /* Altura de la fila para coincidir con la imagen */
-        }
-        
-        .visual-pleno-container {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            height: 28px;
-        }
-        
-        .visual-sign-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #94a3b8;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-        
-        .visual-sign-btn.active {
-            background: #10b981;
-            border-color: #10b981;
-            color: white;
-        }
-        
-        .visual-sign-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #10b981;
-        }
-
-        .pleno-visual-input {
-            width: 25px;
-            padding: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 4px;
-        }
-        
     </style>
 </head>
 <body>
@@ -1108,7 +992,9 @@
                     <div>
                         <div style="color: #3b82f6; font-weight: 600; margin-bottom: 8px;">Instrucciones importantes:</div>
                         <div style="color: #94a3b8; font-size: 14px; line-height: 1.5;">
-                            Sube una foto del boleto y, a continuación, **simplemente marca tus pronósticos** sobre la imagen. Es mucho más rápido y preciso.
+                            El sistema identificará automáticamente los enfrentamientos. Sin embargo, los signos <strong>1, X y 2</strong> no siempre se detectan correctamente.
+                            <br><br>
+                            <strong>Antes de guardar</strong>, revisa y corrige los signos según tu quiniela. Una vez guardado, no podrás editarlos.
                         </div>
                     </div>
                 </div>
@@ -1133,10 +1019,7 @@
                         <input type="number" id="jornadaInput" min="1" max="50" value="2" 
                                style="width: 100px; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; text-align: center;">
                     </div>
-
-                    <div id="visualFormContainer">
-                        </div>
-
+                    <div id="editableForm"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px;">
                         <button class="btn btn-primary" id="saveBoletoBtn">Guardar Boleto</button>
                         <button class="btn btn-secondary" id="newImageBtn">Subir otra imagen</button>
@@ -1154,7 +1037,7 @@
             
             <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;">
                 <div style="color: #10b981; font-size: 14px; text-align: center;">
-                    <strong>Marca los resultados</strong> conforme se van jugando los partidos. Se guardan automáticamente y puedes ver los aciertos en tiempo real.
+                    <strong>Marca los resultados</strong> conforme se van jugando los partidos. Se guardan automáticamente.
                 </div>
             </div>
             
@@ -1195,23 +1078,18 @@
             
             <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;">
                 <div style="color: #f59e0b; font-size: 14px; text-align: center;">
-                    <strong>Consulta boletos anteriores</strong> de cualquier jornada. Selecciona uno específico o elimínalo si hay errores.
+                    <strong>Consulta boletos anteriores</strong> de cualquier jornada o elimínalos si hay errores.
                 </div>
             </div>
             
             <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #10b981;">Seleccionar boleto:</label>
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #f59e0b;">Filtrar por boleto:</label>
                 <select id="historialSelector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
                     <option value="">Cargando boletos...</option>
                 </select>
             </div>
             
-            <div id="historialLoading" class="processing">
-                <div class="loading"></div>
-                <p>Cargando boletos...</p>
-            </div>
-            
-            <div id="historialContent" class="hidden">
+            <div id="historialContent">
                 <div id="boletosLista"></div>
                 <div id="noBoletosMessage" class="hidden" style="text-align: center; padding: 40px; color: #94a3b8;">
                     📋 No hay boletos subidos todavía
@@ -1228,7 +1106,7 @@
             
             <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;">
                 <div style="color: #a855f7; font-size: 14px; text-align: center;">
-                    <strong>Rendimiento histórico</strong> calculado automáticamente. Muestra porcentaje de aciertos, mejor y peor jornada de cada usuario.
+                    <strong>Rendimiento histórico</strong> calculado automáticamente. Muestra el % de aciertos y la mejor jornada.
                 </div>
             </div>
             
@@ -1294,21 +1172,17 @@
     </div>
     
     <input type="file" id="photoInput" class="hidden" accept="image/*">
-    
     <input type="file" id="boletoInput" class="hidden" accept="image/*">
-    
-    <div class="photo-status" id="photoStatus">📸 Foto actualizada</div>
+    <div class="photo-status" id="photoStatus"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // CÓDIGO EXACTO DEL ORIGINAL QUE FUNCIONABA + ESTADÍSTICAS
         const SUPABASE_URL = 'https://cpnrljznrveafzohnmwb.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        let selectedUserId = null;
         let currentUser = null;
         let users = {};
         let currentBoletoImage = null;
@@ -1318,1311 +1192,28 @@
         let currentBoletoSeguimiento = null;
         let resultadosActuales = {};
         
-        // NUEVA FUNCIÓN PARA ESTADÍSTICAS
-        function showEstadisticas() {
-            if (!currentUser) {
-                showToast('Error', 'No hay usuario logueado', 'error');
-                return;
-            }
-            
-            navigateToScreen('estadisticasScreen');
-            
-            document.getElementById('estadisticasLoading').classList.remove('hidden');
-            document.getElementById('estadisticasContent').classList.add('hidden');
-            
-            // Actualizar avatares con fotos reales
-            updateStatsAvatars();
-            
-            calculateEstadisticas();
-        }
-        
-        // NUEVA FUNCIÓN PARA ACTUALIZAR AVATARES EN ESTADÍSTICAS
-        function updateStatsAvatars() {
-            ['oscar', 'txema'].forEach(userId => {
-                const user = users[userId];
-                const avatarElement = document.querySelector(`#${userId}Stats .stats-avatar`);
-                
-                if (avatarElement && user) {
-                    if (user.photo) {
-                        // Mostrar foto real
-                        avatarElement.innerHTML = `<img src="${user.photo}" alt="${user.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
-                    } else {
-                        // Fallback al emoji
-                        avatarElement.textContent = user.icon;
-                    }
-                }
-            });
-        }
-        
-        // NUEVA FUNCIÓN PARA CALCULAR ESTADÍSTICAS
-        async function calculateEstadisticas() {
-            try {
-                const boletos = await loadBoletos();
-                const estadisticas = {
-                    oscar: { boletos: 0, aciertos: [], jornadas: [] },
-                    txema: { boletos: 0, aciertos: [], jornadas: [] }
-                };
-                
-                for (const boleto of boletos) {
-                    const userId = boleto.user_id;
-                    if (estadisticas[userId]) {
-                        estadisticas[userId].boletos++;
-                        
-                        const resultados = await loadResultados(boleto.id);
-                        
-                        let aciertosCol1 = 0, aciertosCol2 = 0;
-                        const columnas = boleto.columnas_apuestas;
-                        
-                        for (let i = 1; i <= 15; i++) {
-                            const resultado = resultados[i];
-                            if (resultado && columnas) {
-                                const apuesta1 = columnas.columna1?.[i-1];
-                                const apuesta2 = columnas.columna2?.[i-1];
-                                
-                                if (apuesta1 === resultado) aciertosCol1++;
-                                if (apuesta2 === resultado) aciertosCol2++;
-                            }
-                        }
-                        
-                        const totalAciertos = aciertosCol1 + aciertosCol2;
-                        const mejorColumna = Math.max(aciertosCol1, aciertosCol2);
-                        const peorColumna = Math.min(aciertosCol1, aciertosCol2);
-                        
-                        estadisticas[userId].aciertos.push(totalAciertos);
-                        estadisticas[userId].jornadas.push({
-                            jornada: boleto.jornada,
-                            aciertos: totalAciertos,
-                            mejorColumna: mejorColumna,
-                            peorColumna: peorColumna
-                        });
-                    }
-                }
-                
-                ['oscar', 'txema'].forEach(userId => {
-                    const stats = estadisticas[userId];
-                    
-                    const totalAciertos = stats.aciertos.reduce((sum, a) => sum + a, 0);
-                    const totalPosibles = stats.boletos * 30;
-                    const porcentaje = totalPosibles > 0 ? Math.round((totalAciertos / totalPosibles) * 100) : 0;
-                    
-                    let mejorJornada = '-', peorJornada = '-';
-                    if (stats.jornadas.length > 0) {
-                        // Mejor jornada: la que tiene la mejor de sus columnas más alta
-                        const jornadaConMejorColumna = stats.jornadas.reduce((mejor, actual) => 
-                            actual.mejorColumna > mejor.mejorColumna ? actual : mejor
-                        );
-                        mejorJornada = `${jornadaConMejorColumna.jornada} (${jornadaConMejorColumna.mejorColumna})`;
-                        
-                        // Peor jornada: la que tiene la peor de sus columnas más baja
-                        const jornadaConPeorColumna = stats.jornadas.reduce((peor, actual) => 
-                            actual.peorColumna < peor.peorColumna ? actual : peor
-                        );
-                        peorJornada = `${jornadaConPeorColumna.jornada} (${jornadaConPeorColumna.peorColumna})`;
-                    }
-                    
-                    document.getElementById(`${userId}Porcentaje`).textContent = `${porcentaje}%`;
-                    document.getElementById(`${userId}Boletos`).textContent = stats.boletos;
-                    document.getElementById(`${userId}Mejor`).textContent = mejorJornada;
-                    document.getElementById(`${userId}Peor`).textContent = peorJornada;
-                });
-                
-                document.getElementById('estadisticasLoading').classList.add('hidden');
-                document.getElementById('estadisticasContent').classList.remove('hidden');
-                
-            } catch (error) {
-                console.error('Error calculando estadísticas:', error);
-                document.getElementById('estadisticasLoading').innerHTML = '<p>Error cargando estadísticas</p>';
-            }
-        }
-        
-        async function loadResultados(boletoId) {
-            try {
-                const { data, error } = await supabase
-                    .from('resultados')
-                    .select('*')
-                    .eq('boleto_id', boletoId);
-                
-                if (error) {
-                    console.error('Error cargando resultados:', error);
-                    return {};
-                }
-                
-                const resultados = {};
-                data.forEach(resultado => {
-                    resultados[resultado.partido_numero] = resultado.resultado_real;
-                });
-                
-                return resultados;
-                
-            } catch (error) {
-                console.error('Error en loadResultados:', error);
-                return {};
-            }
-        }
-        
-        async function saveResultado(boletoId, partidoNumero, resultadoReal) {
-            try {
-                const { data, error } = await supabase
-                    .from('resultados')
-                    .upsert({
-                        boleto_id: boletoId,
-                        partido_numero: partidoNumero,
-                        resultado_real: resultadoReal,
-                        usuario_que_marco: currentUser.id
-                    }, {
-                        onConflict: 'boleto_id,partido_numero'
-                    });
-                
-                if (error) {
-                    console.error('Error en upsert, intentando con insert/update manual:', error);
-                    
-                    // Fallback: intentar primero insert, luego update
-                    const { data: existingData, error: selectError } = await supabase
-                        .from('resultados')
-                        .select('*')
-                        .eq('boleto_id', boletoId)
-                        .eq('partido_numero', partidoNumero)
-                        .single();
-                    
-                    if (existingData) {
-                        // Existe, hacer update
-                        const { error: updateError } = await supabase
-                            .from('resultados')
-                            .update({
-                                resultado_real: resultadoReal,
-                                usuario_que_marco: currentUser.id
-                            })
-                            .eq('boleto_id', boletoId)
-                            .eq('partido_numero', partidoNumero);
-                        
-                        if (updateError) {
-                            console.error('Error en update:', updateError);
-                            return false;
-                        }
-                    } else {
-                        // No existe, hacer insert
-                        const { error: insertError } = await supabase
-                            .from('resultados')
-                            .insert({
-                                boleto_id: boletoId,
-                                partido_numero: partidoNumero,
-                                resultado_real: resultadoReal,
-                                usuario_que_marco: currentUser.id
-                            });
-                        
-                        if (insertError) {
-                            console.error('Error en insert:', insertError);
-                            return false;
-                        }
-                    }
-                }
-                
-                return true;
-                
-            } catch (error) {
-                console.error('Error en saveResultado:', error);
-                return false;
-            }
-        }
-        
-        function showSeguimiento() {
-            if (!currentUser) {
-                showToast('Error', 'No hay usuario logueado', 'error');
-                return;
-            }
-            
-            navigateToScreen('seguimientoScreen');
-            
-            loadBoletoSelector();
-        }
-        
-        async function loadBoletoSelector() {
-            try {
-                const boletos = await loadBoletos();
-                const selector = document.getElementById('boletoSelector');
-                
-                selector.innerHTML = '<option value="">Selecciona un boleto...</option>';
-                
-                boletos.forEach((boleto, index) => {
-                    const option = document.createElement('option');
-                    option.value = boleto.id;
-                    option.textContent = `${boleto.jornada} - ${users[boleto.user_id]?.name || boleto.user_id}`;
-                    
-                    if (index === 0) {
-                        option.selected = true;
-                        loadSeguimientoBoleto(boleto.id);
-                    }
-                    
-                    selector.appendChild(option);
-                });
-                
-            } catch (error) {
-                console.error('Error cargando selector:', error);
-            }
-        }
-        
-        async function loadSeguimientoBoleto(boletoId) {
-            if (!boletoId) {
-                document.getElementById('seguimientoContent').classList.add('hidden');
-                return;
-            }
-            
-            try {
-                const { data: boleto, error } = await supabase
-                    .from('boletos')
-                    .select('*')
-                    .eq('id', boletoId)
-                    .single();
-                
-                if (error || !boleto) {
-                    console.error('Error cargando boleto:', error);
-                    return;
-                }
-                
-                currentBoletoSeguimiento = boleto;
-                resultadosActuales = await loadResultados(boletoId);
-                
-                createSeguimientoTable();
-                document.getElementById('seguimientoContent').classList.remove('hidden');
-                
-            } catch (error) {
-                console.error('Error en loadSeguimientoBoleto:', error);
-            }
-        }
-        
-        function createSeguimientoTable() {
-            const container = document.getElementById('partidosContainer');
-            container.innerHTML = '';
-            
-            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
-            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
-            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
-            
-            for (let i = 0; i < 15; i++) {
-                const row = document.createElement('div');
-                row.className = 'table-row';
-                
-                const partido = equipos[i] || `Partido ${i + 1}`;
-                const apuesta1 = columna1[i] || '-';
-                const apuesta2 = columna2[i] || '-';
-                const resultadoActual = resultadosActuales[i + 1] || '';
-                
-                row.innerHTML = `
-                    <div class="col-partido">${i + 1}. ${partido}</div>
-                    <div class="col-apuesta">${apuesta1}</div>
-                    <div class="col-apuesta">${apuesta2}</div>
-                    <div class="col-resultado">
-                        ${i < 14 ? 
-                            `<select class="resultado-input" onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">
-                                <option value="">-</option>
-                                <option value="1" ${resultadoActual === '1' ? 'selected' : ''}>1</option>
-                                <option value="X" ${resultadoActual === 'X' ? 'selected' : ''}>X</option>
-                                <option value="2" ${resultadoActual === '2' ? 'selected' : ''}>2</option>
-                            </select>` :
-                            `<input type="text" class="resultado-input" placeholder="0-1" value="${resultadoActual}" 
-                                   onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">`
-                        }
-                    </div>
-                    <div class="col-aciertos" id="aciertos-${i + 1}"></div>
-                `;
-                
-                container.appendChild(row);
-                updateAciertos(i + 1, apuesta1, apuesta2, resultadoActual);
-            }
-            
-            calculateTotals();
-        }
-        
-        window.updateResultado = async function(boletoId, partidoNumero, valor) {
-            console.log(`Actualizando partido ${partidoNumero} con valor: ${valor}`);
-            
-            resultadosActuales[partidoNumero] = valor;
-            
-            if (valor && valor !== '') {
-                const success = await saveResultado(boletoId, partidoNumero, valor);
-                if (success) {
-                    console.log('Resultado guardado en Supabase');
-                } else {
-                    console.error('Error guardando resultado');
-                }
-            }
-            
-            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
-            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
-            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
-            
-            updateAciertos(partidoNumero, columna1[partidoNumero - 1], columna2[partidoNumero - 1], valor);
-            calculateTotals();
-        }
-        
-        function updateAciertos(partidoNumero, apuesta1, apuesta2, resultado) {
-            const container = document.getElementById(`aciertos-${partidoNumero}`);
-            if (!container) return;
-            
-            if (!resultado) {
-                container.innerHTML = '<span class="pendiente">-</span>';
-                return;
-            }
-            
-            let acierto1 = false;
-            let acierto2 = false;
-            
-            if (partidoNumero <= 14) {
-                acierto1 = apuesta1 === resultado;
-                acierto2 = apuesta2 === resultado;
-            } else {
-                acierto1 = apuesta1 === resultado;
-                acierto2 = apuesta2 === resultado;
-            }
-            
-            const icon1 = acierto1 ? '✓' : '✗';
-            const icon2 = acierto2 ? '✓' : '✗';
-            const class1 = acierto1 ? 'acierto' : 'fallo';
-            const class2 = acierto2 ? 'acierto' : 'fallo';
-            
-            container.innerHTML = `
-                <span class="${class1}">${icon1}</span> 
-                <span class="${class2}">${icon2}</span>
-            `;
-        }
-        
-        function calculateTotals() {
-            let total1 = 0;
-            let total2 = 0;
-            
-            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
-            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
-            
-            for (let i = 1; i <= 15; i++) {
-                const resultado = resultadosActuales[i];
-                if (resultado) {
-                    if (i <= 14) {
-                        if (columna1[i - 1] === resultado) total1++;
-                        if (columna2[i - 1] === resultado) total2++;
-                    } else {
-                        if (columna1[i - 1] === resultado) total1++;
-                        if (columna2[i - 1] === resultado) total2++;
-                    }
-                }
-            }
-            
-            document.getElementById('totalCol1').textContent = total1;
-            document.getElementById('totalCol2').textContent = total2;
-        }
-        
-        async function deleteBoleto(boletoId, jornada, userName) {
-            if (!confirm(`¿Seguro que quieres eliminar el boleto de la jornada ${jornada} de ${userName}?`)) {
-                return;
-            }
-            
-            try {
-                showPhotoStatus('Eliminando boleto...');
-                
-                const { error } = await supabase
-                    .from('boletos')
-                    .delete()
-                    .eq('id', boletoId);
-                
-                if (error) {
-                    console.error('Error eliminando boleto:', error);
-                    showPhotoStatus('Error al eliminar boleto');
-                    return;
-                }
-                
-                showPhotoStatus('Boleto eliminado correctamente');
-                
-                setTimeout(() => {
-                    loadAndShowBoletos();
-                }, 1000);
-                
-            } catch (error) {
-                console.error('Error en deleteBoleto:', error);
-                showPhotoStatus('Error inesperado');
-            }
-        }
-        
-        async function loadBoletos() {
-            try {
-                console.log('Cargando boletos desde Supabase...');
-                const { data, error } = await supabase
-                    .from('boletos')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
-                if (error) {
-                    console.error('Error cargando boletos:', error);
-                    return [];
-                }
-                
-                console.log('Boletos cargados:', data);
-                return data || [];
-                
-            } catch (error) {
-                console.error('Error en loadBoletos:', error);
-                return [];
-            }
-        }
-        
-        async function loadUsers() {
-            try {
-                console.log('Cargando usuarios desde Supabase...');
-                const { data, error } = await supabase
-                    .from('users')
-                    .select('*');
-                
-                if (error) {
-                    console.error('Error cargando usuarios:', error);
-                    return;
-                }
-                
-                console.log('Datos recibidos de Supabase:', data);
-                
-                users = {};
-                if (data && data.length > 0) {
-                    data.forEach(user => {
-                        users[user.user_id] = {
-                            id: user.user_id,
-                            name: user.name,
-                            icon: user.user_id === 'oscar' ? '👨‍💼' : '👨‍🎓',
-                            photo: user.photo_url
-                        };
-                    });
-                }
-                
-                console.log('Usuarios procesados:', users);
-                updateLoginAvatars();
-                
-            } catch (error) {
-                console.error('Error en loadUsers:', error);
-            }
-        }
-        
-        async function updateUserPhoto(userId, photoUrl) {
-            try {
-                console.log('Actualizando foto en Supabase para:', userId);
-                const { data, error } = await supabase
-                    .from('users')
-                    .update({ photo_url: photoUrl })
-                    .eq('user_id', userId)
-                    .select();
-                
-                if (error) {
-                    console.error('Error actualizando foto:', error);
-                    return false;
-                }
-                
-                console.log('Foto actualizada en Supabase:', data);
-                return true;
-                
-            } catch (error) {
-                console.error('Error en updateUserPhoto:', error);
-                return false;
-            }
-        }
-        
-        async function saveBoleto(boletoData) {
-            try {
-                console.log('Guardando boleto en Supabase:', boletoData);
-                const { data, error } = await supabase
-                    .from('boletos')
-                    .insert([boletoData])
-                    .select();
-                
-                if (error) {
-                    console.error('Error guardando boleto:', error);
-                    return false;
-                }
-                
-                console.log('Boleto guardado en Supabase:', data);
-                return true;
-                
-            } catch (error) {
-                console.error('Error en saveBoleto:', error);
-                return false;
-            }
-        }
-        
-        function selectUser(userId) {
-            console.log('Seleccionando usuario:', userId);
-            
-            document.querySelectorAll('.user-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            selectedUserId = userId;
-            document.getElementById(userId + 'Card').classList.add('selected');
-            
-            document.querySelector(`#${userId}Card .user-hint`).textContent = 'Seleccionado ✓';
-            
-            document.getElementById('passwordSection').classList.add('show');
-            
-            setTimeout(() => {
-                document.getElementById('passwordInput').focus();
-            }, 300);
-            
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('loginButton').disabled = true;
-        }
-        
-        async function attemptLogin() {
-            const password = document.getElementById('passwordInput').value.trim();
-            
-            if (!selectedUserId) {
-                showToast('Error', 'Selecciona un usuario primero', 'warning');
-                return;
-            }
-            
-            if (password !== APP_PASSWORD) {
-                showToast('Contraseña incorrecta', 'Inténtalo de nuevo', 'error');
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-                return;
-            }
-            
-            if (!users[selectedUserId]) {
-                console.log('Usuario no encontrado, recargando...');
-                await loadUsers();
-            }
-            
-            if (!users[selectedUserId]) {
-                showToast('Error', 'Error cargando usuario. Inténtalo de nuevo', 'error');
-                return;
-            }
-            
-            currentUser = {
-                id: selectedUserId,
-                name: users[selectedUserId].name,
-                icon: users[selectedUserId].icon,
-                photo: users[selectedUserId].photo
-            };
-            
-            localStorage.setItem('hermandaz_user', selectedUserId);
-            
-            showHome();
-            
-            showToast('¡Bienvenido!', `Hola ${currentUser.name}, ya puedes usar todas las funciones`, 'success');
-        }
-        
-        function showHome() {
-            navigateToScreen('homeScreen');
-            
-            if (currentUser) {
-                document.getElementById('welcomeText').textContent = `Bienvenido, ${currentUser.name}`;
-                document.getElementById('userName').textContent = currentUser.name;
-                
-                updateUserAvatar();
-            }
-        }
-        
-        function showHistorial() {
-            if (!currentUser) {
-                showToast('Error', 'No hay usuario logueado', 'error');
-                return;
-            }
-            
-            navigateToScreen('historialScreen');
-            
-            document.getElementById('historialLoading').classList.remove('hidden');
-            document.getElementById('historialContent').classList.add('hidden');
-            
-            loadHistorialSelector();
-        }
-        
-        // NUEVA FUNCIÓN PARA CARGAR SELECTOR DE HISTORIAL
-        async function loadHistorialSelector() {
-            try {
-                const boletos = await loadBoletos();
-                const selector = document.getElementById('historialSelector');
-                
-                selector.innerHTML = '<option value="">Selecciona un boleto...</option>';
-                
-                boletos.forEach((boleto, index) => {
-                    const option = document.createElement('option');
-                    option.value = boleto.id;
-                    option.textContent = `${boleto.jornada} - ${users[boleto.user_id]?.name || boleto.user_id}`;
-                    
-                    // Seleccionar el más reciente por defecto
-                    if (index === 0) {
-                        option.selected = true;
-                        loadSingleBoleto(boleto.id);
-                    }
-                    
-                    selector.appendChild(option);
-                });
-                
-            } catch (error) {
-                console.error('Error cargando selector historial:', error);
-                // Fallback al comportamiento anterior si hay error
-                loadAndShowBoletos();
-            }
-        }
-        
-        // NUEVA FUNCIÓN PARA MOSTRAR UN BOLETO ESPECÍFICO
-        async function loadSingleBoleto(boletoId) {
-            if (!boletoId) {
-                document.getElementById('historialLoading').classList.add('hidden');
-                document.getElementById('historialContent').classList.remove('hidden');
-                document.getElementById('boletosLista').innerHTML = '';
-                document.getElementById('noBoletosMessage').classList.remove('hidden');
-                return;
-            }
-            
-            try {
-                const boletos = await loadBoletos();
-                const boleto = boletos.find(b => b.id == boletoId);
-                
-                document.getElementById('historialLoading').classList.add('hidden');
-                document.getElementById('historialContent').classList.remove('hidden');
-                
-                const listaContainer = document.getElementById('boletosLista');
-                const noBoletosMessage = document.getElementById('noBoletosMessage');
-                
-                if (!boleto) {
-                    listaContainer.innerHTML = '';
-                    noBoletosMessage.classList.remove('hidden');
-                    return;
-                }
-                
-                noBoletosMessage.classList.add('hidden');
-                listaContainer.innerHTML = '';
-                
-                const boletoElement = createBoletoElement(boleto);
-                listaContainer.appendChild(boletoElement);
-                
-            } catch (error) {
-                console.error('Error cargando boleto específico:', error);
-                document.getElementById('historialLoading').classList.add('hidden');
-                document.getElementById('historialContent').classList.remove('hidden');
-                document.getElementById('boletosLista').innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">Error cargando boleto</div>';
-            }
-        }
-        
-        async function loadAndShowBoletos() {
-            try {
-                const boletos = await loadBoletos();
-                
-                document.getElementById('historialLoading').classList.add('hidden');
-                document.getElementById('historialContent').classList.remove('hidden');
-                
-                const listaContainer = document.getElementById('boletosLista');
-                const noBoletosMessage = document.getElementById('noBoletosMessage');
-                
-                if (boletos.length === 0) {
-                    listaContainer.innerHTML = '';
-                    noBoletosMessage.classList.remove('hidden');
-                    return;
-                }
-                
-                noBoletosMessage.classList.add('hidden');
-                listaContainer.innerHTML = '';
-                
-                boletos.forEach(boleto => {
-                    const boletoElement = createBoletoElement(boleto);
-                    listaContainer.appendChild(boletoElement);
-                });
-                
-            } catch (error) {
-                console.error('Error cargando historial:', error);
-                document.getElementById('historialLoading').classList.add('hidden');
-                document.getElementById('historialContent').classList.remove('hidden');
-                document.getElementById('boletosLista').innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">Error cargando boletos</div>';
-            }
-        }
-        
-        function createBoletoElement(boleto) {
-            const div = document.createElement('div');
-            div.className = 'boleto-item';
-            
-            const user = users[boleto.user_id] || { name: boleto.user_id, icon: '👤' };
-            const fecha = new Date(boleto.created_at).toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            div.innerHTML = `
-                <div class="boleto-header">
-                    <div class="boleto-user">
-                        <div class="boleto-user-avatar">
-                            ${user.photo ? `<img src="${user.photo}" alt="${user.name}">` : user.icon}
-                        </div>
-                        <div class="boleto-info">
-                            <div style="font-weight: 600; color: white;">${user.name}</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-                        <div class="boleto-info">
-                            <div class="boleto-jornada">${boleto.jornada}</div>
-                            <div class="boleto-fecha">${fecha}</div>
-                        </div>
-                        <div class="boleto-actions">
-                            <button class="btn-delete" onclick="deleteBoleto(${boleto.id}, '${boleto.jornada}', '${user.name}')">
-                                Eliminar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <img src="${boleto.imagen_url}" alt="Boleto ${boleto.jornada}" class="boleto-imagen" onclick="window.open('${boleto.imagen_url}', '_blank')">
-                
-                <div class="boleto-columnas" id="columnas-${boleto.id}">
-                </div>
-            `;
-            
-            const columnasContainer = div.querySelector(`#columnas-${boleto.id}`);
-            if (boleto.columnas_apuestas && typeof boleto.columnas_apuestas === 'object') {
-                Object.keys(boleto.columnas_apuestas).forEach((columna, index) => {
-                    if (columna === 'equipos') return;
-                    
-                    const columnaDiv = document.createElement('div');
-                    columnaDiv.className = 'columna-item';
-                    
-                    const apuestas = boleto.columnas_apuestas[columna] || [];
-                    const equipos = boleto.columnas_apuestas.equipos || [];
-                    
-                    const apuestasHTML = apuestas.map((apuesta, partidoIndex) => {
-                        const equiposPartido = equipos[partidoIndex] || `Partido ${partidoIndex + 1}`;
-                        return `
-                            <div class="apuesta-item">
-                                <span class="apuesta-partido">${equiposPartido}</span>
-                                <span class="apuesta-resultado">${apuesta}</span>
-                            </div>
-                        `;
-                    }).join('');
-                    
-                    columnaDiv.innerHTML = `
-                        <div class="columna-titulo">Columna ${index + 1}</div>
-                        <div class="columna-apuestas">${apuestasHTML}</div>
-                    `;
-                    
-                    columnasContainer.appendChild(columnaDiv);
-                });
-            }
-            
-            return div;
-        }
-        
-        function showUpload() {
-            if (!currentUser) {
-                showToast('Error', 'No hay usuario logueado', 'error');
-                return;
-            }
-            
-            navigateToScreen('uploadScreen');
-            
-            document.getElementById('uploaderText').textContent = `${currentUser.name}, sube tu quiniela`;
-            
-            resetUploadState();
-        }
-        
-        function resetUploadState() {
-            document.getElementById('imagePreview').classList.add('hidden');
-            document.getElementById('processingArea').classList.add('hidden');
-            document.getElementById('extractedData').classList.add('hidden');
-            document.getElementById('uploadArea').classList.remove('hidden');
-            currentBoletoImage = null;
-            extractedColumns = null;
-        }
-        
-        function processBoletoImage(file) {
-            if (!file.type.startsWith('image/')) {
-                showToast('Archivo no válido', 'Solo se permiten imágenes', 'error');
-                return;
-            }
-            
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('Archivo muy grande', 'La imagen debe ser menor a 5MB', 'error');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentBoletoImage = e.target.result;
-                
-                document.getElementById('uploadArea').classList.add('hidden');
-                document.getElementById('imagePreview').classList.remove('hidden');
-                document.getElementById('previewImage').src = currentBoletoImage;
-                
-                setTimeout(() => {
-                    document.getElementById('processingArea').classList.remove('hidden');
-                    
-                    setTimeout(() => {
-                        extractedColumns = getBoletoDatos();
-                        showExtractedData();
-                    }, 2000);
-                }, 500);
-            };
-            
-            reader.readAsDataURL(file);
-        }
-        
-        function getBoletoDatos() {
-            const tiposBoleto = {
-                oficial: {
-                    equipos: [
-                        'Alavés-At. Madrid', 'R. Oviedo-Real Sociedad', 'Girona-Sevilla',
-                        'Real Madrid-Mallorca', 'Celta-Villarreal', 'Betis-Athletic Club',
-                        'Espanyol-Osasuna', 'Racing Santander-Ceuta', 'Valladolid-Córdoba',
-                        'Castellón-R. Zaragoza', 'Andorra-Burgos', 'Cádiz-Albacete',
-                        'Las Palmas-Málaga', 'Granada-Mirandés', 'Rayo Vallecano'
-                    ]
-                },
-                simple: {
-                    equipos: [
-                        'Mallorca-Celta', 'At. Madrid-Elche', 'Levante-Barcelona',
-                        'Osasuna-Valencia', 'Real Sociedad-Espanyol', 'Villarreal-Girona',
-                        'R. Oviedo-Real Madrid', 'Athletic Club-Rayo Vallecano', 'Mirandés-Huesca',
-                        'Ceuta-Sporting', 'R. Zaragoza-Andorra', 'Deportivo-Burgos',
-                        'Cultural Leonesa-Almería', 'Albacete-Racing Santander', 'Sevilla-Getafe'
-                    ]
-                }
-            };
-
-            const tipoDetectado = Math.random() < 0.75 ? 'oficial' : 'simple';
-            
-            const boletoBase = tiposBoleto[tipoDetectado];
-            
-            // Inicializar las columnas vacías
-            const columna1 = new Array(15).fill('');
-            const columna2 = new Array(15).fill('');
-            
-            const resultado = {
-                equipos: boletoBase.equipos,
-                columna1,
-                columna2
-            };
-            
-            console.log('Boleto generado:', resultado);
-            showToast('Boleto procesado', `Se han detectado los equipos. Ahora marca los pronósticos.`, 'info');
-            
-            return resultado;
-        }
-
-        
-        function showExtractedData() {
-            document.getElementById('processingArea').classList.add('hidden');
-            document.getElementById('extractedData').classList.remove('hidden');
-            
-            autoDetectNextJornada();
-            
-            createVisualForm();
-        }
-        
-        async function autoDetectNextJornada() {
-            try {
-                const boletos = await loadBoletos();
-                let ultimaJornada = 1;
-                
-                if (boletos.length > 0) {
-                    boletos.forEach(boleto => {
-                        const jornadaNum = parseInt(boleto.jornada.replace('J', ''));
-                        if (jornadaNum > ultimaJornada) {
-                            ultimaJornada = jornadaNum;
-                        }
-                    });
-                }
-                
-                const siguienteJornada = ultimaJornada + 1;
-                document.getElementById('jornadaInput').value = siguienteJornada;
-                
-                console.log(`Auto-detectado: Última jornada ${ultimaJornada}, siguiente: ${siguienteJornada}`);
-                
-            } catch (error) {
-                console.error('Error detectando jornada:', error);
-                document.getElementById('jornadaInput').value = 2;
-            }
-        }
-        
-        function createVisualForm() {
-            const container = document.getElementById('visualFormContainer');
-            container.innerHTML = '';
-            
-            const previewImage = document.getElementById('previewImage');
-
-            const boletoWidth = previewImage.offsetWidth;
-            const boletoHeight = previewImage.offsetHeight;
-            
-            container.style.width = `${boletoWidth}px`;
-            container.style.height = `${boletoHeight}px`;
-
-            const formOverlay = document.createElement('div');
-            formOverlay.className = 'visual-form-overlay';
-
-            // Coordenadas aproximadas del boleto real para la cuadrícula de pronósticos
-            const coords = {
-                col1: { top: 0.15, left: 0.52, width: 0.08, height: 0.53 },
-                col2: { top: 0.15, left: 0.60, width: 0.08, height: 0.53 },
-            };
-
-            const col1Div = document.createElement('div');
-            col1Div.className = 'visual-column';
-            col1Div.style.position = 'absolute';
-            col1Div.style.top = `${coords.col1.top * 100}%`;
-            col1Div.style.left = `${coords.col1.left * 100}%`;
-            col1Div.style.width = `${coords.col1.width * 100}%`;
-            col1Div.style.height = `${coords.col1.height * 100}%`;
-
-            const col2Div = document.createElement('div');
-            col2Div.className = 'visual-column';
-            col2Div.style.position = 'absolute';
-            col2Div.style.top = `${coords.col2.top * 100}%`;
-            col2Div.style.left = `${coords.col2.left * 100}%`;
-            col2Div.style.width = `${coords.col2.width * 100}%`;
-            col2Div.style.height = `${coords.col2.height * 100}%`;
-            
-            for (let i = 0; i < 14; i++) {
-                // Partido 1-14
-                const partidoDiv1 = document.createElement('div');
-                partidoDiv1.className = 'visual-partido';
-                partidoDiv1.id = `partido-0-${i}`;
-                
-                ['1', 'X', '2'].forEach(sign => {
-                    const btn = document.createElement('button');
-                    btn.textContent = sign;
-                    btn.className = 'visual-sign-btn';
-                    btn.setAttribute('data-col', 0);
-                    btn.setAttribute('data-partido', i);
-                    btn.setAttribute('data-sign', sign);
-                    btn.onclick = () => selectSign(btn, 0, i, sign);
-                    partidoDiv1.appendChild(btn);
-                });
-
-                const partidoDiv2 = document.createElement('div');
-                partidoDiv2.className = 'visual-partido';
-                partidoDiv2.id = `partido-1-${i}`;
-                
-                ['1', 'X', '2'].forEach(sign => {
-                    const btn = document.createElement('button');
-                    btn.textContent = sign;
-                    btn.className = 'visual-sign-btn';
-                    btn.setAttribute('data-col', 1);
-                    btn.setAttribute('data-partido', i);
-                    btn.setAttribute('data-sign', sign);
-                    btn.onclick = () => selectSign(btn, 1, i, sign);
-                    partidoDiv2.appendChild(btn);
-                });
-                
-                col1Div.appendChild(partidoDiv1);
-                col2Div.appendChild(partidoDiv2);
-            }
-            
-            // Pleno al 15
-            const pleno1Div = document.createElement('div');
-            pleno1Div.className = 'visual-pleno-container';
-            const pleno1Input1 = document.createElement('input');
-            pleno1Input1.className = 'pleno-visual-input';
-            pleno1Input1.type = 'text';
-            pleno1Input1.maxLength = 1;
-            pleno1Input1.placeholder = 'Goles';
-            pleno1Input1.id = `pleno-0-0`;
-            const pleno1Guion = document.createElement('span');
-            pleno1Guion.textContent = '-';
-            const pleno1Input2 = document.createElement('input');
-            pleno1Input2.className = 'pleno-visual-input';
-            pleno1Input2.type = 'text';
-            pleno1Input2.maxLength = 1;
-            pleno1Input2.placeholder = 'Goles';
-            pleno1Input2.id = `pleno-0-1`;
-
-            pleno1Div.appendChild(pleno1Input1);
-            pleno1Div.appendChild(pleno1Guion);
-            pleno1Div.appendChild(pleno1Input2);
-            
-            const pleno2Div = document.createElement('div');
-            pleno2Div.className = 'visual-pleno-container';
-            const pleno2Input1 = document.createElement('input');
-            pleno2Input1.className = 'pleno-visual-input';
-            pleno2Input1.type = 'text';
-            pleno2Input1.maxLength = 1;
-            pleno2Input1.placeholder = 'Goles';
-            pleno2Input1.id = `pleno-1-0`;
-            const pleno2Guion = document.createElement('span');
-            pleno2Guion.textContent = '-';
-            const pleno2Input2 = document.createElement('input');
-            pleno2Input2.className = 'pleno-visual-input';
-            pleno2Input2.type = 'text';
-            pleno2Input2.maxLength = 1;
-            pleno2Input2.placeholder = 'Goles';
-            pleno2Input2.id = `pleno-1-1`;
-
-            pleno2Div.appendChild(pleno2Input1);
-            pleno2Div.appendChild(pleno2Guion);
-            pleno2Div.appendChild(pleno2Input2);
-            
-            col1Div.appendChild(pleno1Div);
-            col2Div.appendChild(pleno2Div);
-
-            formOverlay.appendChild(col1Div);
-            formOverlay.appendChild(col2Div);
-            container.appendChild(formOverlay);
-
-            // Rellenar las apuestas con valores iniciales
-            updateVisualForm();
-        }
-
-        function updateVisualForm() {
-            if (!extractedColumns || !extractedColumns.columna1 || !extractedColumns.columna2) {
-                return;
-            }
-            
-            // Recorre los partidos 1-14 y el pleno al 15
-            for (let i = 0; i < 15; i++) {
-                // Columna 1
-                if (i < 14) {
-                    const sign = extractedColumns.columna1[i];
-                    document.querySelectorAll(`#partido-0-${i} .visual-sign-btn`).forEach(btn => {
-                        btn.classList.toggle('active', btn.getAttribute('data-sign') === sign);
-                    });
-                } else {
-                    // Pleno 15
-                    const [goles1, goles2] = extractedColumns.columna1[i].split('-');
-                    document.getElementById('pleno-0-0').value = goles1;
-                    document.getElementById('pleno-0-1').value = goles2;
-                }
-
-                // Columna 2
-                if (i < 14) {
-                    const sign = extractedColumns.columna2[i];
-                    document.querySelectorAll(`#partido-1-${i} .visual-sign-btn`).forEach(btn => {
-                        btn.classList.toggle('active', btn.getAttribute('data-sign') === sign);
-                    });
-                } else {
-                    // Pleno 15
-                    const [goles1, goles2] = extractedColumns.columna2[i].split('-');
-                    document.getElementById('pleno-1-0').value = goles1;
-                    document.getElementById('pleno-1-1').value = goles2;
-                }
-            }
-        }
-        
-        function selectSign(btn, colIndex, partidoIndex, sign) {
-            // Desactiva todos los botones en el mismo partido
-            document.querySelectorAll(`#partido-${colIndex}-${partidoIndex} .visual-sign-btn`).forEach(b => {
-                b.classList.remove('active');
-            });
-
-            // Activa el botón actual
-            btn.classList.add('active');
-        }
-        
-        async function saveBoletoFinal() {
-            if (!currentUser || !currentBoletoImage) {
-                showToast('Error', 'Faltan datos para guardar el boleto', 'error');
-                return;
-            }
-            
-            const jornada = document.getElementById('jornadaInput').value || '2';
-            
-            const columnasFinales = {
-                columna1: [],
-                columna2: [],
-                equipos: extractedColumns.equipos
-            };
-            
-            // Obtener los datos del formulario visual
-            for (let i = 0; i < 14; i++) {
-                const selectedSign1 = document.querySelector(`#partido-0-${i} .visual-sign-btn.active`);
-                columnasFinales.columna1.push(selectedSign1 ? selectedSign1.getAttribute('data-sign') : '');
-                
-                const selectedSign2 = document.querySelector(`#partido-1-${i} .visual-sign-btn.active`);
-                columnasFinales.columna2.push(selectedSign2 ? selectedSign2.getAttribute('data-sign') : '');
-            }
-
-            // Pleno al 15
-            const pleno1_1 = document.getElementById('pleno-0-0').value;
-            const pleno1_2 = document.getElementById('pleno-0-1').value;
-            columnasFinales.columna1.push(`${pleno1_1}-${pleno1_2}`);
-            
-            const pleno2_1 = document.getElementById('pleno-1-0').value;
-            const pleno2_2 = document.getElementById('pleno-1-1').value;
-            columnasFinales.columna2.push(`${pleno2_1}-${pleno2_2}`);
-            
-            showPhotoStatus('Guardando boleto...');
-            
-            const boletoData = {
-                user_id: currentUser.id,
-                jornada: `J${jornada}`,
-                imagen_url: currentBoletoImage,
-                columnas_apuestas: columnasFinales,
-                estado: 'pendiente'
-            };
-            
-            try {
-                const success = await saveBoleto(boletoData);
-                
-                if (success) {
-                    showToast('¡Boleto guardado!', `Jornada ${jornada} guardada correctamente`, 'success');
-                    setTimeout(() => {
-                        showHome();
-                    }, 1500);
-                } else {
-                    showToast('Error', 'No se pudo guardar el boleto', 'error');
-                }
-            } catch (error) {
-                console.error('Error guardando boleto:', error);
-                showToast('Error inesperado', 'Inténtalo de nuevo', 'error');
-            }
-        }
-        
-        function updateUserAvatar() {
-            const userAvatarIcon = document.getElementById('userAvatarIcon');
-            const userAvatarPhoto = document.getElementById('userAvatarPhoto');
-            
-            if (currentUser && currentUser.photo) {
-                userAvatarPhoto.src = currentUser.photo;
-                userAvatarPhoto.classList.remove('hidden');
-                userAvatarIcon.classList.add('hidden');
-            } else {
-                userAvatarPhoto.classList.add('hidden');
-                userAvatarIcon.classList.remove('hidden');
-                if (currentUser) {
-                    userAvatarIcon.textContent = currentUser.icon;
-                }
-            }
-        }
-        
-        function updateLoginAvatars() {
-            Object.keys(users).forEach(userId => {
-                const iconElement = document.getElementById(userId + 'Icon');
-                const photoElement = document.getElementById(userId + 'Photo');
-                const user = users[userId];
-                
-                if (user && user.photo) {
-                    photoElement.src = user.photo;
-                    photoElement.classList.remove('hidden');
-                    iconElement.classList.add('hidden');
-                } else if (iconElement) {
-                    photoElement.classList.add('hidden');
-                    iconElement.classList.remove('hidden');
-                }
-            });
-        }
-        
-        function showLogin() {
-            navigateToScreen('loginScreen');
-            
-            selectedUserId = null;
-            document.querySelectorAll('.user-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            document.getElementById('passwordSection').classList.remove('show');
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('loginButton').disabled = true;
-            
-            document.querySelector('#oscarCard .user-hint').textContent = 'Toca para seleccionar';
-            document.querySelector('#txemaCard .user-hint').textContent = 'Toca para seleccionar';
-        }
-        
-        function logout() {
-            if (confirm(`Seguro que quieres cerrar sesión, ${currentUser.name}?`)) {
-                currentUser = null;
-                localStorage.removeItem('hermandaz_user');
-                showLogin();
-            }
-        }
-        
-        function changePhoto() {
-            if (!currentUser) {
-                alert('Error: No hay usuario logueado');
-                return;
-            }
-            
-            const confirmChange = confirm(`Quieres cambiar tu foto de perfil, ${currentUser.name}?`);
-            if (confirmChange) {
-                document.getElementById('photoInput').click();
-            }
-        }
-        
-        async function handlePhotoChange(event) {
-            const file = event.target.files[0];
-            if (!file || !currentUser) return;
-            
-            if (!file.type.startsWith('image/')) {
-                showToast('Archivo no válido', 'Solo se permiten imágenes', 'error');
-                return;
-            }
-            
-            if (file.size > 2 * 1024 * 1024) {
-                showToast('Archivo muy grande', 'La imagen debe ser menor a 2MB', 'error');
-                return;
-            }
-            
-            showPhotoStatus('Subiendo foto...');
-            
-            try {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    const photoData = e.target.result;
-                    
-                    const success = await updateUserPhoto(currentUser.id, photoData);
-                    
-                    if (success) {
-                        users[currentUser.id].photo = photoData;
-                        currentUser.photo = photoData;
-                        
-                        updateUserAvatar();
-                        updateLoginAvatars();
-                        
-                        showToast('¡Foto actualizada!', 'Tu foto de perfil se ha sincronizado correctamente', 'success');
-                    } else {
-                        showToast('Error', 'No se pudo actualizar la foto', 'error');
-                    }
-                };
-                
-                reader.onerror = function() {
-                    showToast('Error', 'Error al leer la imagen', 'error');
-                };
-                
-                reader.readAsDataURL(file);
-                
-            } catch (error) {
-                console.error('Error en handlePhotoChange:', error);
-                showToast('Error inesperado', 'Inténtalo de nuevo', 'error');
-            }
-            
-            event.target.value = '';
-        }
-        
-        function showPhotoStatus(message) {
-            const statusElement = document.getElementById('photoStatus');
-            statusElement.innerHTML = message;
-            statusElement.classList.add('show');
-            
-            setTimeout(() => {
-                statusElement.classList.remove('show');
-            }, 3000);
-        }
-        
-        // NUEVA FUNCIÓN PARA NAVEGACIÓN CON ANIMACIONES
         function navigateToScreen(targetScreenId) {
             const currentScreen = document.querySelector('.screen.active');
             const targetScreen = document.getElementById(targetScreenId);
             
             if (currentScreen && currentScreen !== targetScreen) {
-                // Animar salida de pantalla actual
                 currentScreen.classList.add('exiting');
-                
                 setTimeout(() => {
                     currentScreen.classList.remove('active', 'exiting');
-                    // Mostrar nueva pantalla con animación de entrada
                     targetScreen.classList.add('active');
                 }, 200);
             } else {
-                // Primera carga o misma pantalla
                 document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
                 targetScreen.classList.add('active');
             }
         }
+
         function showToast(title, message, type = 'info') {
             const toastId = 'toast-' + Date.now();
             const toastHtml = `
                 <div class="toast ${type}" id="${toastId}">
                     <div class="toast-icon">
-                        ${type === 'success' ? '✅' : 
-                          type === 'error' ? '❌' : 
-                          type === 'warning' ? '⚠️' : 'ℹ️'}
+                        ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
                     </div>
                     <div class="toast-content">
                         <div class="toast-title">${title}</div>
@@ -2630,155 +1221,630 @@
                     </div>
                 </div>
             `;
-            
             document.body.insertAdjacentHTML('beforeend', toastHtml);
             const toast = document.getElementById(toastId);
-            
             setTimeout(() => toast.classList.add('show'), 100);
-            
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 400);
             }, 4000);
         }
-        
-        function setupRealtimeSubscription() {
-            const subscription = supabase
-                .channel('users_changes')
-                .on('postgres_changes', 
-                    { event: '*', schema: 'public', table: 'users' }, 
-                    (payload) => {
-                        console.log('Cambio detectado en usuarios:', payload);
-                        loadUsers();
-                    }
-                )
-                .subscribe();
+
+        async function loadUsers() {
+            try {
+                const { data, error } = await supabase.from('users').select('*');
+                if (error) throw error;
                 
-            console.log('Suscripción en tiempo real configurada');
+                users = {};
+                data.forEach(user => {
+                    users[user.user_id] = {
+                        id: user.user_id,
+                        name: user.name,
+                        icon: user.user_id === 'oscar' ? '👨‍💼' : '👨‍🎓',
+                        photo: user.photo_url
+                    };
+                });
+                updateLoginAvatars();
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
         }
         
-        Date.prototype.getWeek = function() {
-            const date = new Date(this.getTime());
-            date.setHours(0, 0, 0, 0);
-            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-            const week1 = new Date(date.getFullYear(), 0, 4);
-            return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-        };
+        function selectUser(userId) {
+            document.querySelectorAll('.user-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById(userId + 'Card').classList.add('selected');
+            document.getElementById('passwordSection').classList.add('show');
+            document.getElementById('passwordInput').focus();
+            currentUser = { id: userId };
+        }
+
+        async function attemptLogin() {
+            const password = document.getElementById('passwordInput').value;
+            if (password !== APP_PASSWORD) {
+                showToast('Contraseña incorrecta', 'Inténtalo de nuevo', 'error');
+                return;
+            }
+            if (!currentUser || !currentUser.id) {
+                 showToast('Error', 'Selecciona un usuario primero', 'warning');
+                return;
+            }
+            
+            localStorage.setItem('hermandaz_user', currentUser.id);
+            currentUser = users[currentUser.id];
+            showHome();
+            showToast('¡Bienvenido!', `Hola ${currentUser.name}, ya puedes usar la app`, 'success');
+        }
+
+        function showHome() {
+            navigateToScreen('homeScreen');
+            if (currentUser) {
+                document.getElementById('welcomeText').textContent = `Bienvenido, ${currentUser.name}`;
+                document.getElementById('userName').textContent = currentUser.name;
+                updateUserAvatar();
+            }
+        }
         
-        document.addEventListener('DOMContentLoaded', async function() {
-            await loadUsers();
+        function showLogin() {
+            navigateToScreen('loginScreen');
+            currentUser = null;
+            localStorage.removeItem('hermandaz_user');
+            document.querySelectorAll('.user-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById('passwordSection').classList.remove('show');
+            document.getElementById('passwordInput').value = '';
+        }
+
+        function logout() {
+            if (confirm(`¿Seguro que quieres cerrar sesión, ${currentUser.name}?`)) {
+                showLogin();
+            }
+        }
+
+        function updateUserAvatar() {
+            const userAvatarIcon = document.getElementById('userAvatarIcon');
+            const userAvatarPhoto = document.getElementById('userAvatarPhoto');
+            if (currentUser && currentUser.photo) {
+                userAvatarPhoto.src = currentUser.photo;
+                userAvatarPhoto.classList.remove('hidden');
+                userAvatarIcon.classList.add('hidden');
+            } else if (currentUser) {
+                userAvatarPhoto.classList.add('hidden');
+                userAvatarIcon.classList.remove('hidden');
+                userAvatarIcon.textContent = currentUser.icon;
+            }
+        }
+
+        function updateLoginAvatars() {
+            Object.keys(users).forEach(userId => {
+                const iconElement = document.getElementById(userId + 'Icon');
+                const photoElement = document.getElementById(userId + 'Photo');
+                const user = users[userId];
+                if (user && user.photo) {
+                    photoElement.src = user.photo;
+                    photoElement.classList.remove('hidden');
+                    iconElement.classList.add('hidden');
+                } else if(iconElement) {
+                    photoElement.classList.add('hidden');
+                    iconElement.classList.remove('hidden');
+                }
+            });
+        }
+        
+        function changePhoto() {
+            if (!currentUser) return;
+            if (confirm(`¿Quieres cambiar tu foto de perfil, ${currentUser.name}?`)) {
+                document.getElementById('photoInput').click();
+            }
+        }
+
+        async function handlePhotoChange(event) {
+            const file = event.target.files[0];
+            if (!file || !currentUser) return;
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Archivo muy grande', 'La imagen debe ser menor a 2MB', 'error');
+                return;
+            }
+
+            showPhotoStatus('Subiendo foto...');
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const photoData = e.target.result;
+                const { error } = await supabase.from('users').update({ photo_url: photoData }).eq('user_id', currentUser.id);
+
+                if (error) {
+                    showToast('Error', 'No se pudo actualizar la foto', 'error');
+                } else {
+                    users[currentUser.id].photo = photoData;
+                    currentUser.photo = photoData;
+                    updateUserAvatar();
+                    updateLoginAvatars();
+                    showToast('¡Foto actualizada!', '', 'success');
+                }
+                 showPhotoStatus('');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showPhotoStatus(message) {
+            const statusElement = document.getElementById('photoStatus');
+            statusElement.textContent = message;
+            if(message) statusElement.classList.add('show');
+            else statusElement.classList.remove('show');
+        }
+        
+        // --- SECCIÓN DE SUBIR BOLETO ---
+        function showUpload() {
+            navigateToScreen('uploadScreen');
+            document.getElementById('uploaderText').textContent = `${currentUser.name}, sube tu quiniela`;
+            resetUploadState();
+        }
+
+        function resetUploadState() {
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('uploadArea').classList.remove('hidden');
+            document.getElementById('boletoInput').value = '';
+            currentBoletoImage = null;
+        }
+
+        function processBoletoImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentBoletoImage = e.target.result;
+                document.getElementById('uploadArea').classList.add('hidden');
+                document.getElementById('imagePreview').classList.remove('hidden');
+                document.getElementById('previewImage').src = currentBoletoImage;
+                document.getElementById('processingArea').classList.remove('hidden');
+                
+                setTimeout(() => { // Simula el análisis
+                    extractedColumns = getBoletoDatos(); // Usamos datos de ejemplo
+                    showExtractedData();
+                }, 1500);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function getBoletoDatos() {
+            // Se mantienen los datos simulados, ya que el OCR real no es viable
+            // El usuario corregirá estos datos fácilmente con la nueva interfaz.
+            return {
+                columna1: ['1', 'X', 'X', 'X', '1', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', '0-M'],
+                columna2: ['X', 'X', '2', 'X', 'X', '2', 'X', '2', 'X', '1', '1', 'X', 'X', 'X', '1-2'],
+                equipos: [
+                    'Alavés-At. Madrid', 'R. Oviedo-Real Sociedad', 'Girona-Sevilla', 'Real Madrid-Mallorca',
+                    'Celta-Villarreal', 'Betis-Athletic Club', 'Espanyol-Osasuna', 'Racing Santander-Ceuta',
+                    'Valladolid-Córdoba', 'Castellón-R. Zaragoza', 'Andorra-Burgos', 'Cádiz-Albacete',
+                    'Las Palmas-Málaga', 'Granada-Mirandés', 'Rayo Vallecano-Barcelona'
+                ]
+            };
+        }
+
+        async function showExtractedData() {
+            document.getElementById('processingArea').classList.add('hidden');
+            document.getElementById('extractedData').classList.remove('hidden');
             
-            setupRealtimeSubscription();
-            
-            const savedUser = localStorage.getItem('hermandaz_user');
-            if (savedUser && users[savedUser]) {
-                currentUser = users[savedUser];
-                currentUser.id = savedUser;
+            try { // Auto-detectar siguiente jornada
+                const { data, error } = await supabase.from('boletos').select('jornada').order('created_at', { ascending: false }).limit(1);
+                if(error) throw error;
+                const lastJornada = data.length > 0 ? parseInt(data[0].jornada.replace('J', '')) : 0;
+                document.getElementById('jornadaInput').value = lastJornada + 1;
+            } catch (e) {
+                document.getElementById('jornadaInput').value = 1;
+            }
+
+            createEditableForm();
+        }
+
+        // --- FUNCIÓN MODIFICADA PARA CREAR EL FORMULARIO ---
+        function createEditableForm() {
+            const container = document.getElementById('editableForm');
+            container.innerHTML = '';
+            container.className = 'editable-form';
+
+            ['columna1', 'columna2'].forEach((columna, columnaIndex) => {
+                const columnaDiv = document.createElement('div');
+                columnaDiv.className = 'columna-editable';
+                columnaDiv.innerHTML = `<h4>Columna ${columnaIndex + 1}</h4>`;
+
+                extractedColumns.equipos.forEach((equipo, partidoIndex) => {
+                    const apuesta = extractedColumns[columna][partidoIndex] || '';
+                    const partidoDiv = document.createElement('div');
+                    partidoDiv.className = 'partido-editable';
+
+                    partidoDiv.innerHTML = `<span class="partido-numero">${partidoIndex + 1}.</span>`;
+                    
+                    const equiposInput = document.createElement('input');
+                    equiposInput.className = 'equipos-input';
+                    equiposInput.type = 'text';
+                    equiposInput.value = equipo;
+                    equiposInput.id = `equipos-${columnaIndex}-${partidoIndex}`;
+                    partidoDiv.appendChild(equiposInput);
+
+                    if (partidoIndex < 14) { // Partidos 1 al 14
+                        const buttonsContainer = document.createElement('div');
+                        buttonsContainer.className = 'resultado-buttons';
+                        buttonsContainer.id = `resultado-${columnaIndex}-${partidoIndex}`;
+                        
+                        ['1', 'X', '2'].forEach(opcion => {
+                            const button = document.createElement('button');
+                            button.type = 'button';
+                            button.textContent = opcion;
+                            if (opcion === apuesta) button.classList.add('selected');
+                            
+                            button.addEventListener('click', () => {
+                                buttonsContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+                                button.classList.add('selected');
+                            });
+                            buttonsContainer.appendChild(button);
+                        });
+                        partidoDiv.appendChild(buttonsContainer);
+                    } else { // Pleno al 15
+                        const plenoContainer = document.createElement('div');
+                        plenoContainer.className = 'pleno-container';
+                        const [goles1, goles2] = apuesta.split('-');
+                        plenoContainer.innerHTML = `
+                            <input type="text" class="pleno-input" id="pleno1-${columnaIndex}" value="${goles1 || ''}" maxlength="1" placeholder="L">
+                            <span>-</span>
+                            <input type="text" class="pleno-input" id="pleno2-${columnaIndex}" value="${goles2 || ''}" maxlength="1" placeholder="V">`;
+                        partidoDiv.appendChild(plenoContainer);
+                    }
+                    columnaDiv.appendChild(partidoDiv);
+                });
+                container.appendChild(columnaDiv);
+            });
+        }
+        
+        // --- FUNCIÓN MODIFICADA PARA GUARDAR EL BOLETO ---
+        async function saveBoletoFinal() {
+            showPhotoStatus('Guardando boleto...');
+            const jornada = document.getElementById('jornadaInput').value;
+            const columnasFinales = { columna1: [], columna2: [], equipos: [] };
+
+            for (let i = 0; i < 15; i++) {
+                // Solo leemos los nombres de equipo de la primera columna para evitar duplicados
+                const equipoInput = document.getElementById(`equipos-0-${i}`);
+                columnasFinales.equipos.push(equipoInput.value);
+
+                ['columna1', 'columna2'].forEach((col, colIndex) => {
+                    if (i < 14) {
+                        const selectedBtn = document.querySelector(`#resultado-${colIndex}-${i} button.selected`);
+                        columnasFinales[col].push(selectedBtn ? selectedBtn.textContent : '');
+                    } else {
+                        const p1 = document.getElementById(`pleno1-${colIndex}`).value || '0';
+                        const p2 = document.getElementById(`pleno2-${colIndex}`).value || '0';
+                        columnasFinales[col].push(`${p1}-${p2}`);
+                    }
+                });
+            }
+
+            const boletoData = {
+                user_id: currentUser.id,
+                jornada: `J${jornada}`,
+                imagen_url: currentBoletoImage,
+                columnas_apuestas: columnasFinales
+            };
+
+            const { error } = await supabase.from('boletos').insert([boletoData]);
+            showPhotoStatus('');
+            if (error) {
+                showToast('Error al guardar', error.message, 'error');
+            } else {
+                showToast('¡Boleto guardado!', `Jornada ${jornada} subida correctamente`, 'success');
                 showHome();
             }
-            
-            const oscarCard = document.getElementById('oscarCard');
-            const txemaCard = document.getElementById('txemaCard');
-            
-            if (oscarCard) {
-                oscarCard.addEventListener('click', function(e) {
-                    console.log('Click en Oscar');
-                    selectUser('oscar');
+        }
+        
+        // --- SECCIÓN DE HISTORIAL ---
+        async function showHistorial() {
+            navigateToScreen('historialScreen');
+            const selector = document.getElementById('historialSelector');
+            selector.innerHTML = '<option value="todos">Mostrar todos</option>';
+            document.getElementById('boletosLista').innerHTML = '<div class="processing"><div class="loading"></div>Cargando...</div>';
+
+            try {
+                const { data: boletos, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+
+                if (boletos.length === 0) {
+                    document.getElementById('noBoletosMessage').classList.remove('hidden');
+                    document.getElementById('boletosLista').innerHTML = '';
+                    return;
+                }
+                
+                document.getElementById('noBoletosMessage').classList.add('hidden');
+                boletos.forEach(b => {
+                    const option = document.createElement('option');
+                    option.value = b.id;
+                    option.textContent = `J${b.jornada} - ${users[b.user_id]?.name || 'Usuario'}`;
+                    selector.appendChild(option);
                 });
+                displayBoletos(boletos);
+            } catch(e) {
+                document.getElementById('boletosLista').innerHTML = 'Error al cargar boletos.';
+            }
+        }
+
+        async function filterHistorial() {
+            const selector = document.getElementById('historialSelector');
+            const boletoId = selector.value;
+            let query = supabase.from('boletos').select('*').order('created_at', { ascending: false });
+            if (boletoId !== 'todos') {
+                query = query.eq('id', boletoId);
+            }
+            const { data, error } = await query;
+            if (error) {
+                showToast('Error', 'No se pudieron filtrar los boletos.', 'error');
+                return;
+            }
+            displayBoletos(data);
+        }
+
+        function displayBoletos(boletos) {
+            const container = document.getElementById('boletosLista');
+            container.innerHTML = '';
+            boletos.forEach(boleto => {
+                const user = users[boleto.user_id] || { name: '?', icon: '👤', photo: null };
+                const fecha = new Date(boleto.created_at).toLocaleString('es-ES');
+                const div = document.createElement('div');
+                div.className = 'boleto-item';
+                div.innerHTML = `
+                    <div class="boleto-header">
+                        <div class="boleto-user">
+                            <div class="boleto-user-avatar">${user.photo ? `<img src="${user.photo}">` : user.icon}</div>
+                            <span style="font-weight: 600;">${user.name}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="boleto-jornada">${boleto.jornada}</div>
+                            <div class="boleto-fecha">${fecha}</div>
+                        </div>
+                    </div>
+                    <img src="${boleto.imagen_url}" class="boleto-imagen" onclick="window.open('${boleto.imagen_url}', '_blank')">
+                    <div class="boleto-columnas">
+                        ${createColumnHTML(boleto.columnas_apuestas.columna1, boleto.columnas_apuestas.equipos, 1)}
+                        ${createColumnHTML(boleto.columnas_apuestas.columna2, boleto.columnas_apuestas.equipos, 2)}
+                    </div>
+                     <button class="btn-delete" style="margin-top: 15px; width: 100%;" onclick="deleteBoleto(${boleto.id})">Eliminar Boleto</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function createColumnHTML(columna, equipos, num) {
+            if (!columna) return '';
+            return `
+                <div class="columna-item">
+                    <div class="columna-titulo">Columna ${num}</div>
+                    ${equipos.map((eq, i) => `
+                        <div class="apuesta-item">
+                            <span class="apuesta-partido">${i + 1}. ${eq.split('-')[0]}</span>
+                            <span class="apuesta-resultado">${columna[i]}</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        async function deleteBoleto(boletoId) {
+            if (!confirm('¿Seguro que quieres eliminar este boleto? Esta acción no se puede deshacer.')) return;
+            const { error } = await supabase.from('boletos').delete().eq('id', boletoId);
+            if (error) {
+                showToast('Error', 'No se pudo eliminar el boleto', 'error');
+            } else {
+                showToast('Boleto eliminado', '', 'success');
+                showHistorial(); // Recargar la vista
+            }
+        }
+        
+        // --- SECCIÓN SEGUIMIENTO ---
+        async function showSeguimiento() {
+            navigateToScreen('seguimientoScreen');
+            const selector = document.getElementById('boletoSelector');
+            selector.innerHTML = '<option value="">Cargando...</option>';
+            document.getElementById('seguimientoContent').classList.add('hidden');
+
+            const { data, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false });
+            if (error || data.length === 0) {
+                selector.innerHTML = '<option value="">No hay boletos</option>';
+                return;
+            }
+
+            selector.innerHTML = '<option value="">Selecciona un boleto</option>';
+            data.forEach(b => {
+                const option = document.createElement('option');
+                option.value = b.id;
+                option.textContent = `${b.jornada} - ${users[b.user_id]?.name}`;
+                selector.appendChild(option);
+            });
+            // Cargar el más reciente por defecto
+            if (data.length > 0) {
+                selector.value = data[0].id;
+                loadSeguimientoBoleto(data[0].id);
+            }
+        }
+        
+        async function loadSeguimientoBoleto(boletoId) {
+             if (!boletoId) {
+                document.getElementById('seguimientoContent').classList.add('hidden');
+                return;
+            }
+            const { data: boleto } = await supabase.from('boletos').select('*').eq('id', boletoId).single();
+            const { data: resultados } = await supabase.from('resultados').select('*').eq('boleto_id', boletoId);
+            
+            currentBoletoSeguimiento = boleto;
+            resultadosActuales = resultados.reduce((acc, r) => ({ ...acc, [r.partido_numero]: r.resultado_real }), {});
+            
+            const container = document.getElementById('partidosContainer');
+            container.innerHTML = '';
+            const { equipos, columna1, columna2 } = boleto.columnas_apuestas;
+
+            equipos.forEach((equipo, i) => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                const res = resultadosActuales[i + 1] || '';
+                row.innerHTML = `
+                    <div class="col-partido">${i + 1}. ${equipo}</div>
+                    <div class="col-apuesta">${columna1[i]}</div>
+                    <div class="col-apuesta">${columna2[i]}</div>
+                    <div class="col-resultado">
+                        ${i < 14 ? `
+                        <select class="resultado-input" onchange="updateResultado(${i + 1}, this.value)">
+                            <option value="">-</option>
+                            <option value="1" ${res === '1' ? 'selected' : ''}>1</option>
+                            <option value="X" ${res === 'X' ? 'selected' : ''}>X</option>
+                            <option value="2" ${res === '2' ? 'selected' : ''}>2</option>
+                        </select>` : `
+                        <input type="text" class="resultado-input" value="${res}" onchange="updateResultado(${i + 1}, this.value)">`}
+                    </div>
+                    <div class="col-aciertos" id="aciertos-${i + 1}"></div>
+                `;
+                container.appendChild(row);
+                updateAciertos(i + 1);
+            });
+            calculateTotals();
+            document.getElementById('seguimientoContent').classList.remove('hidden');
+        }
+
+        window.updateResultado = async function(partidoNum, valor) {
+            resultadosActuales[partidoNum] = valor;
+            await supabase.from('resultados').upsert({
+                boleto_id: currentBoletoSeguimiento.id,
+                partido_numero: partidoNum,
+                resultado_real: valor,
+                usuario_que_marco: currentUser.id
+            }, { onConflict: 'boleto_id,partido_numero' });
+            updateAciertos(partidoNum);
+            calculateTotals();
+        }
+
+        function updateAciertos(partidoNum) {
+            const aciertosDiv = document.getElementById(`aciertos-${partidoNum}`);
+            const resultado = resultadosActuales[partidoNum];
+            if (!resultado) {
+                aciertosDiv.innerHTML = '<span class="pendiente">-</span>';
+                return;
+            }
+            const { columna1, columna2 } = currentBoletoSeguimiento.columnas_apuestas;
+            const acierto1 = columna1[partidoNum - 1] === resultado;
+            const acierto2 = columna2[partidoNum - 1] === resultado;
+            aciertosDiv.innerHTML = `
+                <span class="${acierto1 ? 'acierto' : 'fallo'}">${acierto1 ? '✓' : '✗'}</span>
+                <span class="${acierto2 ? 'acierto' : 'fallo'}">${acierto2 ? '✓' : '✗'}</span>
+            `;
+        }
+
+        function calculateTotals() {
+            let total1 = 0, total2 = 0;
+            const { columna1, columna2 } = currentBoletoSeguimiento.columnas_apuestas;
+            for (let i = 1; i <= 15; i++) {
+                if (resultadosActuales[i]) {
+                    if (columna1[i - 1] === resultadosActuales[i]) total1++;
+                    if (columna2[i - 1] === resultadosActuales[i]) total2++;
+                }
+            }
+            document.getElementById('totalCol1').textContent = total1;
+            document.getElementById('totalCol2').textContent = total2;
+        }
+        
+        // --- SECCIÓN ESTADÍSTICAS ---
+        async function showEstadisticas() {
+            navigateToScreen('estadisticasScreen');
+            document.getElementById('estadisticasLoading').classList.remove('hidden');
+            document.getElementById('estadisticasContent').classList.add('hidden');
+
+            const { data: boletos } = await supabase.from('boletos').select('*, resultados(*)');
+            
+            const stats = { oscar: { aciertos: 0, posibles: 0, boletos: 0, jornadas: [] }, txema: { aciertos: 0, posibles: 0, boletos: 0, jornadas: [] } };
+
+            for (const boleto of boletos) {
+                const user = boleto.user_id;
+                stats[user].boletos++;
+                let aciertosJornada = 0;
+                
+                const { columna1, columna2 } = boleto.columnas_apuestas;
+
+                boleto.resultados.forEach(res => {
+                    const idx = res.partido_numero - 1;
+                    if (columna1[idx] === res.resultado_real) { stats[user].aciertos++; aciertosJornada++; }
+                    if (columna2[idx] === res.resultado_real) { stats[user].aciertos++; aciertosJornada++; }
+                    stats[user].posibles += 2;
+                });
+                if(boleto.resultados.length > 0) {
+                     stats[user].jornadas.push({ jornada: boleto.jornada, aciertos: aciertosJornada, posibles: boleto.resultados.length * 2 });
+                }
             }
             
-            if (txemaCard) {
-                txemaCard.addEventListener('click', function(e) {
-                    console.log('Click en Txema');
-                    selectUser('txema');
+            ['oscar', 'txema'].forEach(user => {
+                const s = stats[user];
+                const porcentaje = s.posibles > 0 ? Math.round((s.aciertos / s.posibles) * 100) : 0;
+                
+                let mejor = { aciertos: -1 }, peor = { aciertos: Infinity };
+                s.jornadas.forEach(j => {
+                    if (j.aciertos > mejor.aciertos) mejor = j;
+                    if (j.aciertos < peor.aciertos) peor = j;
                 });
+                
+                document.getElementById(`${user}Porcentaje`).textContent = `${porcentaje}%`;
+                document.getElementById(`${user}Boletos`).textContent = s.boletos;
+                document.getElementById(`${user}Mejor`).textContent = mejor.aciertos > -1 ? `${mejor.jornada} (${mejor.aciertos})` : '-';
+                document.getElementById(`${user}Peor`).textContent = peor.aciertos !== Infinity ? `${peor.jornada} (${peor.aciertos})` : '-';
+                 const avatarElement = document.querySelector(`#${user}Stats .stats-avatar`);
+                 if(users[user]?.photo){
+                     avatarElement.innerHTML = `<img src="${users[user].photo}" style="width:100%; height:100%; object-fit:cover;">`;
+                 } else {
+                     avatarElement.textContent = users[user]?.icon || '👤';
+                 }
+            });
+
+            document.getElementById('estadisticasLoading').classList.add('hidden');
+            document.getElementById('estadisticasContent').classList.remove('hidden');
+        }
+
+
+        // --- INICIALIZACIÓN Y EVENTOS ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUsers();
+            
+            const savedUserId = localStorage.getItem('hermandaz_user');
+            if (savedUserId && users[savedUserId]) {
+                currentUser = users[savedUserId];
+                showHome();
+            } else {
+                showLogin();
             }
-            
-            const passwordInput = document.getElementById('passwordInput');
-            const loginButton = document.getElementById('loginButton');
-            
-            passwordInput.addEventListener('input', function() {
-                if (this.value.length > 0 && selectedUserId) {
-                    loginButton.disabled = false;
-                } else {
-                    loginButton.disabled = true;
-                }
-            });
-            
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !loginButton.disabled) {
-                    attemptLogin();
-                }
-            });
-            
-            loginButton.addEventListener('click', attemptLogin);
-            
+
+            document.getElementById('oscarCard').addEventListener('click', () => selectUser('oscar'));
+            document.getElementById('txemaCard').addEventListener('click', () => selectUser('txema'));
+            document.getElementById('loginButton').addEventListener('click', attemptLogin);
+            document.getElementById('passwordInput').addEventListener('keypress', (e) => e.key === 'Enter' && attemptLogin());
+
             document.getElementById('logoutBtn').addEventListener('click', logout);
-            
             document.getElementById('backBtn').addEventListener('click', showLogin);
-            document.getElementById('backFromUploadBtn').addEventListener('click', showHome);
-            document.getElementById('backFromHistorialBtn').addEventListener('click', showHome);
-            document.getElementById('backFromSeguimientoBtn').addEventListener('click', showHome);
-            document.getElementById('backFromEstadisticasBtn').addEventListener('click', showHome);
-            
+            document.querySelectorAll('.back-btn').forEach(btn => btn.addEventListener('click', showHome));
+
             document.getElementById('userAvatar').addEventListener('click', changePhoto);
-            
             document.getElementById('photoInput').addEventListener('change', handlePhotoChange);
-            
+
             document.getElementById('uploadBtn').addEventListener('click', showUpload);
             document.getElementById('historyBtn').addEventListener('click', showHistorial);
             document.getElementById('resultsBtn').addEventListener('click', showSeguimiento);
             document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
-            
             document.getElementById('photoBtn').addEventListener('click', changePhoto);
-            
-            document.getElementById('infoBtn').addEventListener('click', () => {
-                alert('LA HERMANDAZ v7.0');
-            });
-            
+            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v8.0'));
+
             const uploadArea = document.getElementById('uploadArea');
             const boletoInput = document.getElementById('boletoInput');
-            
-            uploadArea.addEventListener('click', () => {
-                boletoInput.click();
-            });
-            
-            boletoInput.addEventListener('change', function(e) {
-                if (e.target.files[0]) {
-                    processBoletoImage(e.target.files[0]);
-                }
-            });
-            
-            uploadArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-            
-            uploadArea.addEventListener('dragleave', function(e) {
+            uploadArea.addEventListener('click', () => boletoInput.click());
+            boletoInput.addEventListener('change', (e) => e.target.files[0] && processBoletoImage(e.target.files[0]));
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+            uploadArea.addEventListener('dragleave', (e) => uploadArea.classList.remove('dragover'));
+            uploadArea.addEventListener('drop', (e) => {
                 e.preventDefault();
                 uploadArea.classList.remove('dragover');
+                e.dataTransfer.files[0] && processBoletoImage(e.dataTransfer.files[0]);
             });
-            
-            uploadArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files[0]) {
-                    processBoletoImage(files[0]);
-                }
-            });
-            
+
             document.getElementById('saveBoletoBtn').addEventListener('click', saveBoletoFinal);
             document.getElementById('newImageBtn').addEventListener('click', resetUploadState);
             
-            document.getElementById('boletoSelector').addEventListener('change', function(e) {
-                loadSeguimientoBoleto(e.target.value);
-            });
-            
-            // NUEVO EVENT LISTENER PARA HISTORIAL
-            document.getElementById('historialSelector').addEventListener('change', function(e) {
-                loadSingleBoleto(e.target.value);
-            });
+            document.getElementById('boletoSelector').addEventListener('change', (e) => loadSeguimientoBoleto(e.target.value));
+            document.getElementById('historialSelector').addEventListener('change', filterHistorial);
         });
     </script>
 </body>
