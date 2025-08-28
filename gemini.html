@@ -40,7 +40,7 @@
             max-width: 420px;
             margin: 0 auto;
             text-align: center;
-            padding-bottom: 100px; /* <-- CORRECCIÓN #1: Añadido espacio inferior */
+            padding-bottom: 100px;
         }
         
         .logo {
@@ -534,6 +534,10 @@
             document.getElementById('passwordSection').classList.add('show');
             document.getElementById('passwordInput').focus();
             currentUser = { id: userId };
+            // Activar botón si ya hay texto
+            const loginButton = document.getElementById('loginButton');
+            const passwordInput = document.getElementById('passwordInput');
+            loginButton.disabled = !(passwordInput.value.length > 0 && currentUser?.id);
         }
         async function attemptLogin() {
             if (document.getElementById('passwordInput').value !== APP_PASSWORD) return showToast('Contraseña incorrecta', '', 'error');
@@ -686,7 +690,7 @@
                 const fecha = new Date(b.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
                 const div = document.createElement('div'); div.className = 'boleto-item';
                 const columnsData = b.columnas_apuestas;
-                let columnsHTML = '<div style="color:var(--text-secondary);font-size:14px;padding:20px 0;">No hay datos de apuestas detalladas para este boleto.</div>'; // <-- CORRECCIÓN #2: Mensaje por defecto
+                let columnsHTML = '<div style="color:var(--text-secondary);font-size:14px;padding:20px 0;">No hay datos de apuestas detalladas para este boleto.</div>';
                 if (columnsData && columnsData.columna1 && columnsData.equipos) {
                     columnsHTML = createColumnHTML(columnsData.columna1, columnsData.equipos, 1) + createColumnHTML(columnsData.columna2, columnsData.equipos, 2);
                 }
@@ -784,33 +788,49 @@
             } catch (error) { console.error(error); loadingEl.innerHTML = '<p style="color:red;">Error al cargar.</p>'; }
         }
 
-        // --- INICIALIZACIÓN ---
+        // --- INICIALIZACIÓN Y EVENTOS ---
         document.addEventListener('DOMContentLoaded', async () => {
             await loadUsers();
             const savedUserId = localStorage.getItem('hermandaz_user');
             if (savedUserId && users[savedUserId]) { currentUser = users[savedUserId]; showHome(); } else { showLogin(); }
-            document.getElementById('oscarCard').onclick = () => selectUser('oscar');
-            document.getElementById('txemaCard').onclick = () => selectUser('txema');
-            document.getElementById('loginButton').onclick = attemptLogin;
-            document.getElementById('passwordInput').onkeypress = (e) => e.key === 'Enter' && attemptLogin();
-            document.getElementById('logoutBtn').onclick = logout;
-            document.querySelectorAll('.back-btn').forEach(btn => btn.onclick = showHome);
-            document.getElementById('userAvatarContainer').onclick = changePhoto;
-            document.getElementById('photoInput').onchange = handlePhotoChange;
-            document.getElementById('fabUploadBtn').onclick = showUpload;
-            document.getElementById('historyBtn').onclick = showHistorial;
-            document.getElementById('resultsBtn').onclick = showSeguimiento;
-            document.getElementById('statsBtn').onclick = showEstadisticas;
-            document.getElementById('infoBtn').onclick = () => alert('LA HERMANDAZ v9.1');
+            
+            // --- CORRECCIÓN #3: Event Listeners del Login restaurados ---
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.getElementById('loginButton');
+
+            passwordInput.addEventListener('input', () => {
+                loginButton.disabled = !(passwordInput.value.length > 0 && currentUser?.id);
+            });
+
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !loginButton.disabled) {
+                    attemptLogin();
+                }
+            });
+
+            document.getElementById('oscarCard').addEventListener('click', () => selectUser('oscar'));
+            document.getElementById('txemaCard').addEventListener('click', () => selectUser('txema'));
+            document.getElementById('loginButton').addEventListener('click', attemptLogin);
+
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.querySelectorAll('.back-btn').forEach(btn => btn.addEventListener('click', showHome));
+            document.getElementById('userAvatarContainer').addEventListener('click', changePhoto);
+            document.getElementById('photoInput').addEventListener('change', handlePhotoChange);
+            document.getElementById('fabUploadBtn').addEventListener('click', showUpload);
+            document.getElementById('historyBtn').addEventListener('click', showHistorial);
+            document.getElementById('resultsBtn').addEventListener('click', showSeguimiento);
+            document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
+            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v9.2'));
             const upArea = document.getElementById('uploadArea'), bInput = document.getElementById('boletoInput');
-            upArea.onclick = () => bInput.click(); bInput.onchange = (e) => e.target.files[0] && processBoletoImage(e.target.files[0]);
-            upArea.ondragover = (e) => { e.preventDefault(); upArea.classList.add('dragover'); };
-            upArea.ondragleave = () => upArea.classList.remove('dragover');
-            upArea.ondrop = (e) => { e.preventDefault(); upArea.classList.remove('dragover'); e.dataTransfer.files[0] && processBoletoImage(e.dataTransfer.files[0]); };
-            document.getElementById('saveBoletoBtn').onclick = saveBoletoFinal;
-            document.getElementById('newImageBtn').onclick = resetUploadState;
-            document.getElementById('boletoSelector').onchange = (e) => loadSeguimientoBoleto(e.target.value);
-            document.getElementById('historialSelector').onchange = filterHistorial;
+            upArea.addEventListener('click', () => bInput.click());
+            bInput.addEventListener('change', (e) => e.target.files[0] && processBoletoImage(e.target.files[0]));
+            upArea.addEventListener('dragover', (e) => { e.preventDefault(); upArea.classList.add('dragover'); });
+            upArea.addEventListener('dragleave', () => upArea.classList.remove('dragover'));
+            upArea.addEventListener('drop', (e) => { e.preventDefault(); upArea.classList.remove('dragover'); e.dataTransfer.files[0] && processBoletoImage(e.dataTransfer.files[0]); });
+            document.getElementById('saveBoletoBtn').addEventListener('click', saveBoletoFinal);
+            document.getElementById('newImageBtn').addEventListener('click', resetUploadState);
+            document.getElementById('boletoSelector').addEventListener('change', (e) => loadSeguimientoBoleto(e.target.value));
+            document.getElementById('historialSelector').addEventListener('change', filterHistorial);
         });
     </script>
 </body>
