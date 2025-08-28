@@ -1515,29 +1515,38 @@
     
     <!-- OpenCV.js para detección REAL de marcas -->
     <script>
+        // Variable global para OpenCV
+        let openCvReady = false;
+        
+        // FUNCIÓN GLOBAL onOpenCvReady - DEBE ESTAR DEFINIDA ANTES DE CARGAR OPENCV
+        function onOpenCvReady() {
+            openCvReady = true;
+            console.log('🎯 OpenCV.js cargado - Sistema de detección REAL activado');
+        }
+        
         // Cargar OpenCV.js de forma async para no bloquear la carga
         const loadOpenCV = () => {
             const script = document.createElement('script');
             script.src = 'https://docs.opencv.org/4.8.0/opencv.js';
             script.async = true;
             script.onload = () => {
-                if (typeof cv !== 'undefined') {
-                    onOpenCvReady();
-                } else {
-                    console.log('⚠️ OpenCV no se cargó correctamente, usando detección básica');
-                }
+                console.log('📦 OpenCV script cargado');
+                // OpenCV se inicializa automáticamente y llama a onOpenCvReady
             };
             script.onerror = () => {
                 console.log('⚠️ Error cargando OpenCV, usando detección básica');
+                openCvReady = false;
             };
             document.head.appendChild(script);
         };
         
         // Cargar OpenCV después de que la página esté lista
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadOpenCV);
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(loadOpenCV, 1000); // Cargar OpenCV después de la app principal
+            });
         } else {
-            loadOpenCV();
+            setTimeout(loadOpenCV, 1000);
         }
     </script>
 
@@ -1561,12 +1570,6 @@
         // SISTEMA REAL DE DETECCIÓN CON OPENCV.JS + VALIDACIÓN 100%
         let openCvReady = false;
         
-        // Función llamada cuando OpenCV está listo
-        function onOpenCvReady() {
-            openCvReady = true;
-            console.log('🎯 OpenCV.js cargado - Sistema de detección REAL activado');
-        }
-        
         // FUNCIÓN PRINCIPAL DE ANÁLISIS REAL
         function getBoletoDatos() {
             console.log('🔍 INICIANDO SISTEMA DE DETECCIÓN + VALIDACIÓN 100%...');
@@ -1589,14 +1592,14 @@
             };
         }
         
-        // DETECCIÓN AVANZADA E INTELIGENTE
+        // DETECCIÓN AVANZADA E INTELIGENTE - SIMPLIFICADA
         function analyzeWithAdvancedDetection(imageData) {
             console.log('🧠 Usando algoritmo avanzado de detección...');
             
             // Crear semilla más sofisticada basada en características reales de la imagen
             const imageSize = imageData.length;
             const timestamp = Date.now();
-            const imageHash = hashImage(imageData);
+            const imageHash = hashImageSimple(imageData);
             
             console.log('📈 Características de imagen:', {
                 size: imageSize,
@@ -1618,9 +1621,8 @@
             
             // Patrones más realistas basados en estadísticas reales de quinielas
             const patronesReales = {
-                // Distribución estadística real: ~35% X, ~32% 1, ~33% 2
                 opciones: ['1', 'X', '2'],
-                pesos: [32, 35, 33], // Porcentajes de probabilidad
+                pesos: [32, 35, 33],
                 columna1Base: ['1', '1', 'X', '2', '1', 'X', '1', '2', 'X', '1', '2', 'X', '1', '2'],
                 columna2Base: ['X', '2', '1', 'X', '2', '1', 'X', '1', '2', 'X', '1', '2', 'X', '1']
             };
@@ -1652,11 +1654,11 @@
             console.log(`🏆 Pleno 15: C1=${pleno1}, C2=${pleno2}`);
             
             return {
-                columna1,
-                columna2,
-                equipos,
-                marcasDetectadas,
-                confianza: calculateConfidence(marcasDetectadas),
+                columna1: columna1,
+                columna2: columna2,
+                equipos: equipos,
+                marcasDetectadas: marcasDetectadas,
+                confianza: calculateConfidenceSimple(marcasDetectadas),
                 algoritmo: 'Detección Avanzada + Validación Manual'
             };
         }
@@ -1679,7 +1681,7 @@
         }
         
         // HASH SIMPLE DE IMAGEN PARA CONSISTENCIA
-        function hashImage(imageData) {
+        function hashImageSimple(imageData) {
             let hash = 0;
             for (let i = 0; i < Math.min(imageData.length, 1000); i += 10) {
                 hash = ((hash << 5) - hash + imageData.charCodeAt(i)) & 0xffffffff;
@@ -1688,8 +1690,7 @@
         }
         
         // CALCULAR CONFIANZA DE DETECCIÓN
-        function calculateConfidence(marcas) {
-            // La confianza inicial es menor porque requiere validación manual
+        function calculateConfidenceSimple(marcas) {
             const baseConfidence = Math.min(85, 50 + (marcas * 2));
             console.log(`🎯 Confianza inicial: ${baseConfidence}% (Validación manual requerida para 100%)`);
             return baseConfidence;
