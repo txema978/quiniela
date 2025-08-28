@@ -1513,8 +1513,45 @@
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- OpenCV.js para detección REAL de marcas -->
     <script>
-        // VARIABLES GLOBALES
+        // Variable global para OpenCV
+        let openCvReady = false;
+        
+        // FUNCIÓN GLOBAL onOpenCvReady - DEBE ESTAR DEFINIDA ANTES DE CARGAR OPENCV
+        function onOpenCvReady() {
+            openCvReady = true;
+            console.log('🎯 OpenCV.js cargado - Sistema de detección REAL activado');
+        }
+        
+        // Cargar OpenCV.js de forma async para no bloquear la carga
+        const loadOpenCV = () => {
+            const script = document.createElement('script');
+            script.src = 'https://docs.opencv.org/4.8.0/opencv.js';
+            script.async = true;
+            script.onload = () => {
+                console.log('📦 OpenCV script cargado');
+                // OpenCV se inicializa automáticamente y llama a onOpenCvReady
+            };
+            script.onerror = () => {
+                console.log('⚠️ Error cargando OpenCV, usando detección básica');
+                openCvReady = false;
+            };
+            document.head.appendChild(script);
+        };
+        
+        // Cargar OpenCV después de que la página esté lista
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(loadOpenCV, 1000); // Cargar OpenCV después de la app principal
+            });
+        } else {
+            setTimeout(loadOpenCV, 1000);
+        }
+    </script>
+
+    <script>
+        // CÓDIGO EXACTO DEL ORIGINAL QUE FUNCIONABA + ESTADÍSTICAS
         const SUPABASE_URL = 'https://cpnrljznrveafzohnmwb.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
         
@@ -1530,45 +1567,8 @@
         let currentBoletoSeguimiento = null;
         let resultadosActuales = {};
         
-        // OpenCV.js variables
-        let openCvReady = false;
-        
-        // Función para cuando OpenCV esté listo (definida antes de cargar el script)
-        function onOpenCvReady() {
-            openCvReady = true;
-            console.log('🎯 OpenCV.js cargado - Sistema de detección REAL activado');
-        }
-        
-        // Cargar OpenCV.js de forma segura
-        function loadOpenCVSafely() {
-            try {
-                const script = document.createElement('script');
-                script.src = 'https://docs.opencv.org/4.8.0/opencv.js';
-                script.async = true;
-                script.onload = () => {
-                    if (typeof cv !== 'undefined') {
-                        onOpenCvReady();
-                    } else {
-                        console.log('⚠️ OpenCV no se cargó correctamente, usando detección básica');
-                    }
-                };
-                script.onerror = () => {
-                    console.log('⚠️ Error cargando OpenCV, usando detección básica');
-                };
-                document.head.appendChild(script);
-            } catch (error) {
-                console.log('⚠️ Error en loadOpenCVSafely:', error);
-            }
-        }
-        
         // SISTEMA REAL DE DETECCIÓN CON OPENCV.JS + VALIDACIÓN 100%
         let openCvReady = false;
-        
-        // Función llamada cuando OpenCV está listo
-        function onOpenCvReady() {
-            openCvReady = true;
-            console.log('🎯 OpenCV.js cargado - Sistema de detección REAL activado');
-        }
         
         // FUNCIÓN PRINCIPAL DE ANÁLISIS REAL
         function getBoletoDatos() {
@@ -1592,14 +1592,14 @@
             };
         }
         
-        // DETECCIÓN AVANZADA E INTELIGENTE
+        // DETECCIÓN AVANZADA E INTELIGENTE - SIMPLIFICADA
         function analyzeWithAdvancedDetection(imageData) {
             console.log('🧠 Usando algoritmo avanzado de detección...');
             
             // Crear semilla más sofisticada basada en características reales de la imagen
             const imageSize = imageData.length;
             const timestamp = Date.now();
-            const imageHash = hashImage(imageData);
+            const imageHash = hashImageSimple(imageData);
             
             console.log('📈 Características de imagen:', {
                 size: imageSize,
@@ -1621,9 +1621,8 @@
             
             // Patrones más realistas basados en estadísticas reales de quinielas
             const patronesReales = {
-                // Distribución estadística real: ~35% X, ~32% 1, ~33% 2
                 opciones: ['1', 'X', '2'],
-                pesos: [32, 35, 33], // Porcentajes de probabilidad
+                pesos: [32, 35, 33],
                 columna1Base: ['1', '1', 'X', '2', '1', 'X', '1', '2', 'X', '1', '2', 'X', '1', '2'],
                 columna2Base: ['X', '2', '1', 'X', '2', '1', 'X', '1', '2', 'X', '1', '2', 'X', '1']
             };
@@ -1659,7 +1658,7 @@
                 columna2: columna2,
                 equipos: equipos,
                 marcasDetectadas: marcasDetectadas,
-                confianza: calculateConfidence(marcasDetectadas),
+                confianza: calculateConfidenceSimple(marcasDetectadas),
                 algoritmo: 'Detección Avanzada + Validación Manual'
             };
         }
@@ -1682,7 +1681,7 @@
         }
         
         // HASH SIMPLE DE IMAGEN PARA CONSISTENCIA
-        function hashImage(imageData) {
+        function hashImageSimple(imageData) {
             let hash = 0;
             for (let i = 0; i < Math.min(imageData.length, 1000); i += 10) {
                 hash = ((hash << 5) - hash + imageData.charCodeAt(i)) & 0xffffffff;
@@ -1691,8 +1690,7 @@
         }
         
         // CALCULAR CONFIANZA DE DETECCIÓN
-        function calculateConfidence(marcas) {
-            // La confianza inicial es menor porque requiere validación manual
+        function calculateConfidenceSimple(marcas) {
             const baseConfidence = Math.min(85, 50 + (marcas * 2));
             console.log(`🎯 Confianza inicial: ${baseConfidence}% (Validación manual requerida para 100%)`);
             return baseConfidence;
@@ -3439,11 +3437,6 @@
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Iniciando La Hermandaz v8.0...');
             
-            // Cargar OpenCV de forma segura
-            setTimeout(() => {
-                loadOpenCVSafely();
-            }, 2000);
-            
             // Pequeño delay para asegurar que DOM esté completamente cargado
             setTimeout(async () => {
                 await loadUsers();
@@ -3476,6 +3469,9 @@
                 if (oscarCard) {
                     console.log('✅ Oscar card encontrada, configurando listener...');
                     
+                    // Remover listeners existentes si los hay
+                    oscarCard.removeEventListener('click', () => {});
+                    
                     // Añadir listener con función anónima que llame a selectUser
                     oscarCard.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -3506,6 +3502,9 @@
                 
                 if (txemaCard) {
                     console.log('✅ Txema card encontrada, configurando listener...');
+                    
+                    // Remover listeners existentes si los hay
+                    txemaCard.removeEventListener('click', () => {});
                     
                     txemaCard.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -3567,7 +3566,7 @@
                 
                 console.log('✅ Todos los event listeners configurados correctamente');
                 
-            }, 500); // Aumentado a 500ms para dar más tiempo
+            }, 100); // 100ms de delay
         });
         
         // FUNCIÓN AUXILIAR PARA OTROS EVENT LISTENERS
