@@ -245,7 +245,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
-            margin-bottom: 80px; /* <-- CORRECCIÓN #1: Añadido margen inferior */
+            margin-bottom: 80px; /* <-- CORRECCIÓN #1: Espacio para el FAB */
         }
         
         .menu-item {
@@ -495,7 +495,7 @@
         
         let currentUser = null, users = {}, currentBoletoImage = null, extractedColumns = null;
         const APP_PASSWORD = 'purrungui';
-        let currentBoletoSeguimiento = null, resultadosActuales = {}, allBoletos = [];
+        let currentBoletoSeguimiento = null, resultadosActuales = {};
         
         // --- NAVEGACIÓN Y UTILIDADES ---
         function navigateToScreen(targetId) {
@@ -660,48 +660,79 @@
             else { showToast('¡Boleto guardado!', '', 'success'); showHome(); }
         }
         
-        // --- HISTORIAL (LÓGICA REESCRITA Y CORREGIDA) ---
+        // --- HISTORIAL (LÓGICA RESTAURADA Y MEJORADA) ---
         async function showHistorial() {
             navigateToScreen('historialScreen');
-            const selector = document.getElementById('historialSelector');
-            const listContainer = document.getElementById('boletosLista');
-            selector.innerHTML = ''; // Limpiar antes de poblar
-            listContainer.innerHTML = '<div class="processing"><div class="loading"></div></div>';
-            
-            try {
-                const { data, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                
-                allBoletos = data; // Guardar la lista completa en la variable global
+            document.getElementById('boletosLista').innerHTML = '<div class="processing"><div class="loading"></div></div>';
+            document.getElementById('noBoletosMessage').classList.add('hidden');
+            await loadHistorialSelector();
+        }
 
-                selector.innerHTML = '<option value="todos">Mostrar todos</option>'; // Añadir opción "todos"
-                if (allBoletos.length === 0) {
+        async function loadHistorialSelector() {
+            const selector = document.getElementById('historialSelector');
+            selector.innerHTML = '<option value="">Cargando...</option>';
+            try {
+                const { data: boletos, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+
+                if (boletos.length === 0) {
+                    selector.innerHTML = '<option>No hay boletos</option>';
+                    document.getElementById('boletosLista').innerHTML = '';
                     document.getElementById('noBoletosMessage').classList.remove('hidden');
-                    listContainer.innerHTML = '';
-                    selector.innerHTML = '<option value="">No hay boletos</option>';
                     return;
                 }
                 
-                document.getElementById('noBoletosMessage').classList.add('hidden');
-                allBoletos.forEach(b => selector.add(new Option(`J${b.jornada} - ${users[b.user_id]?.name || ''}`, b.id)));
-                displayBoletos(allBoletos); // Mostrar todos los boletos por defecto
+                selector.innerHTML = '<option value="todos">Mostrar todos</option>';
+                boletos.forEach(b => {
+                    selector.add(new Option(`J${b.jornada} - ${users[b.user_id]?.name || ''}`, b.id));
+                });
+
+                // Cargar el último boleto por defecto, como en la versión original
+                await loadSingleBoleto(boletos[0].id);
             } catch(e) {
-                listContainer.innerHTML = '<p style="color:red">Error al cargar boletos.</p>';
+                document.getElementById('boletosLista').innerHTML = '<p style="color:red">Error al cargar el historial.</p>';
             }
         }
 
-        function filterHistorial() {
-            const selectedId = document.getElementById('historialSelector').value;
-            if (selectedId === 'todos') {
-                displayBoletos(allBoletos);
-            } else {
-                const singleBoleto = allBoletos.find(b => b.id == selectedId);
-                displayBoletos(singleBoleto ? [singleBoleto] : []);
+        async function handleHistorialFilter() {
+            const selectedValue = document.getElementById('historialSelector').value;
+            if (selectedValue === 'todos') {
+                await loadAndShowAllBoletos();
+            } else if (selectedValue) {
+                await loadSingleBoleto(selectedValue);
             }
         }
+
+        async function loadSingleBoleto(boletoId) {
+            const listContainer = document.getElementById('boletosLista');
+            listContainer.innerHTML = '<div class="processing"><div class="loading"></div></div>';
+            const { data, error } = await supabase.from('boletos').select('*').eq('id', boletoId);
+            if(error || !data || data.length === 0) {
+                listContainer.innerHTML = '<p style="color:red">No se pudo cargar el boleto.</p>';
+                return;
+            }
+            displayBoletos(data);
+        }
         
+        async function loadAndShowAllBoletos() {
+            const listContainer = document.getElementById('boletosLista');
+            listContainer.innerHTML = '<div class="processing"><div class="loading"></div></div>';
+            const { data, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false });
+            if (error) {
+                listContainer.innerHTML = '<p style="color:red">Error al cargar los boletos.</p>';
+                return;
+            }
+            displayBoletos(data);
+        }
+
         function displayBoletos(boletos) {
             const container = document.getElementById('boletosLista'); container.innerHTML = '';
+            if (!boletos || boletos.length === 0) {
+                document.getElementById('noBoletosMessage').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('noBoletosMessage').classList.add('hidden');
+            
             boletos.forEach(b => {
                 const user = users[b.user_id] || { name: '?', icon: '👤' };
                 const fecha = new Date(b.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -836,7 +867,7 @@
             document.getElementById('historyBtn').addEventListener('click', showHistorial);
             document.getElementById('resultsBtn').addEventListener('click', showSeguimiento);
             document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
-            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v9.3'));
+            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v9.4 - Final'));
             const upArea = document.getElementById('uploadArea'), bInput = document.getElementById('boletoInput');
             upArea.addEventListener('click', () => bInput.click());
             bInput.addEventListener('change', (e) => e.target.files[0] && processBoletoImage(e.target.files[0]));
@@ -846,7 +877,7 @@
             document.getElementById('saveBoletoBtn').addEventListener('click', saveBoletoFinal);
             document.getElementById('newImageBtn').addEventListener('click', resetUploadState);
             document.getElementById('boletoSelector').addEventListener('change', (e) => loadSeguimientoBoleto(e.target.value));
-            document.getElementById('historialSelector').addEventListener('change', filterHistorial);
+            document.getElementById('historialSelector').addEventListener('change', handleHistorialFilter);
         });
     </script>
 </body>
