@@ -40,6 +40,7 @@
             max-width: 420px;
             margin: 0 auto;
             text-align: center;
+            padding-bottom: 100px; /* <-- CORRECCIÓN #1: Añadido espacio inferior */
         }
         
         .logo {
@@ -203,7 +204,6 @@
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
         }
         
-        /* --- NUEVOS ESTILOS: Pantalla Principal --- */
         #homeScreen .home-header {
             background: var(--card-bg);
             border-radius: 16px;
@@ -239,8 +239,8 @@
             height: 100%;
             object-fit: cover;
         }
-        #homeScreen .welcome-text { font-weight: 600; font-size: 16px; }
-        #homeScreen .welcome-hint { font-size: 12px; color: var(--text-secondary); }
+        #homeScreen .welcome-text { font-weight: 600; font-size: 16px; text-align: left; }
+        #homeScreen .welcome-hint { font-size: 12px; color: var(--text-secondary); text-align: left; }
 
         .menu-grid {
             display: grid;
@@ -267,7 +267,6 @@
         .menu-icon { font-size: 28px; margin-bottom: 12px; display: block; }
         .menu-text { font-size: 16px; font-weight: 600; }
         
-        /* --- NUEVOS ESTILOS: Botón Flotante --- */
         .fab {
             position: fixed;
             bottom: 30px;
@@ -345,7 +344,6 @@
         .dedicatoria { margin-top: 40px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--card-border); }
         .dedicatoria p { color: var(--text-secondary); font-size: 14px; text-align: center; line-height: 1.5; }
 
-        /* Pantalla de subir boleto */
         .upload-area {
             border: 2px dashed var(--primary-color); border-radius: 16px; padding: 40px 20px; margin-bottom: 20px;
             cursor: pointer; transition: all 0.3s ease; background: rgba(16, 185, 129, 0.05);
@@ -358,7 +356,6 @@
         .processing { text-align: center; padding: 20px; background: var(--card-bg); border-radius: 12px; margin-bottom: 20px; }
         .btn-secondary { background: rgba(255, 255, 255, 0.1); color: white; }
         
-        /* Formulario editable */
         .editable-form { display: flex; flex-direction: column; gap: 16px; }
         .columna-editable { background: var(--card-bg); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 16px; }
         .columna-editable h4 { color: var(--primary-color); margin-bottom: 12px; font-size: 16px; }
@@ -374,7 +371,6 @@
         .pleno-input { width: 40px; padding: 8px; border-radius: 6px; border: 1px solid var(--card-border); background: rgba(255, 255, 255, 0.1); color: white; text-align: center; font-weight: 600; }
         .pleno-input:focus { outline: none; border-color: var(--primary-color); }
 
-        /* Tabla de seguimiento */
         .seguimiento-table { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); }
         .table-header, .table-row, .table-totals { display: grid; grid-template-columns: 1fr 40px 40px 65px 60px; align-items: center; gap: 5px; padding: 4px; }
         .table-header { background: rgba(16, 185, 129, 0.2); font-weight: 600; font-size: 12px; padding: 8px 4px; }
@@ -387,7 +383,6 @@
         .acierto { color: #10b981; font-weight: 700; } .fallo { color: #ef4444; } .pendiente { color: #94a3b8; }
         .total-col1, .total-col2 { color: #10b981; font-size: 16px; }
 
-        /* --- NUEVOS ESTILOS: Historial (Tarjetas Colapsables) --- */
         .boleto-item {
             background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px;
             padding: 16px; margin-bottom: 20px; transition: all 0.3s ease;
@@ -404,7 +399,7 @@
             transition: max-height 0.5s ease-out, margin-top 0.5s ease-out;
         }
         .boleto-item.expanded .boleto-details {
-            max-height: 1000px; /* Suficientemente grande */
+            max-height: 1000px; 
             margin-top: 16px;
         }
         .boleto-imagen { width: 100%; border-radius: 12px; margin-bottom: 16px; cursor: pointer; background: rgba(0,0,0,0.2); }
@@ -418,7 +413,6 @@
         .btn-delete { background: #ef4444; color: white; padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.3s ease; }
         .btn-delete:hover { background: #dc2626; }
 
-        /* Estadísticas */
         .stats-container { display: flex; flex-direction: column; gap: 20px; }
         .user-stats { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; flex: 1; }
         .user-stats-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
@@ -433,163 +427,65 @@
 <body>
     <div class="container">
         <div id="loginScreen" class="screen active">
-            <div class="logo">⚽</div>
-            <h1 class="title">LA HERMANDAZ</h1>
-            <p class="subtitle">Quinielas entre colegas</p>
-            
+            <div class="logo">⚽</div><h1 class="title">LA HERMANDAZ</h1><p class="subtitle">Quinielas entre colegas</p>
             <h2 style="font-size: 22px; margin-bottom: 30px; color: var(--text-secondary); font-weight: 500;">¿Quién eres?</h2>
-            
             <div class="user-grid">
-                <div class="user-card" id="oscarCard">
-                    <div class="user-avatar" id="oscarAvatar"><span id="oscarIcon">👨‍💼</span><img id="oscarPhoto" class="hidden" alt="Oscar"></div>
-                    <div class="user-name">OSCAR</div><div class="user-hint">Toca para seleccionar</div>
-                </div>
-                <div class="user-card" id="txemaCard">
-                    <div class="user-avatar" id="txemaAvatar"><span id="txemaIcon">👨‍🎓</span><img id="txemaPhoto" class="hidden" alt="Txema"></div>
-                    <div class="user-name">TXEMA</div><div class="user-hint">Toca para seleccionar</div>
-                </div>
+                <div class="user-card" id="oscarCard"><div class="user-avatar" id="oscarAvatar"><span id="oscarIcon"></span><img id="oscarPhoto" class="hidden" alt="Oscar"></div><div class="user-name">OSCAR</div><div class="user-hint">Toca para seleccionar</div></div>
+                <div class="user-card" id="txemaCard"><div class="user-avatar" id="txemaAvatar"><span id="txemaIcon"></span><img id="txemaPhoto" class="hidden" alt="Txema"></div><div class="user-name">TXEMA</div><div class="user-hint">Toca para seleccionar</div></div>
             </div>
-            
-            <div class="password-section" id="passwordSection">
-                <input type="password" class="password-input" id="passwordInput" placeholder="Introduce la contraseña">
-                <button class="btn btn-primary" id="loginButton" disabled>🔐 Entrar</button>
-            </div>
-            
+            <div class="password-section" id="passwordSection"><input type="password" class="password-input" id="passwordInput" placeholder="Introduce la contraseña"><button class="btn btn-primary" id="loginButton" disabled>🔐 Entrar</button></div>
             <div class="dedicatoria"><p>🙏 En Memoria de Modesto Feliu y Aluino Dean 🙏</p></div>
         </div>
         
         <div id="homeScreen" class="screen">
             <div class="home-header">
-                <div class="user-info-left" id="userAvatarContainer">
-                    <div class="user-info-avatar" id="userAvatar">
-                        <span id="userAvatarIcon"></span>
-                        <img id="userAvatarPhoto" class="hidden" alt="Foto usuario">
-                    </div>
-                    <div>
-                        <div class="welcome-text" id="userName"></div>
-                        <div class="welcome-hint">Toca para cambiar tu foto</div>
-                    </div>
-                </div>
+                <div class="user-info-left" id="userAvatarContainer"><div class="user-info-avatar" id="userAvatar"><span id="userAvatarIcon"></span><img id="userAvatarPhoto" class="hidden" alt="Foto usuario"></div><div><div class="welcome-text" id="userName"></div><div class="welcome-hint">Toca para cambiar tu foto</div></div></div>
                 <button class="btn-danger" id="logoutBtn">Salir</button>
             </div>
-            
-            <h1 class="title" style="margin-top: 40px;">Menú Principal</h1>
-            <p class="subtitle" style="margin-bottom: 30px;" id="welcomeText">Elige una opción</p>
-            
+            <h1 class="title" style="margin-top: 40px;">Menú Principal</h1><p class="subtitle" style="margin-bottom: 30px;" id="welcomeText"></p>
             <div class="menu-grid">
                 <div class="menu-item" id="resultsBtn"><span class="menu-icon">📊</span><div class="menu-text">Resultados</div></div>
                 <div class="menu-item" id="statsBtn"><span class="menu-icon">🏆</span><div class="menu-text">Estadísticas</div></div>
                 <div class="menu-item" id="historyBtn"><span class="menu-icon">📅</span><div class="menu-text">Historial</div></div>
                 <div class="menu-item" id="infoBtn"><span class="menu-icon">ℹ️</span><div class="menu-text">Info</div></div>
             </div>
-
             <button class="fab" id="fabUploadBtn" title="Subir nuevo boleto">+</button>
         </div>
 
         <div id="uploadScreen" class="screen">
-            <button class="back-btn" id="backFromUploadBtn">←</button>
-            <div class="logo">📷</div>
-            <h1 class="title">SUBIR BOLETO</h1>
-            <p class="subtitle" id="uploaderText">Sube tu quiniela de la jornada</p>
-            
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📸</div>
-                <div class="upload-text">Haz foto o selecciona imagen</div>
-                <div class="upload-hint">Toca aquí o arrastra la imagen del boleto</div>
-            </div>
-            
+            <button class="back-btn" id="backFromUploadBtn">←</button><div class="logo">📷</div><h1 class="title">SUBIR BOLETO</h1><p class="subtitle" id="uploaderText"></p>
+            <div class="upload-area" id="uploadArea"><div class="upload-icon">📸</div><div class="upload-text">Haz foto o selecciona imagen</div><div class="upload-hint">Toca aquí o arrastra la imagen</div></div>
             <div id="imagePreview" class="hidden">
-                <img id="previewImage" class="image-preview" alt="Preview del boleto">
-                <div id="processingArea" class="processing hidden">
-                    <div class="loading"></div><p>Analizando boleto...</p>
-                </div>
+                <img id="previewImage" class="image-preview" alt="Preview"><div id="processingArea" class="processing hidden"><div class="loading"></div><p>Analizando...</p></div>
                 <div id="extractedData" class="hidden">
                     <h3 style="color: var(--primary-color); margin-bottom: 16px;">Verifica y corrige los datos:</h3>
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Jornada:</label>
-                        <input type="number" id="jornadaInput" min="1" max="50" value="1" 
-                               style="width: 100px; padding: 8px; border-radius: 8px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.1); color: white; text-align: center;">
-                    </div>
+                    <div style="margin-bottom: 20px;"><label style="display: block; margin-bottom: 8px; font-weight: 600;">Jornada:</label><input type="number" id="jornadaInput" min="1" max="50" value="1" style="width: 100px; padding: 8px; border-radius: 8px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.1); color: white; text-align: center;"></div>
                     <div id="editableForm"></div>
-                    <div style="margin-top: 20px; display: flex; gap: 10px;">
-                        <button class="btn btn-primary" id="saveBoletoBtn">Guardar Boleto</button>
-                        <button class="btn btn-secondary" id="newImageBtn">Subir otra</button>
-                    </div>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;"><button class="btn btn-primary" id="saveBoletoBtn">Guardar Boleto</button><button class="btn btn-secondary" id="newImageBtn">Subir otra</button></div>
                 </div>
             </div>
         </div>
-
+        
         <div id="seguimientoScreen" class="screen">
-            <button class="back-btn" id="backFromSeguimientoBtn">←</button>
-            <div class="logo">📊</div>
-            <h1 class="title">SEGUIMIENTO</h1>
-            <p class="subtitle">Resultados en tiempo real</p>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--primary-color);">Seleccionar boleto:</label>
-                <select id="boletoSelector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.1); color: white;"></select>
-            </div>
-            <div id="seguimientoContent" class="hidden">
-                <div class="seguimiento-table">
-                    <div class="table-header">
-                        <div class="col-partido">Partido</div><div class="col-apuesta">C1</div><div class="col-apuesta">C2</div>
-                        <div class="col-resultado">Res.</div><div class="col-aciertos">OK</div>
-                    </div>
-                    <div id="partidosContainer"></div>
-                    <div class="table-totals">
-                        <div class="col-partido">TOTAL</div>
-                        <div class="col-apuesta total-col1" id="totalCol1">0</div><div class="col-apuesta total-col2" id="totalCol2">0</div>
-                        <div class="col-resultado"></div><div class="col-aciertos"></div>
-                    </div>
-                </div>
-            </div>
+            <button class="back-btn" id="backFromSeguimientoBtn">←</button><div class="logo">📊</div><h1 class="title">SEGUIMIENTO</h1><p class="subtitle">Resultados en tiempo real</p>
+            <div style="margin-bottom: 20px;"><label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--primary-color);">Seleccionar boleto:</label><select id="boletoSelector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.1); color: white;"></select></div>
+            <div id="seguimientoContent" class="hidden"><div class="seguimiento-table"><div class="table-header"><div class="col-partido">Partido</div><div class="col-apuesta">C1</div><div class="col-apuesta">C2</div><div class="col-resultado">Res.</div><div class="col-aciertos">OK</div></div><div id="partidosContainer"></div><div class="table-totals"><div class="col-partido">TOTAL</div><div class="col-apuesta total-col1" id="totalCol1">0</div><div class="col-apuesta total-col2" id="totalCol2">0</div><div class="col-resultado"></div><div class="col-aciertos"></div></div></div></div>
         </div>
 
         <div id="historialScreen" class="screen">
-            <button class="back-btn" id="backFromHistorialBtn">←</button>
-            <div class="logo">📅</div><h1 class="title">HISTORIAL</h1><p class="subtitle">Boletos de todas las jornadas</p>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--secondary-color);">Filtrar por boleto:</label>
-                <select id="historialSelector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.1); color: white;"></select>
-            </div>
-            <div id="historialContent">
-                <div id="boletosLista"></div>
-                <div id="noBoletosMessage" class="hidden" style="text-align: center; padding: 40px; color: var(--text-secondary);">📋 No hay boletos subidos todavía</div>
-            </div>
+            <button class="back-btn" id="backFromHistorialBtn">←</button><div class="logo">📅</div><h1 class="title">HISTORIAL</h1><p class="subtitle">Boletos de todas las jornadas</p>
+            <div style="margin-bottom: 20px;"><label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--secondary-color);">Filtrar por boleto:</label><select id="historialSelector" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.1); color: white;"></select></div>
+            <div id="historialContent"><div id="boletosLista"></div><div id="noBoletosMessage" class="hidden" style="text-align: center; padding: 40px; color: var(--text-secondary);">📋 No hay boletos subidos todavía</div></div>
         </div>
 
         <div id="estadisticasScreen" class="screen">
-            <button class="back-btn" id="backFromEstadisticasBtn">←</button>
-            <div class="logo">🏆</div><h1 class="title">ESTADÍSTICAS</h1><p class="subtitle">Rendimiento por usuario</p>
+            <button class="back-btn" id="backFromEstadisticasBtn">←</button><div class="logo">🏆</div><h1 class="title">ESTADÍSTICAS</h1><p class="subtitle">Rendimiento por usuario</p>
             <div id="estadisticasLoading" class="processing"><div class="loading"></div><p>Calculando estadísticas...</p></div>
-            <div id="estadisticasContent" class="hidden">
-                <div class="stats-container">
-                    <div class="user-stats" id="oscarStats">
-                        <div class="user-stats-header"><div class="stats-avatar"></div><h3>Oscar</h3></div>
-                        <div class="stats-grid">
-                            <div class="stat-item"><div class="stat-value" id="oscarPorcentaje">-</div><div class="stat-label">% Acierto</div></div>
-                            <div class="stat-item"><div class="stat-value" id="oscarBoletos">0</div><div class="stat-label">Boletos</div></div>
-                            <div class="stat-item"><div class="stat-value" id="oscarMejor">-</div><div class="stat-label">Mejor Jornada</div></div>
-                            <div class="stat-item"><div class="stat-value" id="oscarPeor">-</div><div class="stat-label">Peor Jornada</div></div>
-                        </div>
-                    </div>
-                    <div class="user-stats" id="txemaStats">
-                        <div class="user-stats-header"><div class="stats-avatar"></div><h3>Txema</h3></div>
-                        <div class="stats-grid">
-                            <div class="stat-item"><div class="stat-value" id="txemaPorcentaje">-</div><div class="stat-label">% Acierto</div></div>
-                            <div class="stat-item"><div class="stat-value" id="txemaBoletos">0</div><div class="stat-label">Boletos</div></div>
-                            <div class="stat-item"><div class="stat-value" id="txemaMejor">-</div><div class="stat-label">Mejor Jornada</div></div>
-                            <div class="stat-item"><div class="stat-value" id="txemaPeor">-</div><div class="stat-label">Peor Jornada</div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="estadisticasContent" class="hidden"><div class="stats-container"><div class="user-stats" id="oscarStats"><div class="user-stats-header"><div class="stats-avatar"></div><h3>Oscar</h3></div><div class="stats-grid"><div class="stat-item"><div class="stat-value" id="oscarPorcentaje">-</div><div class="stat-label">% Acierto</div></div><div class="stat-item"><div class="stat-value" id="oscarBoletos">0</div><div class="stat-label">Boletos</div></div><div class="stat-item"><div class="stat-value" id="oscarMejor">-</div><div class="stat-label">Mejor Jornada</div></div><div class="stat-item"><div class="stat-value" id="oscarPeor">-</div><div class="stat-label">Peor Jornada</div></div></div></div><div class="user-stats" id="txemaStats"><div class="user-stats-header"><div class="stats-avatar"></div><h3>Txema</h3></div><div class="stats-grid"><div class="stat-item"><div class="stat-value" id="txemaPorcentaje">-</div><div class="stat-label">% Acierto</div></div><div class="stat-item"><div class="stat-value" id="txemaBoletos">0</div><div class="stat-label">Boletos</div></div><div class="stat-item"><div class="stat-value" id="txemaMejor">-</div><div class="stat-label">Mejor Jornada</div></div><div class="stat-item"><div class="stat-value" id="txemaPeor">-</div><div class="stat-label">Peor Jornada</div></div></div></div></div></div>
         </div>
-
     </div>
     
-    <input type="file" id="photoInput" class="hidden" accept="image/*">
-    <input type="file" id="boletoInput" class="hidden" accept="image/*">
-    <div class="photo-status" id="photoStatus"></div>
+    <input type="file" id="photoInput" class="hidden" accept="image/*"><input type="file" id="boletoInput" class="hidden" accept="image/*"><div class="photo-status" id="photoStatus"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -597,54 +493,41 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        let currentUser = null;
-        let users = {};
-        let currentBoletoImage = null;
-        let extractedColumns = null;
+        let currentUser = null, users = {}, currentBoletoImage = null, extractedColumns = null;
         const APP_PASSWORD = 'purrungui';
-        let currentBoletoSeguimiento = null;
-        let resultadosActuales = {};
+        let currentBoletoSeguimiento = null, resultadosActuales = {};
         
-        function navigateToScreen(targetScreenId) {
-            const currentScreen = document.querySelector('.screen.active');
-            const targetScreen = document.getElementById(targetScreenId);
-            
-            if (currentScreen && currentScreen !== targetScreen) {
-                currentScreen.classList.add('exiting');
-                setTimeout(() => {
-                    currentScreen.classList.remove('active', 'exiting');
-                    targetScreen.classList.add('active');
-                }, 300);
+        // --- NAVEGACIÓN Y UTILIDADES ---
+        function navigateToScreen(targetId) {
+            const current = document.querySelector('.screen.active');
+            const target = document.getElementById(targetId);
+            if (current && current !== target) {
+                current.classList.add('exiting');
+                setTimeout(() => { current.classList.remove('active', 'exiting'); target.classList.add('active'); }, 300);
             } else {
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-                targetScreen.classList.add('active');
+                target.classList.add('active');
             }
         }
-
-        function showToast(title, message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `<div class="toast-icon">${type === 'success' ? '✅' : '❌'}</div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div>`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 500);
-            }, 4000);
+        function showToast(title, msg, type = 'info') {
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.innerHTML = `<div class="toast-icon">${type === 'success' ? '✅' : '❌'}</div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${msg}</div></div>`;
+            document.body.appendChild(t);
+            setTimeout(() => t.classList.add('show'), 10);
+            setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 500); }, 4000);
         }
 
+        // --- GESTIÓN DE USUARIOS Y LOGIN ---
         async function loadUsers() {
             try {
                 const { data, error } = await supabase.from('users').select('*');
                 if (error) throw error;
                 users = {};
-                data.forEach(user => {
-                    users[user.user_id] = { id: user.user_id, name: user.name, icon: user.user_id === 'oscar' ? '👨‍💼' : '👨‍🎓', photo: user.photo_url };
-                });
+                data.forEach(u => { users[u.user_id] = { id: u.user_id, name: u.name, icon: u.user_id === 'oscar' ? '👨‍💼' : '👨‍🎓', photo: u.photo_url }; });
                 updateLoginAvatars();
             } catch (error) { console.error('Error loading users:', error); }
         }
-        
         function selectUser(userId) {
             document.querySelectorAll('.user-card').forEach(c => c.classList.remove('selected'));
             document.getElementById(`${userId}Card`).classList.add('selected');
@@ -652,17 +535,14 @@
             document.getElementById('passwordInput').focus();
             currentUser = { id: userId };
         }
-
         async function attemptLogin() {
             if (document.getElementById('passwordInput').value !== APP_PASSWORD) return showToast('Contraseña incorrecta', '', 'error');
-            if (!currentUser || !currentUser.id) return showToast('Error', 'Selecciona un usuario', 'error');
-            
+            if (!currentUser?.id) return showToast('Error', 'Selecciona un usuario', 'error');
             localStorage.setItem('hermandaz_user', currentUser.id);
             currentUser = users[currentUser.id];
             showHome();
             showToast('¡Bienvenido!', `Hola ${currentUser.name}`, 'success');
         }
-
         function showHome() {
             navigateToScreen('homeScreen');
             if (currentUser) {
@@ -671,7 +551,6 @@
                 updateUserAvatar();
             }
         }
-        
         function showLogin() {
             navigateToScreen('loginScreen');
             currentUser = null;
@@ -680,421 +559,258 @@
             document.getElementById('passwordSection').classList.remove('show');
             document.getElementById('passwordInput').value = '';
         }
-
         function logout() { if (confirm(`¿Seguro que quieres cerrar sesión, ${currentUser.name}?`)) showLogin(); }
-
         function updateUserAvatar() {
-            const iconEl = document.getElementById('userAvatarIcon');
-            const photoEl = document.getElementById('userAvatarPhoto');
-            if (currentUser && currentUser.photo) {
-                photoEl.src = currentUser.photo;
-                photoEl.classList.remove('hidden');
-                iconEl.classList.add('hidden');
-            } else if (currentUser) {
-                photoEl.classList.add('hidden');
-                iconEl.classList.remove('hidden');
-                iconEl.textContent = currentUser.icon;
-            }
+            const iconEl = document.getElementById('userAvatarIcon'), photoEl = document.getElementById('userAvatarPhoto');
+            if (currentUser?.photo) { photoEl.src = currentUser.photo; photoEl.classList.remove('hidden'); iconEl.classList.add('hidden'); } 
+            else if (currentUser) { photoEl.classList.add('hidden'); iconEl.classList.remove('hidden'); iconEl.textContent = currentUser.icon; }
         }
-
         function updateLoginAvatars() {
-            Object.keys(users).forEach(userId => {
-                const iconEl = document.getElementById(`${userId}Icon`);
-                const photoEl = document.getElementById(`${userId}Photo`);
-                if (users[userId]?.photo) {
-                    photoEl.src = users[userId].photo;
-                    photoEl.classList.remove('hidden');
-                    iconEl.classList.add('hidden');
-                } else if (iconEl) {
-                    photoEl.classList.add('hidden');
-                    iconEl.classList.remove('hidden');
-                }
+            Object.keys(users).forEach(id => {
+                const iconEl = document.getElementById(`${id}Icon`), photoEl = document.getElementById(`${id}Photo`);
+                if (users[id]?.photo) { photoEl.src = users[id].photo; photoEl.classList.remove('hidden'); iconEl.classList.add('hidden'); } 
+                else if (iconEl) { photoEl.classList.add('hidden'); iconEl.classList.remove('hidden'); iconEl.textContent = users[id].icon; }
             });
         }
-        
-        function changePhoto() {
-            if (!currentUser) return;
-            if (confirm(`¿Quieres cambiar tu foto de perfil, ${currentUser.name}?`)) {
-                document.getElementById('photoInput').click();
-            }
-        }
-
+        function changePhoto() { if (currentUser && confirm(`¿Quieres cambiar tu foto de perfil, ${currentUser.name}?`)) document.getElementById('photoInput').click(); }
         async function handlePhotoChange(event) {
             const file = event.target.files[0];
             if (!file || !currentUser) return;
             if (file.size > 2 * 1024 * 1024) return showToast('Archivo muy grande', 'La imagen debe ser menor a 2MB', 'error');
-            
             showPhotoStatus('Subiendo foto...');
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const photoData = e.target.result;
-                const { error } = await supabase.from('users').update({ photo_url: photoData }).eq('user_id', currentUser.id);
+                const { error } = await supabase.from('users').update({ photo_url: e.target.result }).eq('user_id', currentUser.id);
                 showPhotoStatus('');
                 if (error) return showToast('Error', 'No se pudo actualizar la foto', 'error');
-                
-                users[currentUser.id].photo = photoData;
-                currentUser.photo = photoData;
-                updateUserAvatar();
-                updateLoginAvatars();
-                showToast('¡Foto actualizada!', '', 'success');
+                users[currentUser.id].photo = e.target.result; currentUser.photo = e.target.result;
+                updateUserAvatar(); updateLoginAvatars(); showToast('¡Foto actualizada!', '', 'success');
             };
             reader.readAsDataURL(file);
         }
-
-        function showPhotoStatus(message) {
-            const statusEl = document.getElementById('photoStatus');
-            statusEl.textContent = message;
-            message ? statusEl.classList.add('show') : statusEl.classList.remove('show');
-        }
+        function showPhotoStatus(msg) { const el = document.getElementById('photoStatus'); el.textContent = msg; msg ? el.classList.add('show') : el.classList.remove('show'); }
         
-        function showUpload() {
-            navigateToScreen('uploadScreen');
-            document.getElementById('uploaderText').textContent = `${currentUser.name}, sube tu quiniela`;
-            resetUploadState();
-        }
-
-        function resetUploadState() {
-            document.getElementById('imagePreview').classList.add('hidden');
-            document.getElementById('uploadArea').classList.remove('hidden');
-            document.getElementById('boletoInput').value = '';
-            currentBoletoImage = null;
-        }
-
+        // --- SUBIR BOLETO ---
+        function showUpload() { navigateToScreen('uploadScreen'); document.getElementById('uploaderText').textContent = `${currentUser.name}, sube tu quiniela`; resetUploadState(); }
+        function resetUploadState() { document.getElementById('imagePreview').classList.add('hidden'); document.getElementById('uploadArea').classList.remove('hidden'); document.getElementById('boletoInput').value = ''; currentBoletoImage = null; }
         function processBoletoImage(file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 currentBoletoImage = e.target.result;
-                document.getElementById('uploadArea').classList.add('hidden');
-                document.getElementById('imagePreview').classList.remove('hidden');
+                const preview = document.getElementById('imagePreview'), area = document.getElementById('uploadArea');
+                area.classList.add('hidden'); preview.classList.remove('hidden');
                 document.getElementById('previewImage').src = currentBoletoImage;
                 document.getElementById('processingArea').classList.remove('hidden');
                 setTimeout(() => { extractedColumns = getBoletoDatos(); showExtractedData(); }, 1500);
             };
             reader.readAsDataURL(file);
         }
-
         function getBoletoDatos() {
             return {
-                columna1: ['1', 'X', 'X', 'X', '1', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', '0-M'],
-                columna2: ['X', 'X', '2', 'X', 'X', '2', 'X', '2', 'X', '1', '1', 'X', 'X', 'X', '1-2'],
-                equipos: [
-                    'Alavés-At. Madrid', 'R. Oviedo-Real Sociedad', 'Girona-Sevilla', 'Real Madrid-Mallorca',
-                    'Celta-Villarreal', 'Betis-Athletic Club', 'Espanyol-Osasuna', 'Racing Santander-Ceuta',
-                    'Valladolid-Córdoba', 'Castellón-R. Zaragoza', 'Andorra-Burgos', 'Cádiz-Albacete',
-                    'Las Palmas-Málaga', 'Granada-Mirandés', 'Rayo Vallecano-Barcelona'
-                ]
+                columna1: ['1','X','X','X','1','X','X','X','X','X','X','X','X','X','0-M'],
+                columna2: ['X','X','2','X','X','2','X','2','X','1','1','X','X','X','1-2'],
+                equipos: ['Alavés-At. Madrid', 'R. Oviedo-Real Sociedad', 'Girona-Sevilla', 'Real Madrid-Mallorca', 'Celta-Villarreal', 'Betis-Athletic Club', 'Espanyol-Osasuna', 'Racing Santander-Ceuta', 'Valladolid-Córdoba', 'Castellón-R. Zaragoza', 'Andorra-Burgos', 'Cádiz-Albacete', 'Las Palmas-Málaga', 'Granada-Mirandés', 'Rayo Vallecano-Barcelona']
             };
         }
-
         async function showExtractedData() {
             document.getElementById('processingArea').classList.add('hidden');
             document.getElementById('extractedData').classList.remove('hidden');
             try { 
-                const { data, error } = await supabase.from('boletos').select('jornada').order('created_at', { ascending: false }).limit(1);
-                if(error) throw error;
+                const { data } = await supabase.from('boletos').select('jornada').order('created_at', { ascending: false }).limit(1);
                 document.getElementById('jornadaInput').value = (data.length > 0 ? parseInt(data[0].jornada.replace('J', '')) : 0) + 1;
             } catch (e) { document.getElementById('jornadaInput').value = 1; }
             createEditableForm();
         }
-
         function createEditableForm() {
-            const container = document.getElementById('editableForm');
-            container.innerHTML = '';
-            container.className = 'editable-form';
-            ['columna1', 'columna2'].forEach((columna, colIndex) => {
-                const colDiv = document.createElement('div');
-                colDiv.className = 'columna-editable';
-                colDiv.innerHTML = `<h4>Columna ${colIndex + 1}</h4>`;
+            const container = document.getElementById('editableForm'); container.innerHTML = ''; container.className = 'editable-form';
+            ['columna1', 'columna2'].forEach((col, colIndex) => {
+                const colDiv = document.createElement('div'); colDiv.className = 'columna-editable'; colDiv.innerHTML = `<h4>Columna ${colIndex + 1}</h4>`;
                 extractedColumns.equipos.forEach((equipo, pIndex) => {
-                    const apuesta = extractedColumns[columna][pIndex] || '';
-                    const pDiv = document.createElement('div');
-                    pDiv.className = 'partido-editable';
+                    const apuesta = extractedColumns[col][pIndex] || '', pDiv = document.createElement('div'); pDiv.className = 'partido-editable';
                     pDiv.innerHTML = `<span class="partido-numero">${pIndex + 1}.</span><input class="equipos-input" type="text" value="${equipo}" id="equipos-${colIndex}-${pIndex}">`;
                     if (pIndex < 14) {
-                        const btns = document.createElement('div');
-                        btns.className = 'resultado-buttons';
-                        btns.id = `resultado-${colIndex}-${pIndex}`;
+                        const btns = document.createElement('div'); btns.className = 'resultado-buttons'; btns.id = `resultado-${colIndex}-${pIndex}`;
                         ['1', 'X', '2'].forEach(o => {
-                            const btn = document.createElement('button');
-                            btn.type = 'button';
-                            btn.textContent = o;
-                            if (o === apuesta) btn.classList.add('selected');
+                            const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = o; if (o === apuesta) btn.classList.add('selected');
                             btn.onclick = () => { btns.querySelectorAll('button').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); };
                             btns.appendChild(btn);
                         });
                         pDiv.appendChild(btns);
-                    } else {
-                        const [g1, g2] = apuesta.split('-');
-                        pDiv.insertAdjacentHTML('beforeend', `<div class="pleno-container"><input type="text" class="pleno-input" id="pleno1-${colIndex}" value="${g1||''}" maxlength="1" placeholder="L"><span>-</span><input type="text" class="pleno-input" id="pleno2-${colIndex}" value="${g2||''}" maxlength="1" placeholder="V"></div>`);
-                    }
+                    } else { const [g1, g2] = apuesta.split('-'); pDiv.insertAdjacentHTML('beforeend', `<div class="pleno-container"><input type="text" class="pleno-input" id="pleno1-${colIndex}" value="${g1||''}" maxlength="1" placeholder="L"><span>-</span><input type="text" class="pleno-input" id="pleno2-${colIndex}" value="${g2||''}" maxlength="1" placeholder="V"></div>`); }
                     colDiv.appendChild(pDiv);
                 });
                 container.appendChild(colDiv);
             });
         }
-        
         async function saveBoletoFinal() {
-            showPhotoStatus('Guardando boleto...');
-            const jornada = document.getElementById('jornadaInput').value;
-            const columnasFinales = { columna1: [], columna2: [], equipos: [] };
+            showPhotoStatus('Guardando...');
+            const jornada = document.getElementById('jornadaInput').value, cols = { c1: [], c2: [], eq: [] };
             for (let i = 0; i < 15; i++) {
-                columnasFinales.equipos.push(document.getElementById(`equipos-0-${i}`).value);
-                ['columna1', 'columna2'].forEach((col, colIndex) => {
-                    if (i < 14) {
-                        const selBtn = document.querySelector(`#resultado-${colIndex}-${i} button.selected`);
-                        columnasFinales[col].push(selBtn ? selBtn.textContent : '');
-                    } else {
-                        const p1 = document.getElementById(`pleno1-${colIndex}`).value || '0';
-                        const p2 = document.getElementById(`pleno2-${colIndex}`).value || '0';
-                        columnasFinales[col].push(`${p1}-${p2}`);
-                    }
-                });
+                cols.eq.push(document.getElementById(`equipos-0-${i}`).value);
+                const sel1 = document.querySelector(`#resultado-0-${i} button.selected`), sel2 = document.querySelector(`#resultado-1-${i} button.selected`);
+                if (i < 14) { cols.c1.push(sel1 ? sel1.textContent : ''); cols.c2.push(sel2 ? sel2.textContent : ''); } 
+                else { cols.c1.push(`${document.getElementById('pleno1-0').value||'0'}-${document.getElementById('pleno2-0').value||'0'}`); cols.c2.push(`${document.getElementById('pleno1-1').value||'0'}-${document.getElementById('pleno2-1').value||'0'}`); }
             }
-            const { error } = await supabase.from('boletos').insert([{ user_id: currentUser.id, jornada: `J${jornada}`, imagen_url: currentBoletoImage, columnas_apuestas: columnasFinales }]);
+            const { error } = await supabase.from('boletos').insert([{ user_id: currentUser.id, jornada: `J${jornada}`, imagen_url: currentBoletoImage, columnas_apuestas: {columna1: cols.c1, columna2: cols.c2, equipos: cols.eq} }]);
             showPhotoStatus('');
             if (error) showToast('Error al guardar', error.message, 'error');
-            else { showToast('¡Boleto guardado!', `Jornada ${jornada} subida`, 'success'); showHome(); }
+            else { showToast('¡Boleto guardado!', '', 'success'); showHome(); }
         }
         
+        // --- HISTORIAL ---
         async function showHistorial() {
             navigateToScreen('historialScreen');
-            const selector = document.getElementById('historialSelector');
-            selector.innerHTML = '<option value="todos">Mostrar todos</option>';
+            const selector = document.getElementById('historialSelector'); selector.innerHTML = '<option value="todos">Mostrar todos</option>';
             document.getElementById('boletosLista').innerHTML = '<div class="processing"><div class="loading"></div></div>';
             try {
                 const { data: boletos, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
-                if (boletos.length === 0) {
-                    document.getElementById('noBoletosMessage').classList.remove('hidden');
-                    document.getElementById('boletosLista').innerHTML = '';
-                    selector.innerHTML = '<option value="">No hay boletos</option>';
-                    return;
-                }
+                if (boletos.length === 0) { document.getElementById('noBoletosMessage').classList.remove('hidden'); document.getElementById('boletosLista').innerHTML = ''; return selector.innerHTML = '<option>No hay boletos</option>'; }
                 document.getElementById('noBoletosMessage').classList.add('hidden');
                 boletos.forEach(b => selector.add(new Option(`J${b.jornada} - ${users[b.user_id]?.name || ''}`, b.id)));
                 displayBoletos(boletos);
             } catch(e) { document.getElementById('boletosLista').innerHTML = 'Error al cargar boletos.'; }
         }
-
         async function filterHistorial() {
-            const boletoId = document.getElementById('historialSelector').value;
-            const query = supabase.from('boletos').select('*').order('created_at', { ascending: false });
-            if (boletoId !== 'todos') query.eq('id', boletoId);
-            const { data, error } = await query;
-            if (error) return showToast('Error', 'No se pudieron filtrar', 'error');
+            const id = document.getElementById('historialSelector').value;
+            const q = supabase.from('boletos').select('*').order('created_at', { ascending: false });
+            if (id !== 'todos') q.eq('id', id);
+            const { data, error } = await q;
+            if (error) return showToast('Error', 'No se pudo filtrar', 'error');
             displayBoletos(data);
         }
-
         function displayBoletos(boletos) {
-            const container = document.getElementById('boletosLista');
-            container.innerHTML = '';
-            boletos.forEach(boleto => {
-                const user = users[boleto.user_id] || { name: '?', icon: '👤' };
-                const fecha = new Date(boleto.created_at).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                const div = document.createElement('div');
-                div.className = 'boleto-item';
-                div.innerHTML = `
-                    <div class="boleto-header">
-                        <div class="boleto-user"><div class="boleto-user-avatar">${user.photo ? `<img src="${user.photo}">` : user.icon}</div><span>${user.name}</span></div>
-                        <div style="text-align: right;"><div class="boleto-jornada">${boleto.jornada}</div><div class="boleto-fecha">${fecha}</div></div>
-                    </div>
-                    <div class="boleto-details">
-                        <img src="${boleto.imagen_url}" class="boleto-imagen" onclick="window.open('${boleto.imagen_url}', '_blank')">
-                        <div class="boleto-columnas">
-                            ${createColumnHTML(boleto.columnas_apuestas?.columna1, boleto.columnas_apuestas?.equipos, 1)}
-                            ${createColumnHTML(boleto.columnas_apuestas?.columna2, boleto.columnas_apuestas?.equipos, 2)}
-                        </div>
-                        <button class="btn-delete" style="width:100%; margin-top:16px;" onclick="deleteBoleto(${boleto.id})">Eliminar Boleto</button>
-                    </div>`;
+            const container = document.getElementById('boletosLista'); container.innerHTML = '';
+            boletos.forEach(b => {
+                const user = users[b.user_id] || { name: '?', icon: '👤' };
+                const fecha = new Date(b.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const div = document.createElement('div'); div.className = 'boleto-item';
+                const columnsData = b.columnas_apuestas;
+                let columnsHTML = '<div style="color:var(--text-secondary);font-size:14px;padding:20px 0;">No hay datos de apuestas detalladas para este boleto.</div>'; // <-- CORRECCIÓN #2: Mensaje por defecto
+                if (columnsData && columnsData.columna1 && columnsData.equipos) {
+                    columnsHTML = createColumnHTML(columnsData.columna1, columnsData.equipos, 1) + createColumnHTML(columnsData.columna2, columnsData.equipos, 2);
+                }
+                div.innerHTML = `<div class="boleto-header"><div class="boleto-user"><div class="boleto-user-avatar">${user.photo ? `<img src="${user.photo}">` : user.icon}</div><span>${user.name}</span></div><div style="text-align: right;"><div class="boleto-jornada">${b.jornada}</div><div class="boleto-fecha">${fecha}</div></div></div><div class="boleto-details"><img src="${b.imagen_url}" class="boleto-imagen" onclick="window.open('${b.imagen_url}', '_blank')"><div class="boleto-columnas">${columnsHTML}</div><button class="btn-delete" style="width:100%; margin-top:16px;" onclick="deleteBoleto(${b.id})">Eliminar Boleto</button></div>`;
                 div.querySelector('.boleto-header').addEventListener('click', () => div.classList.toggle('expanded'));
                 container.appendChild(div);
             });
         }
-
-        function createColumnHTML(columna, equipos, num) {
-            if (!columna || !equipos) return '';
-            return `<div class="columna-item"><div class="columna-titulo">Columna ${num}</div>${equipos.map((eq, i) => `<div class="apuesta-item"><span class="apuesta-partido">${i + 1}. ${eq.split('-')[0]}</span><span class="apuesta-resultado">${columna[i] || '-'}</span></div>`).join('')}</div>`;
-        }
-
-        async function deleteBoleto(boletoId) {
-            event.stopPropagation();
-            if (!confirm('¿Seguro que quieres eliminar este boleto?')) return;
-            const { error } = await supabase.from('boletos').delete().eq('id', boletoId);
-            if (error) showToast('Error', 'No se pudo eliminar', 'error');
-            else { showToast('Boleto eliminado', '', 'success'); showHistorial(); }
-        }
+        function createColumnHTML(col, eq, num) { if (!col || !eq) return ''; return `<div class="columna-item"><div class="columna-titulo">Columna ${num}</div>${eq.map((e, i) => `<div class="apuesta-item"><span class="apuesta-partido">${i + 1}. ${e.split('-')[0]}</span><span class="apuesta-resultado">${col[i] || '-'}</span></div>`).join('')}</div>`; }
+        async function deleteBoleto(id) { event.stopPropagation(); if (!confirm('¿Seguro que quieres eliminar este boleto?')) return; const { error } = await supabase.from('boletos').delete().eq('id', id); if (error) showToast('Error', 'No se pudo eliminar', 'error'); else { showToast('Boleto eliminado', '', 'success'); showHistorial(); } }
         
+        // --- SEGUIMIENTO ---
         async function showSeguimiento() {
             navigateToScreen('seguimientoScreen');
-            const selector = document.getElementById('boletoSelector');
-            selector.innerHTML = '<option value="">Cargando...</option>';
-            document.getElementById('seguimientoContent').classList.add('hidden');
+            const selector = document.getElementById('boletoSelector'); selector.innerHTML = '<option>Cargando...</option>'; document.getElementById('seguimientoContent').classList.add('hidden');
             const { data, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false });
-            if (error || data.length === 0) return selector.innerHTML = '<option value="">No hay boletos</option>';
+            if (error || !data || data.length === 0) return selector.innerHTML = '<option>No hay boletos</option>';
             selector.innerHTML = '<option value="">Selecciona un boleto</option>';
             data.forEach(b => selector.add(new Option(`${b.jornada} - ${users[b.user_id]?.name}`, b.id)));
             if (data.length > 0) { selector.value = data[0].id; loadSeguimientoBoleto(data[0].id); }
         }
-        
-        async function loadSeguimientoBoleto(boletoId) {
-             if (!boletoId) return document.getElementById('seguimientoContent').classList.add('hidden');
-            const { data: boleto } = await supabase.from('boletos').select('*').eq('id', boletoId).single();
-            const { data: resultados } = await supabase.from('resultados').select('*').eq('boleto_id', boletoId);
+        async function loadSeguimientoBoleto(id) {
+            if (!id) return document.getElementById('seguimientoContent').classList.add('hidden');
+            const { data: boleto } = await supabase.from('boletos').select('*').eq('id', id).single();
+            const { data: resultados } = await supabase.from('resultados').select('*').eq('boleto_id', id);
             currentBoletoSeguimiento = boleto;
             resultadosActuales = resultados.reduce((acc, r) => ({ ...acc, [r.partido_numero]: r.resultado_real }), {});
-            const container = document.getElementById('partidosContainer');
-            container.innerHTML = '';
+            const container = document.getElementById('partidosContainer'); container.innerHTML = '';
             const { equipos, columna1, columna2 } = boleto.columnas_apuestas;
-            equipos.forEach((equipo, i) => {
-                const res = resultadosActuales[i + 1] || '';
-                const row = document.createElement('div');
-                row.className = 'table-row';
-                row.innerHTML = `
-                    <div class="col-partido">${i + 1}. ${equipo}</div><div class="col-apuesta">${columna1[i]}</div><div class="col-apuesta">${columna2[i]}</div>
-                    <div class="col-resultado">${i < 14 ? `<select class="resultado-input" onchange="updateResultado(${i + 1}, this.value)"><option value="">-</option><option value="1" ${res === '1' ? 'selected':''}>1</option><option value="X" ${res === 'X' ? 'selected':''}>X</option><option value="2" ${res === '2' ? 'selected':''}>2</option></select>` : `<input type="text" class="resultado-input" value="${res}" onchange="updateResultado(${i + 1}, this.value)">`}</div>
-                    <div class="col-aciertos" id="aciertos-${i + 1}"></div>`;
-                container.appendChild(row);
-                updateAciertos(i + 1);
+            equipos.forEach((eq, i) => {
+                const res = resultadosActuales[i + 1] || '', row = document.createElement('div'); row.className = 'table-row';
+                row.innerHTML = `<div class="col-partido">${i + 1}. ${eq}</div><div class="col-apuesta">${columna1[i]}</div><div class="col-apuesta">${columna2[i]}</div><div class="col-resultado">${i < 14 ? `<select class="resultado-input" onchange="updateResultado(${i + 1}, this.value)"><option value="">-</option><option value="1" ${res === '1' ? 'selected':''}>1</option><option value="X" ${res === 'X' ? 'selected':''}>X</option><option value="2" ${res === '2' ? 'selected':''}>2</option></select>` : `<input type="text" class="resultado-input" value="${res}" onchange="updateResultado(${i + 1}, this.value)">`}</div><div class="col-aciertos" id="aciertos-${i + 1}"></div>`;
+                container.appendChild(row); updateAciertos(i + 1);
             });
-            calculateTotals();
-            document.getElementById('seguimientoContent').classList.remove('hidden');
+            calculateTotals(); document.getElementById('seguimientoContent').classList.remove('hidden');
         }
-
-        window.updateResultado = async function(partidoNum, valor) {
-            resultadosActuales[partidoNum] = valor;
-            const { error: deleteError } = await supabase.from('resultados').delete().match({ boleto_id: currentBoletoSeguimiento.id, partido_numero: partidoNum });
-            if (deleteError) return showToast('Error', 'No se pudo actualizar', 'error');
-            if (valor && valor !== '') {
-                const { error: insertError } = await supabase.from('resultados').insert({ boleto_id: currentBoletoSeguimiento.id, partido_numero: partidoNum, resultado_real: valor, usuario_que_marco: currentUser.id });
-                if (insertError) return showToast('Error', 'No se pudo guardar', 'error');
+        window.updateResultado = async function(pNum, val) {
+            resultadosActuales[pNum] = val;
+            const { error: delErr } = await supabase.from('resultados').delete().match({ boleto_id: currentBoletoSeguimiento.id, partido_numero: pNum });
+            if (delErr) return showToast('Error', 'No se pudo actualizar', 'error');
+            if (val) {
+                const { error: insErr } = await supabase.from('resultados').insert({ boleto_id: currentBoletoSeguimiento.id, partido_numero: pNum, resultado_real: val, usuario_que_marco: currentUser.id });
+                if (insErr) return showToast('Error', 'No se pudo guardar', 'error');
             }
-            updateAciertos(partidoNum);
-            calculateTotals();
+            updateAciertos(pNum); calculateTotals();
         }
-
-        function updateAciertos(partidoNum) {
-            const aciertosDiv = document.getElementById(`aciertos-${partidoNum}`);
-            const resultado = resultadosActuales[partidoNum];
-            if (!resultado) return aciertosDiv.innerHTML = '<span class="pendiente">-</span>';
+        function updateAciertos(pNum) {
+            const div = document.getElementById(`aciertos-${pNum}`), res = resultadosActuales[pNum];
+            if (!res) return div.innerHTML = '<span class="pendiente">-</span>';
             const { columna1, columna2 } = currentBoletoSeguimiento.columnas_apuestas;
-            const acierto1 = columna1[partidoNum - 1] === resultado;
-            const acierto2 = columna2[partidoNum - 1] === resultado;
-            aciertosDiv.innerHTML = `<span class="${acierto1 ? 'acierto':'fallo'}">${acierto1 ? '✓':'✗'}</span> <span class="${acierto2 ? 'acierto':'fallo'}">${acierto2 ? '✓':'✗'}</span>`;
+            const a1 = columna1[pNum - 1] === res, a2 = columna2[pNum - 1] === res;
+            div.innerHTML = `<span class="${a1 ? 'acierto':'fallo'}">${a1 ? '✓':'✗'}</span> <span class="${a2 ? 'acierto':'fallo'}">${a2 ? '✓':'✗'}</span>`;
         }
-
         function calculateTotals() {
-            let total1 = 0, total2 = 0;
+            let t1 = 0, t2 = 0;
             const { columna1, columna2 } = currentBoletoSeguimiento.columnas_apuestas;
             for (let i = 1; i <= 15; i++) {
-                if (resultadosActuales[i]) {
-                    if (columna1[i - 1] === resultadosActuales[i]) total1++;
-                    if (columna2[i - 1] === resultadosActuales[i]) total2++;
-                }
+                if (resultadosActuales[i]) { if (columna1[i - 1] === resultadosActuales[i]) t1++; if (columna2[i - 1] === resultadosActuales[i]) t2++; }
             }
-            document.getElementById('totalCol1').textContent = total1;
-            document.getElementById('totalCol2').textContent = total2;
+            document.getElementById('totalCol1').textContent = t1; document.getElementById('totalCol2').textContent = t2;
         }
         
-        async function loadBoletos() {
-            const { data, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false });
-            if (error) { console.error('Error cargando boletos:', error); return []; }
-            return data || [];
-        }
-
-        async function loadResultados(boletoId) {
-            const { data, error } = await supabase.from('resultados').select('*').eq('boleto_id', boletoId);
-            if (error) { console.error('Error cargando resultados:', error); return {}; }
-            const resultados = {};
-            data.forEach(r => { resultados[r.partido_numero] = r.resultado_real; });
-            return resultados;
-        }
-        
+        // --- ESTADÍSTICAS ---
+        async function loadBoletos() { const { data, error } = await supabase.from('boletos').select('*').order('created_at', { ascending: false }); if (error) { console.error(error); return []; } return data || []; }
+        async function loadResultados(id) { const { data, error } = await supabase.from('resultados').select('*').eq('boleto_id', id); if (error) { console.error(error); return {}; } const res = {}; data.forEach(r => { res[r.partido_numero] = r.resultado_real; }); return res; }
         async function showEstadisticas() {
             navigateToScreen('estadisticasScreen');
-            const loadingEl = document.getElementById('estadisticasLoading');
-            const contentEl = document.getElementById('estadisticasContent');
-            loadingEl.classList.remove('hidden');
-            contentEl.classList.add('hidden');
-            loadingEl.innerHTML = '<div class="loading"></div><p>Calculando estadísticas...</p>';
+            const loadingEl = document.getElementById('estadisticasLoading'), contentEl = document.getElementById('estadisticasContent');
+            loadingEl.classList.remove('hidden'); contentEl.classList.add('hidden'); loadingEl.innerHTML = '<div class="loading"></div><p>Calculando...</p>';
             try {
-                const boletos = await loadBoletos();
-                const stats = { oscar: { b: 0, a: 0, p: 0, j: [] }, txema: { b: 0, a: 0, p: 0, j: [] } };
+                const boletos = await loadBoletos(), stats = { oscar: { b: 0, a: 0, p: 0, j: [] }, txema: { b: 0, a: 0, p: 0, j: [] } };
                 for (const boleto of boletos) {
                     const userId = boleto.user_id;
                     if (stats[userId]) {
                         stats[userId].b++;
-                        const resultados = await loadResultados(boleto.id);
-                        const cols = boleto.columnas_apuestas;
+                        const resultados = await loadResultados(boleto.id), cols = boleto.columnas_apuestas;
                         let a1 = 0, a2 = 0, p = 0;
-                        if (cols?.columna1 && cols?.columna2) {
-                            for (let i = 1; i <= 15; i++) {
-                                if (resultados[i]) {
-                                    p++;
-                                    if (cols.columna1[i - 1] === resultados[i]) a1++;
-                                    if (cols.columna2[i - 1] === resultados[i]) a2++;
-                                }
-                            }
-                        }
-                        stats[userId].a += a1 + a2;
-                        stats[userId].p += p * 2;
+                        if (cols?.columna1 && cols?.columna2) { for (let i = 1; i <= 15; i++) { if (resultados[i]) { p++; if (cols.columna1[i - 1] === resultados[i]) a1++; if (cols.columna2[i - 1] === resultados[i]) a2++; } } }
+                        stats[userId].a += a1 + a2; stats[userId].p += p * 2;
                         if (p > 0) stats[userId].j.push({ j: boleto.jornada, m: Math.max(a1, a2), p: Math.min(a1, a2) });
                     }
                 }
-                ['oscar', 'txema'].forEach(userId => {
-                    const s = stats[userId];
-                    const porc = s.p > 0 ? Math.round((s.a / s.p) * 100) : 0;
+                ['oscar', 'txema'].forEach(id => {
+                    const s = stats[id], porc = s.p > 0 ? Math.round((s.a / s.p) * 100) : 0;
                     let mejor = { m: -1, j: '-' }, peor = { p: Infinity, j: '-' };
                     s.j.forEach(j => { if(j.m > mejor.m) mejor = j; if(j.p < peor.p) peor = j; });
-                    document.getElementById(`${userId}Porcentaje`).textContent = `${porc}%`;
-                    document.getElementById(`${userId}Boletos`).textContent = s.b;
-                    document.getElementById(`${userId}Mejor`).textContent = mejor.j !== '-' ? `${mejor.j} (${mejor.m})` : '-';
-                    document.getElementById(`${userId}Peor`).textContent = peor.j !== '-' ? `${peor.j} (${peor.p})` : '-';
-                    const avatarEl = document.querySelector(`#${userId}Stats .stats-avatar`);
-                    if (users[userId]?.photo) avatarEl.innerHTML = `<img src="${users[userId].photo}" style="width:100%;height:100%;object-fit:cover;">`;
-                    else avatarEl.textContent = users[userId]?.icon || '👤';
+                    document.getElementById(`${id}Porcentaje`).textContent = `${porc}%`; document.getElementById(`${id}Boletos`).textContent = s.b;
+                    document.getElementById(`${id}Mejor`).textContent = mejor.j !== '-' ? `${mejor.j} (${mejor.m})` : '-';
+                    document.getElementById(`${id}Peor`).textContent = peor.j !== '-' ? `${peor.j} (${peor.p})` : '-';
+                    const avatarEl = document.querySelector(`#${id}Stats .stats-avatar`);
+                    if (users[id]?.photo) avatarEl.innerHTML = `<img src="${users[id].photo}" style="width:100%;height:100%;object-fit:cover;">`;
+                    else avatarEl.textContent = users[id]?.icon || '👤';
                 });
-                loadingEl.classList.add('hidden');
-                contentEl.classList.remove('hidden');
-            } catch (error) {
-                console.error('Error calculando estadísticas:', error);
-                loadingEl.innerHTML = '<p style="color: #ef4444;">Error al cargar las estadísticas.</p>';
-            }
+                loadingEl.classList.add('hidden'); contentEl.classList.remove('hidden');
+            } catch (error) { console.error(error); loadingEl.innerHTML = '<p style="color:red;">Error al cargar.</p>'; }
         }
 
-        // --- INICIALIZACIÓN Y EVENTOS ---
+        // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', async () => {
             await loadUsers();
             const savedUserId = localStorage.getItem('hermandaz_user');
-            if (savedUserId && users[savedUserId]) {
-                currentUser = users[savedUserId];
-                showHome();
-            } else {
-                showLogin();
-            }
-            document.getElementById('oscarCard').addEventListener('click', () => selectUser('oscar'));
-            document.getElementById('txemaCard').addEventListener('click', () => selectUser('txema'));
-            document.getElementById('loginButton').addEventListener('click', attemptLogin);
-            document.getElementById('passwordInput').addEventListener('keypress', (e) => e.key === 'Enter' && attemptLogin());
-            document.getElementById('logoutBtn').addEventListener('click', logout);
-            document.querySelectorAll('.back-btn').forEach(btn => btn.addEventListener('click', showHome));
-            document.getElementById('userAvatarContainer').addEventListener('click', changePhoto);
-            document.getElementById('photoInput').addEventListener('change', handlePhotoChange);
-            document.getElementById('fabUploadBtn').addEventListener('click', showUpload);
-            document.getElementById('historyBtn').addEventListener('click', showHistorial);
-            document.getElementById('resultsBtn').addEventListener('click', showSeguimiento);
-            document.getElementById('statsBtn').addEventListener('click', showEstadisticas);
-            document.getElementById('infoBtn').addEventListener('click', () => alert('LA HERMANDAZ v9.0'));
-            const uploadArea = document.getElementById('uploadArea');
-            const boletoInput = document.getElementById('boletoInput');
-            uploadArea.addEventListener('click', () => boletoInput.click());
-            boletoInput.addEventListener('change', (e) => e.target.files[0] && processBoletoImage(e.target.files[0]));
-            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
-            uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-            uploadArea.addEventListener('drop', (e) => { e.preventDefault(); uploadArea.classList.remove('dragover'); e.dataTransfer.files[0] && processBoletoImage(e.dataTransfer.files[0]); });
-            document.getElementById('saveBoletoBtn').addEventListener('click', saveBoletoFinal);
-            document.getElementById('newImageBtn').addEventListener('click', resetUploadState);
-            document.getElementById('boletoSelector').addEventListener('change', (e) => loadSeguimientoBoleto(e.target.value));
-            document.getElementById('historialSelector').addEventListener('change', filterHistorial);
+            if (savedUserId && users[savedUserId]) { currentUser = users[savedUserId]; showHome(); } else { showLogin(); }
+            document.getElementById('oscarCard').onclick = () => selectUser('oscar');
+            document.getElementById('txemaCard').onclick = () => selectUser('txema');
+            document.getElementById('loginButton').onclick = attemptLogin;
+            document.getElementById('passwordInput').onkeypress = (e) => e.key === 'Enter' && attemptLogin();
+            document.getElementById('logoutBtn').onclick = logout;
+            document.querySelectorAll('.back-btn').forEach(btn => btn.onclick = showHome);
+            document.getElementById('userAvatarContainer').onclick = changePhoto;
+            document.getElementById('photoInput').onchange = handlePhotoChange;
+            document.getElementById('fabUploadBtn').onclick = showUpload;
+            document.getElementById('historyBtn').onclick = showHistorial;
+            document.getElementById('resultsBtn').onclick = showSeguimiento;
+            document.getElementById('statsBtn').onclick = showEstadisticas;
+            document.getElementById('infoBtn').onclick = () => alert('LA HERMANDAZ v9.1');
+            const upArea = document.getElementById('uploadArea'), bInput = document.getElementById('boletoInput');
+            upArea.onclick = () => bInput.click(); bInput.onchange = (e) => e.target.files[0] && processBoletoImage(e.target.files[0]);
+            upArea.ondragover = (e) => { e.preventDefault(); upArea.classList.add('dragover'); };
+            upArea.ondragleave = () => upArea.classList.remove('dragover');
+            upArea.ondrop = (e) => { e.preventDefault(); upArea.classList.remove('dragover'); e.dataTransfer.files[0] && processBoletoImage(e.dataTransfer.files[0]); };
+            document.getElementById('saveBoletoBtn').onclick = saveBoletoFinal;
+            document.getElementById('newImageBtn').onclick = resetUploadState;
+            document.getElementById('boletoSelector').onchange = (e) => loadSeguimientoBoleto(e.target.value);
+            document.getElementById('historialSelector').onchange = filterHistorial;
         });
     </script>
 </body>
