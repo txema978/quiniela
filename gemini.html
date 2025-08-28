@@ -913,42 +913,80 @@
             letter-spacing: 0.5px;
         }
 
-        /* Nuevos estilos para el selector de signos */
-        .signs-selector {
+        /* Nuevos estilos para el formulario visual */
+        #visualFormContainer {
+            position: relative;
+        }
+
+        .visual-form-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px; /* Ajusta el espacio entre columnas si es necesario */
+            padding: 20px; /* Espacio para que no se pegue al borde de la imagen */
+            box-sizing: border-box;
+        }
+
+        .visual-column {
             display: flex;
-            gap: 8px;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            flex-direction: column;
+            gap: 12px; /* Espacio entre los partidos */
         }
-
-        .signs-selector::-webkit-scrollbar {
-            display: none;
+        
+        .visual-partido {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 4px;
+            height: 28px; /* Altura de la fila para coincidir con la imagen */
         }
-
-        .signs-btn {
+        
+        .visual-pleno-container {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            height: 28px;
+        }
+        
+        .visual-sign-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: 6px;
             font-size: 14px;
             font-weight: 600;
             color: #94a3b8;
             cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
         }
         
-        .signs-btn.active {
+        .visual-sign-btn.active {
             background: #10b981;
             border-color: #10b981;
             color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
-
-        .signs-btn:hover:not(.active) {
+        
+        .visual-sign-btn:hover:not(.active) {
             background: rgba(255, 255, 255, 0.15);
             border-color: #10b981;
+        }
+
+        .pleno-visual-input {
+            width: 25px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
         }
         
     </style>
@@ -1070,9 +1108,7 @@
                     <div>
                         <div style="color: #3b82f6; font-weight: 600; margin-bottom: 8px;">Instrucciones importantes:</div>
                         <div style="color: #94a3b8; font-size: 14px; line-height: 1.5;">
-                            El sistema identificará los equipos y los signos automáticamente.
-                            <br><br>
-                            <strong>Antes de guardar</strong>, revisa y corrige los signos. Una vez guardado, no podrás editarlos y tendrás que eliminar el boleto para subirlo de nuevo.
+                            Sube una foto del boleto y, a continuación, **simplemente marca tus pronósticos** sobre la imagen. Es mucho más rápido y preciso.
                         </div>
                     </div>
                 </div>
@@ -1097,7 +1133,10 @@
                         <input type="number" id="jornadaInput" min="1" max="50" value="2" 
                                style="width: 100px; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; text-align: center;">
                     </div>
-                    <div id="editableForm"></div>
+
+                    <div id="visualFormContainer">
+                        </div>
+
                     <div style="margin-top: 20px; display: flex; gap: 10px;">
                         <button class="btn btn-primary" id="saveBoletoBtn">Guardar Boleto</button>
                         <button class="btn btn-secondary" id="newImageBtn">Subir otra imagen</button>
@@ -2119,7 +2158,6 @@
             reader.readAsDataURL(file);
         }
         
-        // MODIFICACIÓN CRUCIAL: AHORA LA FUNCIÓN DEVUELVE UNA QUINIELA ALEATORIA
         function getBoletoDatos() {
             const tiposBoleto = {
                 oficial: {
@@ -2142,30 +2180,22 @@
                 }
             };
 
-            const signos = ['1', 'X', '2'];
-            const plenoAl15 = ['0-0', '0-1', '0-2', '0-M', '1-0', '1-1', '1-2', '1-M', '2-0', '2-1', '2-2', '2-M', 'M-0', 'M-1', 'M-2', 'M-M'];
-
-            // Detección mejorada
             const tipoDetectado = Math.random() < 0.75 ? 'oficial' : 'simple';
             
             const boletoBase = tiposBoleto[tipoDetectado];
             
-            // Simulación de detección de signos
-            const columna1 = Array.from({ length: 14 }, () => signos[Math.floor(Math.random() * signos.length)]);
-            const columna2 = Array.from({ length: 14 }, () => signos[Math.floor(Math.random() * signos.length)]);
+            // Inicializar las columnas vacías
+            const columna1 = new Array(15).fill('');
+            const columna2 = new Array(15).fill('');
             
-            // Simulación del pleno al 15
-            columna1.push(plenoAl15[Math.floor(Math.random() * plenoAl15.length)]);
-            columna2.push(plenoAl15[Math.floor(Math.random() * plenoAl15.length)]);
-
             const resultado = {
                 equipos: boletoBase.equipos,
                 columna1,
                 columna2
             };
             
-            console.log('Detección simulada - Boleto generado:', resultado);
-            showToast('Boleto procesado', `Se han detectado los equipos y los signos. Revisa y corrige.`, 'info');
+            console.log('Boleto generado:', resultado);
+            showToast('Boleto procesado', `Se han detectado los equipos. Ahora marca los pronósticos.`, 'info');
             
             return resultado;
         }
@@ -2175,20 +2205,17 @@
             document.getElementById('processingArea').classList.add('hidden');
             document.getElementById('extractedData').classList.remove('hidden');
             
-            // Auto-detectar siguiente jornada
             autoDetectNextJornada();
             
-            createEditableForm();
+            createVisualForm();
         }
         
-        // NUEVA FUNCIÓN PARA AUTO-DETECTAR SIGUIENTE JORNADA
         async function autoDetectNextJornada() {
             try {
                 const boletos = await loadBoletos();
                 let ultimaJornada = 1;
                 
                 if (boletos.length > 0) {
-                    // Buscar la jornada más alta
                     boletos.forEach(boleto => {
                         const jornadaNum = parseInt(boleto.jornada.replace('J', ''));
                         if (jornadaNum > ultimaJornada) {
@@ -2204,102 +2231,180 @@
                 
             } catch (error) {
                 console.error('Error detectando jornada:', error);
-                // Fallback a jornada 2 si hay error
                 document.getElementById('jornadaInput').value = 2;
             }
         }
         
-        function createEditableForm() {
-            const container = document.getElementById('editableForm');
+        function createVisualForm() {
+            const container = document.getElementById('visualFormContainer');
             container.innerHTML = '';
-            container.className = 'editable-form';
             
-            Object.keys(extractedColumns).forEach((columna, columnaIndex) => {
-                if (columna === 'equipos') return;
+            const previewImage = document.getElementById('previewImage');
+
+            const boletoWidth = previewImage.offsetWidth;
+            const boletoHeight = previewImage.offsetHeight;
+            
+            container.style.width = `${boletoWidth}px`;
+            container.style.height = `${boletoHeight}px`;
+
+            const formOverlay = document.createElement('div');
+            formOverlay.className = 'visual-form-overlay';
+
+            // Coordenadas aproximadas del boleto real para la cuadrícula de pronósticos
+            const coords = {
+                col1: { top: 0.15, left: 0.52, width: 0.08, height: 0.53 },
+                col2: { top: 0.15, left: 0.60, width: 0.08, height: 0.53 },
+            };
+
+            const col1Div = document.createElement('div');
+            col1Div.className = 'visual-column';
+            col1Div.style.position = 'absolute';
+            col1Div.style.top = `${coords.col1.top * 100}%`;
+            col1Div.style.left = `${coords.col1.left * 100}%`;
+            col1Div.style.width = `${coords.col1.width * 100}%`;
+            col1Div.style.height = `${coords.col1.height * 100}%`;
+
+            const col2Div = document.createElement('div');
+            col2Div.className = 'visual-column';
+            col2Div.style.position = 'absolute';
+            col2Div.style.top = `${coords.col2.top * 100}%`;
+            col2Div.style.left = `${coords.col2.left * 100}%`;
+            col2Div.style.width = `${coords.col2.width * 100}%`;
+            col2Div.style.height = `${coords.col2.height * 100}%`;
+            
+            for (let i = 0; i < 14; i++) {
+                // Partido 1-14
+                const partidoDiv1 = document.createElement('div');
+                partidoDiv1.className = 'visual-partido';
+                partidoDiv1.id = `partido-0-${i}`;
                 
-                const columnaDiv = document.createElement('div');
-                columnaDiv.className = 'columna-editable';
+                ['1', 'X', '2'].forEach(sign => {
+                    const btn = document.createElement('button');
+                    btn.textContent = sign;
+                    btn.className = 'visual-sign-btn';
+                    btn.setAttribute('data-col', 0);
+                    btn.setAttribute('data-partido', i);
+                    btn.setAttribute('data-sign', sign);
+                    btn.onclick = () => selectSign(btn, 0, i, sign);
+                    partidoDiv1.appendChild(btn);
+                });
+
+                const partidoDiv2 = document.createElement('div');
+                partidoDiv2.className = 'visual-partido';
+                partidoDiv2.id = `partido-1-${i}`;
                 
-                const titulo = document.createElement('h4');
-                titulo.textContent = `Columna ${columnaIndex + 1}`;
-                columnaDiv.appendChild(titulo);
-                
-                extractedColumns[columna].forEach((apuesta, partidoIndex) => {
-                    const partidoDiv = document.createElement('div');
-                    partidoDiv.className = 'partido-editable';
-                    
-                    const numero = document.createElement('span');
-                    numero.className = 'partido-numero';
-                    numero.textContent = `${partidoIndex + 1}.`;
-                    
-                    const equiposInput = document.createElement('input');
-                    equiposInput.className = 'equipos-input';
-                    equiposInput.type = 'text';
-                    equiposInput.placeholder = 'Equipo A - Equipo B';
-                    equiposInput.value = extractedColumns.equipos[partidoIndex] || `Partido ${partidoIndex + 1}`;
-                    equiposInput.id = `equipos-${columnaIndex}-${partidoIndex}`;
-                    
-                    partidoDiv.appendChild(numero);
-                    partidoDiv.appendChild(equiposInput);
-                    
-                    if (partidoIndex < 14) {
-                        const resultadoSelect = document.createElement('select');
-                        resultadoSelect.className = 'resultado-select';
-                        resultadoSelect.id = `resultado-${columnaIndex}-${partidoIndex}`;
-                        
-                        const opciones = ['1', 'X', '2'];
-                        opciones.forEach(opcion => {
-                            const option = document.createElement('option');
-                            option.value = opcion;
-                            option.textContent = opcion;
-                            if (opcion === apuesta) option.selected = true;
-                            resultadoSelect.appendChild(option);
-                        });
-                        
-                        partidoDiv.appendChild(resultadoSelect);
-                    } else {
-                        const plenoContainer = document.createElement('div');
-                        plenoContainer.className = 'pleno-container';
-                        
-                        const [goles1, goles2] = apuesta.split('-');
-                        
-                        const input1 = document.createElement('input');
-                        input1.className = 'pleno-input';
-                        input1.type = 'text';
-                        input1.maxLength = 1;
-                        input1.value = goles1 || '0';
-                        input1.placeholder = '0';
-                        input1.id = `pleno1-${columnaIndex}`;
-                        
-                        const guion = document.createElement('span');
-                        guion.textContent = '-';
-                        guion.style.color = '#10b981';
-                        guion.style.fontWeight = '600';
-                        
-                        const input2 = document.createElement('input');
-                        input2.className = 'pleno-input';
-                        input2.type = 'text';
-                        input2.maxLength = 1;
-                        input2.value = goles2 || '0';
-                        input2.placeholder = '0';
-                        input2.id = `pleno2-${columnaIndex}`;
-                        
-                        plenoContainer.appendChild(input1);
-                        plenoContainer.appendChild(guion);
-                        plenoContainer.appendChild(input2);
-                        partidoDiv.appendChild(plenoContainer);
-                        
-                        const ayuda = document.createElement('div');
-                        ayuda.style.cssText = 'font-size: 11px; color: #94a3b8; margin-top: 4px;';
-                        ayuda.textContent = 'Pleno al 15: 0, 1, 2 o M (más de 2)';
-                        partidoDiv.appendChild(ayuda);
-                    }
-                    
-                    columnaDiv.appendChild(partidoDiv);
+                ['1', 'X', '2'].forEach(sign => {
+                    const btn = document.createElement('button');
+                    btn.textContent = sign;
+                    btn.className = 'visual-sign-btn';
+                    btn.setAttribute('data-col', 1);
+                    btn.setAttribute('data-partido', i);
+                    btn.setAttribute('data-sign', sign);
+                    btn.onclick = () => selectSign(btn, 1, i, sign);
+                    partidoDiv2.appendChild(btn);
                 });
                 
-                container.appendChild(columnaDiv);
+                col1Div.appendChild(partidoDiv1);
+                col2Div.appendChild(partidoDiv2);
+            }
+            
+            // Pleno al 15
+            const pleno1Div = document.createElement('div');
+            pleno1Div.className = 'visual-pleno-container';
+            const pleno1Input1 = document.createElement('input');
+            pleno1Input1.className = 'pleno-visual-input';
+            pleno1Input1.type = 'text';
+            pleno1Input1.maxLength = 1;
+            pleno1Input1.placeholder = 'Goles';
+            pleno1Input1.id = `pleno-0-0`;
+            const pleno1Guion = document.createElement('span');
+            pleno1Guion.textContent = '-';
+            const pleno1Input2 = document.createElement('input');
+            pleno1Input2.className = 'pleno-visual-input';
+            pleno1Input2.type = 'text';
+            pleno1Input2.maxLength = 1;
+            pleno1Input2.placeholder = 'Goles';
+            pleno1Input2.id = `pleno-0-1`;
+
+            pleno1Div.appendChild(pleno1Input1);
+            pleno1Div.appendChild(pleno1Guion);
+            pleno1Div.appendChild(pleno1Input2);
+            
+            const pleno2Div = document.createElement('div');
+            pleno2Div.className = 'visual-pleno-container';
+            const pleno2Input1 = document.createElement('input');
+            pleno2Input1.className = 'pleno-visual-input';
+            pleno2Input1.type = 'text';
+            pleno2Input1.maxLength = 1;
+            pleno2Input1.placeholder = 'Goles';
+            pleno2Input1.id = `pleno-1-0`;
+            const pleno2Guion = document.createElement('span');
+            pleno2Guion.textContent = '-';
+            const pleno2Input2 = document.createElement('input');
+            pleno2Input2.className = 'pleno-visual-input';
+            pleno2Input2.type = 'text';
+            pleno2Input2.maxLength = 1;
+            pleno2Input2.placeholder = 'Goles';
+            pleno2Input2.id = `pleno-1-1`;
+
+            pleno2Div.appendChild(pleno2Input1);
+            pleno2Div.appendChild(pleno2Guion);
+            pleno2Div.appendChild(pleno2Input2);
+            
+            col1Div.appendChild(pleno1Div);
+            col2Div.appendChild(pleno2Div);
+
+            formOverlay.appendChild(col1Div);
+            formOverlay.appendChild(col2Div);
+            container.appendChild(formOverlay);
+
+            // Rellenar las apuestas con valores iniciales
+            updateVisualForm();
+        }
+
+        function updateVisualForm() {
+            if (!extractedColumns || !extractedColumns.columna1 || !extractedColumns.columna2) {
+                return;
+            }
+            
+            // Recorre los partidos 1-14 y el pleno al 15
+            for (let i = 0; i < 15; i++) {
+                // Columna 1
+                if (i < 14) {
+                    const sign = extractedColumns.columna1[i];
+                    document.querySelectorAll(`#partido-0-${i} .visual-sign-btn`).forEach(btn => {
+                        btn.classList.toggle('active', btn.getAttribute('data-sign') === sign);
+                    });
+                } else {
+                    // Pleno 15
+                    const [goles1, goles2] = extractedColumns.columna1[i].split('-');
+                    document.getElementById('pleno-0-0').value = goles1;
+                    document.getElementById('pleno-0-1').value = goles2;
+                }
+
+                // Columna 2
+                if (i < 14) {
+                    const sign = extractedColumns.columna2[i];
+                    document.querySelectorAll(`#partido-1-${i} .visual-sign-btn`).forEach(btn => {
+                        btn.classList.toggle('active', btn.getAttribute('data-sign') === sign);
+                    });
+                } else {
+                    // Pleno 15
+                    const [goles1, goles2] = extractedColumns.columna2[i].split('-');
+                    document.getElementById('pleno-1-0').value = goles1;
+                    document.getElementById('pleno-1-1').value = goles2;
+                }
+            }
+        }
+        
+        function selectSign(btn, colIndex, partidoIndex, sign) {
+            // Desactiva todos los botones en el mismo partido
+            document.querySelectorAll(`#partido-${colIndex}-${partidoIndex} .visual-sign-btn`).forEach(b => {
+                b.classList.remove('active');
             });
+
+            // Activa el botón actual
+            btn.classList.add('active');
         }
         
         async function saveBoletoFinal() {
@@ -2310,42 +2415,29 @@
             
             const jornada = document.getElementById('jornadaInput').value || '2';
             
-            const columnasFinales = {};
-            const equiposFinales = [];
+            const columnasFinales = {
+                columna1: [],
+                columna2: [],
+                equipos: extractedColumns.equipos
+            };
             
-            Object.keys(extractedColumns).forEach((columna, columnaIndex) => {
-                if (columna === 'equipos') return;
+            // Obtener los datos del formulario visual
+            for (let i = 0; i < 14; i++) {
+                const selectedSign1 = document.querySelector(`#partido-0-${i} .visual-sign-btn.active`);
+                columnasFinales.columna1.push(selectedSign1 ? selectedSign1.getAttribute('data-sign') : '');
                 
-                const apuestasColumna = [];
-                
-                for (let partidoIndex = 0; partidoIndex < 15; partidoIndex++) {
-                    if (columnaIndex === 0) {
-                        const equiposInput = document.getElementById(`equipos-${columnaIndex}-${partidoIndex}`);
-                        if (equiposInput) {
-                            equiposFinales.push(equiposInput.value || `Partido ${partidoIndex + 1}`);
-                        }
-                    }
-                    
-                    if (partidoIndex < 14) {
-                        const resultadoSelect = document.getElementById(`resultado-${columnaIndex}-${partidoIndex}`);
-                        if (resultadoSelect) {
-                            apuestasColumna.push(resultadoSelect.value);
-                        }
-                    } else {
-                        const pleno1Input = document.getElementById(`pleno1-${columnaIndex}`);
-                        const pleno2Input = document.getElementById(`pleno2-${columnaIndex}`);
-                        if (pleno1Input && pleno2Input) {
-                            const gol1 = pleno1Input.value || '0';
-                            const gol2 = pleno2Input.value || '0';
-                            apuestasColumna.push(`${gol1}-${gol2}`);
-                        }
-                    }
-                }
-                
-                columnasFinales[columna] = apuestasColumna;
-            });
+                const selectedSign2 = document.querySelector(`#partido-1-${i} .visual-sign-btn.active`);
+                columnasFinales.columna2.push(selectedSign2 ? selectedSign2.getAttribute('data-sign') : '');
+            }
+
+            // Pleno al 15
+            const pleno1_1 = document.getElementById('pleno-0-0').value;
+            const pleno1_2 = document.getElementById('pleno-0-1').value;
+            columnasFinales.columna1.push(`${pleno1_1}-${pleno1_2}`);
             
-            columnasFinales.equipos = equiposFinales;
+            const pleno2_1 = document.getElementById('pleno-1-0').value;
+            const pleno2_2 = document.getElementById('pleno-1-1').value;
+            columnasFinales.columna2.push(`${pleno2_1}-${pleno2_2}`);
             
             showPhotoStatus('Guardando boleto...');
             
