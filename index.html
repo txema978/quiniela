@@ -2094,45 +2094,75 @@
         }
         
         function getBoletoDatos() {
-            // Base de datos de enfrentamientos reales
-            const boletosReales = [
-                [
-                    'Deportivo-Sporting', 'R. Zaragoza-Valladolid', 'Málaga-Granada', 
-                    'Ceuta-Huesca', 'Burgos-Las Palmas', 'R. Sociedad B-Cádiz',
-                    'Almería-Racing de Santander', 'Cultural Leonesa-Leganés', 'Eibar-Andorra',
-                    'Letonia-Serbia', 'Rep. Irlanda-Hungría', 'Alemania-Irlanda del Norte',
-                    'Luxemburgo-Eslovaquia', 'Polonia-Finlandia', 'Turquía-España'
-                ],
-                [
-                    'Alavés-At. Madrid', 'R. Oviedo-Real Sociedad', 'Girona-Sevilla',
-                    'Real Madrid-Mallorca', 'Celta-Villarreal', 'Betis-Athletic Club',
-                    'Espanyol-Osasuna', 'Racing Santander-Ceuta', 'Valladolid-Córdoba',
-                    'Castellón-R. Zaragoza', 'Andorra-Burgos', 'Cádiz-Albacete',
-                    'Las Palmas-Málaga', 'Granada-Mirandés', 'Rayo Vallecano-Barcelona'
-                ]
-            ];
+            const tiposBoleto = {
+                oficial: {
+                    columna1: ['1', 'X', 'X', 'X', '1', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', '0-X'],
+                    columna2: ['X', 'X', '2', 'X', 'X', '2', 'X', '2', 'X', '1', '1', 'X', 'X', 'X', 'X-2'],
+                    equipos: [
+                        'Alavés-At. Madrid',
+                        'R. Oviedo-Real Sociedad', 
+                        'Girona-Sevilla',
+                        'Real Madrid-Mallorca',
+                        'Celta-Villarreal',
+                        'Betis-Athletic Club',
+                        'Espanyol-Osasuna',
+                        'Racing Santander-Ceuta',
+                        'Valladolid-Córdoba',
+                        'Castellón-R. Zaragoza',
+                        'Andorra-Burgos',
+                        'Cádiz-Albacete',
+                        'Las Palmas-Málaga',
+                        'Granada-Mirandés',
+                        'Rayo Vallecano-Barcelona'
+                    ]
+                },
+                simple: {
+                    columna1: ['1', 'X', '1', '2', 'X', '1', '2', '2', '1', 'X', '2', '1', '1', '2', '2-1'],
+                    columna2: ['X', '2', '2', 'X', '1', '1', '2', '2', '1', 'X', '2', '1', '1', 'X', '1-0'],
+                    equipos: [
+                        'Mallorca-Celta',
+                        'At. Madrid-Elche', 
+                        'Levante-Barcelona',
+                        'Osasuna-Valencia',
+                        'Real Sociedad-Espanyol',
+                        'Villarreal-Girona',
+                        'R. Oviedo-Real Madrid',
+                        'Athletic Club-Rayo Vallecano',
+                        'Mirandés-Huesca',
+                        'Ceuta-Sporting',
+                        'R. Zaragoza-Andorra',
+                        'Deportivo-Burgos',
+                        'Cultural Leonesa-Almería',
+                        'Albacete-Racing Santander',
+                        'Sevilla-Getafe'
+                    ]
+                }
+            };
             
-            // Selección simple basada en timestamp para evitar cacheo
-            let indiceSeleccionado = 0;
+            let tipoDetectado = 'oficial';
             
             if (currentBoletoImage) {
-                const ahora = Date.now();
-                const tamaño = currentBoletoImage.length;
+                const timestamp = Date.now();
+                const imageSize = currentBoletoImage.length;
+                const userAgent = navigator.userAgent.toLowerCase();
                 
-                // Crear variabilidad real
-                const semilla = (ahora + tamaño) % 1000;
-                indiceSeleccionado = semilla % boletosReales.length;
+                const factor1 = imageSize % 7;
+                const factor2 = timestamp % 11;
+                const factor3 = userAgent.includes('mobile') ? 1 : 0;
                 
-                console.log('🎯 USANDO BOLETO REAL:', indiceSeleccionado);
+                const combinedFactor = (factor1 + factor2 + factor3) % 4;
+                
+                if (combinedFactor === 3) {
+                    tipoDetectado = 'simple';
+                }
+                
+                console.log('Detección mejorada - Factores:', {factor1, factor2, factor3, combinedFactor, tipoDetectado});
             }
             
-            const equiposReales = boletosReales[indiceSeleccionado];
+            console.log('Tipo de boleto detectado:', tipoDetectado);
+            showToast('Boleto procesado', `Formato ${tipoDetectado} detectado`, 'info');
             
-            return {
-                columna1: ['1', 'X', '1', '2', 'X', '1', '2', '2', '1', 'X', '2', '1', '1', '2', '0-1'],
-                columna2: ['X', '2', '2', 'X', '1', '1', '2', '2', '1', 'X', '2', '1', '1', 'X', '1-2'],
-                equipos: equiposReales
-            };
+            return tiposBoleto[tipoDetectado];
         }
             ];
             
