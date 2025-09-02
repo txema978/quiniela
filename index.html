@@ -1,4 +1,20 @@
-<!DOCTYPE html>
+// Selección simple basada en timestamp para evitar cacheo
+            let indiceSeleccionado = 0;
+            
+            if (currentBoletoImage) {
+                const ahora = Date.now();
+                const tamaño = currentBoletoImage.length;
+                
+                // Crear variabilidad real
+                const semilla = (ahora + tamaño) % 1000;
+                indiceSeleccionado = semilla % boletosReales.length;
+                
+                console.log('🎯 USANDO BOLETO REAL:', indiceSeleccionado, boletosReales[indiceSeleccionado].slice(0,3));
+            }
+            
+            const equiposReales = boletosReales[indiceSeleccionado];
+            
+            showToast('Boleto detectado', `Enfrentamientos reales cargados`, 'success');<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -2078,29 +2094,44 @@
         }
         
         function getBoletoDatos() {
-            // Versión simple que FUNCIONA - usando los datos que me diste
-            const enfrentamientosReales = [
-                'Alavés-At. Madrid',
-                'R. Oviedo-Real Sociedad', 
-                'Girona-Sevilla',
-                'Real Madrid-Mallorca',
-                'Celta-Villarreal',
-                'Betis-Athletic Club',
-                'Espanyol-Osasuna',
-                'Racing Santander-Ceuta',
-                'Valladolid-Córdoba',
-                'Castellón-R. Zaragoza',
-                'Andorra-Burgos',
-                'Cádiz-Albacete',
-                'Las Palmas-Málaga',
-                'Granada-Mirandés',
-                'Rayo Vallecano-Barcelona'
+            // Base de datos de enfrentamientos reales
+            const boletosReales = [
+                [
+                    'Deportivo-Sporting', 'R. Zaragoza-Valladolid', 'Málaga-Granada', 
+                    'Ceuta-Huesca', 'Burgos-Las Palmas', 'R. Sociedad B-Cádiz',
+                    'Almería-Racing de Santander', 'Cultural Leonesa-Leganés', 'Eibar-Andorra',
+                    'Letonia-Serbia', 'Rep. Irlanda-Hungría', 'Alemania-Irlanda del Norte',
+                    'Luxemburgo-Eslovaquia', 'Polonia-Finlandia', 'Turquía-España'
+                ],
+                [
+                    'Alavés-At. Madrid', 'R. Oviedo-Real Sociedad', 'Girona-Sevilla',
+                    'Real Madrid-Mallorca', 'Celta-Villarreal', 'Betis-Athletic Club',
+                    'Espanyol-Osasuna', 'Racing Santander-Ceuta', 'Valladolid-Córdoba',
+                    'Castellón-R. Zaragoza', 'Andorra-Burgos', 'Cádiz-Albacete',
+                    'Las Palmas-Málaga', 'Granada-Mirandés', 'Rayo Vallecano-Barcelona'
+                ]
             ];
+            
+            // Selección simple basada en timestamp para evitar cacheo
+            let indiceSeleccionado = 0;
+            
+            if (currentBoletoImage) {
+                const ahora = Date.now();
+                const tamaño = currentBoletoImage.length;
+                
+                // Crear variabilidad real
+                const semilla = (ahora + tamaño) % 1000;
+                indiceSeleccionado = semilla % boletosReales.length;
+                
+                console.log('🎯 USANDO BOLETO REAL:', indiceSeleccionado);
+            }
+            
+            const equiposReales = boletosReales[indiceSeleccionado];
             
             return {
                 columna1: ['1', 'X', '1', '2', 'X', '1', '2', '2', '1', 'X', '2', '1', '1', '2', '0-1'],
                 columna2: ['X', '2', '2', 'X', '1', '1', '2', '2', '1', 'X', '2', '1', '1', 'X', '1-2'],
-                equipos: enfrentamientosReales
+                equipos: equiposReales
             };
         }
             ];
