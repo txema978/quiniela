@@ -485,6 +485,28 @@
             color: white;
             margin-top: 10px;
         }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        /* Estilos para entrada rápida */
+        #equiposTextarea {
+            font-family: 'Courier New', monospace;
+            line-height: 1.4;
+        }
+        
+        #equiposTextarea:focus {
+            outline: none;
+            border-color: #f59e0b;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        #equiposTextarea::placeholder {
+            color: #94a3b8;
+            font-style: italic;
+        }
 
         /* Progreso OCR */
         .ocr-progress {
