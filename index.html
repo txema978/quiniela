@@ -1293,7 +1293,7 @@
             console.log('### FIN updateResultado ###');
         }
         
-        // FUNCIÓN SAVERESULTADO CORREGIDA
+        // FUNCIÓN SAVERESULTADO CORREGIDA PARA SUPABASE
         async function saveResultado(boletoId, partidoNumero, resultadoReal) {
             try {
                 console.log('### saveResultado ###');
@@ -1318,23 +1318,44 @@
                     return true;
                 }
                 
-                // Si hay valor, guardar
+                // Si hay valor, intentar actualizar primero, luego insertar
                 console.log('Guardando resultado en Supabase...');
                 
-                const { data, error } = await supabase
+                // Primero intentar update
+                const { data: updateData, error: updateError } = await supabase
                     .from('resultados')
-                    .upsert({
-                        boleto_id: boletoId,
-                        partido_numero: partidoNumero,
+                    .update({
                         resultado_real: resultadoReal,
                         usuario_que_marco: currentUser.id
-                    }, {
-                        onConflict: 'boleto_id,partido_numero'
-                    });
+                    })
+                    .eq('boleto_id', boletoId)
+                    .eq('partido_numero', partidoNumero)
+                    .select();
                 
-                if (error) {
-                    console.error('Error en upsert:', error);
+                // Si el update no afectó filas, hacer insert
+                if (updateData && updateData.length === 0) {
+                    console.log('No existe, haciendo insert...');
+                    const { data: insertData, error: insertError } = await supabase
+                        .from('resultados')
+                        .insert({
+                            boleto_id: boletoId,
+                            partido_numero: partidoNumero,
+                            resultado_real: resultadoReal,
+                            usuario_que_marco: currentUser.id
+                        })
+                        .select();
+                    
+                    if (insertError) {
+                        console.error('Error en insert:', insertError);
+                        return false;
+                    }
+                    
+                    console.log('Insert exitoso:', insertData);
+                } else if (updateError) {
+                    console.error('Error en update:', updateError);
                     return false;
+                } else {
+                    console.log('Update exitoso:', updateData);
                 }
                 
                 console.log('Resultado guardado correctamente');
