@@ -4,7 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Hermandaz</title>
+    
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1e293b">
+    <meta name="description" content="Quinielas entre colegas - La Hermandaz">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="La Hermandaz">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- Iconos para PWA -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%231e293b'/%3E%3Cstop offset='100%25' style='stop-color:%23334155'/%3E%3C/linearGradient%3E%3ClinearGradient id='ball' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2310b981'/%3E%3Cstop offset='100%25' style='stop-color:%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' rx='24' fill='url(%23bg)'/%3E%3Ccircle cx='96' cy='96' r='64' fill='url(%23ball)'/%3E%3Ctext x='96' y='110' text-anchor='middle' font-size='48' fill='white'%3E⚽%3C/text%3E%3C/svg%3E">
+    
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%231e293b'/%3E%3Cstop offset='100%25' style='stop-color:%23334155'/%3E%3C/linearGradient%3E%3ClinearGradient id='ball' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2310b981'/%3E%3Cstop offset='100%25' style='stop-color:%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='20' fill='url(%23bg)'/%3E%3Ccircle cx='90' cy='90' r='60' fill='url(%23ball)'/%3E%3Ctext x='90' y='105' text-anchor='middle' font-size='44' fill='white'%3E⚽%3C/text%3E%3C/svg%3E">
+    
+    <!-- Manifest JSON inline -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkxhIEhlcm1hbmRheiIsCiAgInNob3J0X25hbWUiOiAiSGVybWFuZGF6IiwKICAiZGVzY3JpcHRpb24iOiAiUXVpbmllbGFzIGVudHJlIGNvbGVnYXMgLSBMYSBIZXJtYW5kYXoiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzFlMjkzYiIsCiAgInRoZW1lX2NvbG9yIjogIiMxZTI5M2IiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgNzIgNzInJTNFJTNDZGVmcyUzRSUzQ2xpbmVhckdyYWRpZW50IGlkPSdiZycgeDElM0QnMCUyNScgeTE9JzAlMjUnIHgyPScxMDAlMjUnIHkyPScxMDAlMjUnJTNFJTNDc3RvcCBvZmZzZXQ9JzAlMjUnIHN0eWxlPSdzdG9wLWNvbG9yOiUyMzFlMjkzYicvJTNFJTNDc3RvcCBvZmZzZXQ9JzEwMCUyNScgc3R5bGU9J3N0b3AtY29sb3I6JTIzMzM0MTU1Jy8lM0UlM0MvbGluZWFyR3JhZGllbnQlM0UlM0NsaW5lYXJHcmFkaWVudCBpZD0nYmFsbCcgeDElM0QnMCUyNScgeTE9JzAlMjUnIHgyPScxMDAlMjUnIHkyPScxMDAlMjUnJTNFJTNDc3RvcCBvZmZzZXQ9JzAlMjUnIHN0eWxlPSdzdG9wLWNvbG9yOiUyMzEwYjk4MScvJTNFJTNDc3RvcCBvZmZzZXQ9JzEwMCUyNScgc3R5bGU9J3N0b3AtY29sb3I6JTIzZjU5ZTBiJy8lM0UlM0MvbGluZWFyR3JhZGllbnQlM0UlM0MvZGVmcyUzRSUzQ3JlY3Qgd2lkdGg9JzcyJyBoZWlnaHQ9JzcyJyByeD0nOCcgZmlsbD0ndXJsKCUyM2JnKScvJTNFJTNDY2lyY2xlIGN4PSczNicgY3k9JzM2JyByPScyNCcgZmlsbD0ndXJsKCUyM2JhbGwpJy8lM0UlM0N0ZXh0IHg9JzM2JyB5PSc0MicgdGV4dC1hbmNob3I9J21pZGRsZScgZm9udC1zaXplPScyMCcgZmlsbD0nd2hpdGUnJTNFJUU5JUJBJTk3JTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjcyeDcyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5NiA5NiclM0UlM0NkZWZzJTNFJTNDbGluZWFyR3JhZGllbnQgaWQ9J2JnJyB4MSU0RCcwJTI1JyB5MSUzRCcwJTI1JyB4MiUzRCcxMDAlMjUnIHkyJTNEJzEwMCUyNSclM0UlM0NzdG9wIG9mZnNldCUzRCcwJTI1JyBzdHlsZSUzRCdzdG9wLWNvbG9yOiUyMzFlMjkzYicvJTNFJTNDc3RvcCBvZmZzZXQlM0QnMTAwJTI1JyBzdHlsZSUzRCdzdG9wLWNvbG9yOiUyMzMzNDE1NScvJTNFJTNDL2xpbmVhckdyYWRpZW50JTNFJTNDbGluZWFyR3JhZGllbnQgaWQlM0QnYmFsbCcgeDElM0QnMCUyNScgeTE9JzAlMjUnIHgyPScxMDAlMjUnIHkyPScxMDAlMjUnJTNFJTNDc3RvcCBvZmZzZXQlM0QnMCUyNScgc3R5bGUlM0Qnc3RvcC1jb2xvcjolMjMxMGI5ODEnLyUzRSUzQ3N0b3Agb2Zmc2V0PSc5NSUyNScgc3R5bGU9J3N0b3AtY29sb3I6JTIzZjU5ZTBiJy8lM0UlM0MvbGluZWFyR3JhZGllbnQlM0UlM0MvZGVmcyUzRSUzQ3JlY3Qgd2lkdGg9Jzk2JyBoZWlnaHQ9Jzk2JyByeD0nMTInIGZpbGw9J3VybCglMjNiZyknLyUzRSUzQ2NpcmNsZSBjeD0nNDgnIGN5PSc0OCcgcj0nMzInIGZpbGw9J3VybCglMjNiYWxsKScvJTNFJTNDdGV4dCB4PSc0OCcgeT0nNTYnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nMjQnIGZpbGw9J3doaXRlJyUzRSVFOSVCQSU5NyUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsCiAgICAgICJzaXplcyI6ICI5Nng5NiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTI4IDEyOCclM0UlM0NkZWZzJTNFJTNDbGluZWFyR3JhZGllbnQgaWQ9J2JnJyB4MSUzRCcwJTI1JyB5MSUzRCcwJTI1JyB4MiUzRCcxMDAlMjUnIHkyJTNEJzEwMCUyNSclM0UlM0NzdG9wIG9mZnNldCUzRCcwJTI1JyBzdHlsZSUzRCdzdG9wLWNvbG9yOiUyMzFlMjkzYicvJTNFJTNDc3RvcCBvZmZzZXQlM0QnMTAwJTI1JyBzdHlsZSUzRCdzdG9wLWNvbG9yOiUyMzMzNDE1NScvJTNFJTNDL2xpbmVhckdyYWRpZW50JTNFJTNDbGluZWFyR3JhZGllbnQgaWQlM0QnYmFsbCcgeDElM0QnMCUyNScgeTE9JzAlMjUnIHgyPScxMDAlMjUnIHkyPScxMDAlMjUnJTNFJTNDc3RvcCBvZmZzZXQlM0QnMCUyNScgc3R5bGUlM0Qnc3RvcC1jb2xvcjolMjMxMGI5ODEnLyUzRSUzQ3N0b3Agb2Zmc2V0PSc5NSUyNScgc3R5bGU9J3N0b3AtY29sb3I6JTIzZjU5ZTBiJy8lM0UlM0MvbGluZWFyR3JhZGllbnQlM0UlM0MvZGVmcyUzRSUzQ3JlY3Qgd2lkdGg9JzEyOCcgaGVpZ2h0PScxMjgnIHJ4PScxNicgZmlsbD0ndXJsKCUyM2JnKScvJTNFJTNDY2lyY2xlIGN4PSc2NCcgY3k9JzY0JyByPSc0OCcgZmlsbD0ndXJsKCUyM2JhbGwpJy8lM0UlM0N0ZXh0IHg9JzY0JyB5PSc3NicgdGV4dC1hbmNob3I9J21pZGRsZScgZm9udC1zaXplPSczMicgZmlsbD0nd2hpdGUnJTNFJUU5JUJBJTk3JTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjEyOHgxMjgiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfSwKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDE5MiAxOTInJTNFJTNDZGVmcyUzRSUzQ2xpbmVhckdyYWRpZW50IGlkPSdiZycgeDElM0QnMCUyNScgeTE9JzAlMjUnIHgyPScxMDAlMjUnIHkyPScxMDAlMjUnJTNFJTNDc3RvcCBvZmZzZXQ9JzAlMjUnIHN0eWxlPSdzdG9wLWNvbG9yOiUyMzFlMjkzYicvJTNFJTNDc3RvcCBvZmZzZXQ9JzEwMCUyNScgc3R5bGU9J3N0b3AtY29sb3I6JTIzMzM0MTU1Jy8lM0UlM0MvbGluZWFyR3JhZGllbnQlM0UlM0NsaW5lYXJHcmFkaWVudCBpZD0nYmFsbCcgeDElM0QnMCUyNScgeTE9JzAlMjUnIHgyPScxMDAlMjUnIHkyPScxMDAlMjUnJTNFJTNDc3RvcCBvZmZzZXQ9JzAlMjUnIHN0eWxlPSdzdG9wLWNvbG9yOiUyMzEwYjk4MScvJTNFJTNDc3RvcCBvZmZzZXQ9JzEwMCUyNScgc3R5bGU9J3N0b3AtY29sb3I6JTIzZjU5ZTBiJy8lM0UlM0MvbGluZWFyR3JhZGllbnQlM0UlM0MvZGVmcyUzRSUzQ3JlY3Qgd2lkdGg9JzE5MicgaGVpZ2h0PScxOTInIHJ4PScyNCcgZmlsbD0ndXJsKCUyM2JnKScvJTNFJTNDY2lyY2xlIGN4PSc5NicgY3k9Jzk2JyByPSc2NCcgZmlsbD0ndXJsKCUyM2JhbGwpJy8lM0UlM0N0ZXh0IHg9Jzk2JyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nNDgnIGZpbGw9J3doaXRlJyUzRSVFOSVCQSU5NyUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJyUzRSUzQ2RlZnMlM0UlM0NsaW5lYXJHcmFkaWVudCBpZD0nYmcnIHgxJTNEJzAlMjUnIHkxJTNEJzAlMjUnIHgyJTNEJzEwMCUyNScgeTIlM0QnMTAwJTI1JyUzRSUzQ3N0b3Agb2Zmc2V0JTNEJzAlMjUnIHN0eWxlJTNEJ3N0b3AtY29sb3I6JTIzMWUyOTNiJy8lM0UlM0NzdG9wIG9mZnNldCUzRCcxMDAlMjUnIHN0eWxlJTNEJ3N0b3AtY29sb3I6JTIzMzM0MTU1Jy8lM0UlM0MvbGluZWFyR3JhZGllbnQlM0UlM0NsaW5lYXJHcmFkaWVudCBpZCUzRCdiYWxsJyB4MSUzRCcwJTI1JyB5MSUzRCcwJTI1JyB4MiUzRCcxMDAlMjUnIHkyJTNEJzEwMCUyNSclM0UlM0NzdG9wIG9mZnNldCUzRCcwJTI1JyBzdHlsZSUzRCdzdG9wLWNvbG9yOiUyMzEwYjk4MScvJTNFJTNDc3RvcCBvZmZzZXQlM0QnMTAwJTI1JyBzdHlsZSUzRCdzdG9wLWNvbG9yOiUyM2Y1OWUwYicvJTNFJTNDL2xpbmVhckdyYWRpZW50JTNFJTNDL2RlZnMlM0UlM0NyZWN0IHdpZHRoJTNEJzUxMicgaGVpZ2h0JTNEJzUxMicgcnglM0QnNjQnIGZpbGwlM0QndXJsKCUyM2JnKScvJTNFJTNDY2lyY2xlIGN4JTNEJzI1NicgY3klM0QnMjU2JyByJTNEJzE5MicgZmlsbCUzRCd1cmwoJTIzYmFsbCknLyUzRSUzQ3RleHQgeCUzRCcyNTYnIHklM0QnMzAwJyB0ZXh0LWFuY2hvciUzRCdtaWRkbGUnIGZvbnQtc2l6ZSUzRCcxMjgnIGZpbGwlM0Qnd2hpdGUnJTNFJUU5JUJBJTk3JTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0sCiAgImNhdGVnb3JpZXMiOiBbInNwb3J0cyIsICJnYW1lcyJdLAogICJsYW5nIjogImVzIgp9">
+    
     <style>
         html {
             background: #1e293b;
@@ -912,6 +929,29 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
+        /* PWA Específicos */
+        @media (display-mode: standalone) {
+            body {
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            
+            .back-btn {
+                top: calc(20px + env(safe-area-inset-top));
+            }
+            
+            .photo-status, .toast {
+                top: calc(20px + env(safe-area-inset-top));
+            }
+        }
+
+        /* Soporte para notch en iPhone */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .container {
+                padding-top: env(safe-area-inset-top);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1239,6 +1279,60 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+        // Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(
+                    'data:application/javascript;base64,' + btoa(`
+                        const CACHE_NAME = 'hermandaz-v1';
+                        const urlsToCache = [
+                            '/',
+                            '/index.html'
+                        ];
+
+                        self.addEventListener('install', function(event) {
+                            event.waitUntil(
+                                caches.open(CACHE_NAME)
+                                    .then(function(cache) {
+                                        return cache.addAll(urlsToCache);
+                                    })
+                            );
+                        });
+
+                        self.addEventListener('fetch', function(event) {
+                            event.respondWith(
+                                caches.match(event.request)
+                                    .then(function(response) {
+                                        if (response) {
+                                            return response;
+                                        }
+                                        return fetch(event.request);
+                                    }
+                                )
+                            );
+                        });
+                    `)
+                ).then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                }).catch(function(error) {
+                    console.log('ServiceWorker registration failed: ', error);
+                });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Mostrar notificación de instalación después de 3 segundos
+            setTimeout(() => {
+                showToast('Instalar App', 'Añade La Hermandaz a tu pantalla de inicio para una mejor experiencia', 'info');
+            }, 3000);
+        });
+
         // CÓDIGO EXACTO DEL ORIGINAL QUE FUNCIONABA + ESTADÍSTICAS + CORRECCIONES
         const SUPABASE_URL = 'https://cpnrljznrveafzohnmwb.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
@@ -2653,7 +2747,7 @@
             document.getElementById('photoBtn').addEventListener('click', changePhoto);
             
             document.getElementById('infoBtn').addEventListener('click', () => {
-                alert('LA HERMANDAZ v7.0');
+                alert('LA HERMANDAZ v7.0 PWA');
             });
             
             const uploadArea = document.getElementById('uploadArea');
