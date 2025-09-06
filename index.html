@@ -1239,7 +1239,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // CÓDIGO EXACTO DEL ORIGINAL QUE FUNCIONABA + ESTADÍSTICAS
+        // CÓDIGO EXACTO DEL ORIGINAL QUE FUNCIONABA + ESTADÍSTICAS + CORRECCIONES
         const SUPABASE_URL = 'https://cpnrljznrveafzohnmwb.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbnJsanpucnZlYWZ6b2hubXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDQsImV4cCI6MjA3MTY5NjcwNH0.msizWvm89UHJ2H38po_WirVLQi4mFP0mSU6o9ogwmKU';
         
@@ -1255,7 +1255,181 @@
         let currentBoletoSeguimiento = null;
         let resultadosActuales = {};
         
-        // NUEVA FUNCIÓN PARA ESTADÍSTICAS
+        // FUNCIÓN UPDATERESULTADO CORREGIDA CON LOGS DETALLADOS
+        window.updateResultado = async function(boletoId, partidoNumero, valor) {
+            console.log('### NUEVA FUNCIÓN updateResultado ###');
+            console.log('Parámetros recibidos:');
+            console.log('- boletoId:', boletoId);
+            console.log('- partidoNumero:', partidoNumero);
+            console.log('- valor:', valor, '(tipo:', typeof valor, ')');
+            
+            // Actualizar objeto local
+            if (!valor || valor === '' || valor === '-') {
+                console.log('Eliminando resultado del objeto local...');
+                delete resultadosActuales[partidoNumero];
+            } else {
+                console.log('Guardando resultado en objeto local...');
+                resultadosActuales[partidoNumero] = valor;
+            }
+            
+            console.log('Estado actual de resultadosActuales:', resultadosActuales);
+            
+            // Guardar en base de datos
+            console.log('Llamando a saveResultado...');
+            const success = await saveResultado(boletoId, partidoNumero, valor);
+            console.log('Resultado de saveResultado:', success);
+            
+            // Actualizar interfaz
+            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
+            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
+            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
+            
+            console.log('Actualizando aciertos...');
+            updateAciertos(partidoNumero, columna1[partidoNumero - 1], columna2[partidoNumero - 1], valor);
+            
+            console.log('Calculando totales...');
+            calculateTotals();
+            
+            console.log('### FIN updateResultado ###');
+        }
+        
+        // FUNCIÓN SAVERESULTADO CORREGIDA
+        async function saveResultado(boletoId, partidoNumero, resultadoReal) {
+            try {
+                console.log('### saveResultado ###');
+                console.log('Parámetros:', {boletoId, partidoNumero, resultadoReal});
+                
+                // Si está vacío, eliminar
+                if (!resultadoReal || resultadoReal === '' || resultadoReal === '-') {
+                    console.log('Eliminando resultado de Supabase...');
+                    
+                    const { error } = await supabase
+                        .from('resultados')
+                        .delete()
+                        .eq('boleto_id', boletoId)
+                        .eq('partido_numero', partidoNumero);
+                    
+                    if (error) {
+                        console.error('Error eliminando:', error);
+                        return false;
+                    }
+                    
+                    console.log('Resultado eliminado correctamente');
+                    return true;
+                }
+                
+                // Si hay valor, guardar
+                console.log('Guardando resultado en Supabase...');
+                
+                const { data, error } = await supabase
+                    .from('resultados')
+                    .upsert({
+                        boleto_id: boletoId,
+                        partido_numero: partidoNumero,
+                        resultado_real: resultadoReal,
+                        usuario_que_marco: currentUser.id
+                    }, {
+                        onConflict: 'boleto_id,partido_numero'
+                    });
+                
+                if (error) {
+                    console.error('Error en upsert:', error);
+                    return false;
+                }
+                
+                console.log('Resultado guardado correctamente');
+                return true;
+                
+            } catch (error) {
+                console.error('Error en saveResultado:', error);
+                return false;
+            }
+        }
+        
+        // FUNCIÓN UPDATEACIERTOS CORREGIDA CON ICONOS VISIBLES
+        function updateAciertos(partidoNumero, apuesta1, apuesta2, resultado) {
+            console.log('### updateAciertos ###');
+            console.log('Partido:', partidoNumero, 'Apuesta1:', apuesta1, 'Apuesta2:', apuesta2, 'Resultado:', resultado);
+            
+            const container = document.getElementById(`aciertos-${partidoNumero}`);
+            if (!container) {
+                console.log('Container no encontrado para partido', partidoNumero);
+                return;
+            }
+            
+            if (!resultado || resultado === '' || resultado === '-') {
+                console.log('Sin resultado, mostrando guión');
+                container.innerHTML = '<span class="pendiente">-</span>';
+                return;
+            }
+            
+            const acierto1 = apuesta1 === resultado;
+            const acierto2 = apuesta2 === resultado;
+            
+            console.log('Aciertos calculados:', {acierto1, acierto2});
+            
+            // Usar caracteres simples que se vean en todos los navegadores
+            const icono1 = acierto1 ? '✓' : '✗';
+            const icono2 = acierto2 ? '✓' : '✗';
+            const color1 = acierto1 ? '#10b981' : '#ef4444';
+            const color2 = acierto2 ? '#10b981' : '#ef4444';
+            
+            container.innerHTML = `
+                <span style="color: ${color1}; font-weight: bold; font-size: 18px; margin-right: 8px;">${icono1}</span>
+                <span style="color: ${color2}; font-weight: bold; font-size: 18px;">${icono2}</span>
+            `;
+            
+            console.log('HTML de aciertos actualizado:', container.innerHTML);
+        }
+        
+        // FUNCIÓN CREATESEGUIMIENTOTABLE CORREGIDA
+        function createSeguimientoTable() {
+            console.log('### createSeguimientoTable ###');
+            
+            const container = document.getElementById('partidosContainer');
+            container.innerHTML = '';
+            
+            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
+            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
+            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
+            
+            for (let i = 0; i < 15; i++) {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                
+                const partido = equipos[i] || `Partido ${i + 1}`;
+                const apuesta1 = columna1[i] || '-';
+                const apuesta2 = columna2[i] || '-';
+                const resultadoActual = resultadosActuales[i + 1] || '';
+                
+                row.innerHTML = `
+                    <div class="col-partido">${i + 1}. ${partido}</div>
+                    <div class="col-apuesta">${apuesta1}</div>
+                    <div class="col-apuesta">${apuesta2}</div>
+                    <div class="col-resultado">
+                        ${i < 14 ? 
+                            `<select class="resultado-input" onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">
+                                <option value=""${!resultadoActual ? ' selected' : ''}>-</option>
+                                <option value="1"${resultadoActual === '1' ? ' selected' : ''}>1</option>
+                                <option value="X"${resultadoActual === 'X' ? ' selected' : ''}>X</option>
+                                <option value="2"${resultadoActual === '2' ? ' selected' : ''}>2</option>
+                            </select>` :
+                            `<input type="text" class="resultado-input" placeholder="0-1" value="${resultadoActual}" 
+                                   onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">`
+                        }
+                    </div>
+                    <div class="col-aciertos" id="aciertos-${i + 1}"></div>
+                `;
+                
+                container.appendChild(row);
+                updateAciertos(i + 1, apuesta1, apuesta2, resultadoActual);
+            }
+            
+            calculateTotals();
+            console.log('Tabla de seguimiento creada');
+        }
+        
+        // RESTO DE FUNCIONES SIN CAMBIOS (funciones que ya funcionaban)
         function showEstadisticas() {
             if (!currentUser) {
                 showToast('Error', 'No hay usuario logueado', 'error');
@@ -1267,13 +1441,10 @@
             document.getElementById('estadisticasLoading').classList.remove('hidden');
             document.getElementById('estadisticasContent').classList.add('hidden');
             
-            // Actualizar avatares con fotos reales
             updateStatsAvatars();
-            
             calculateEstadisticas();
         }
         
-        // NUEVA FUNCIÓN PARA ACTUALIZAR AVATARES EN ESTADÍSTICAS
         function updateStatsAvatars() {
             ['oscar', 'txema'].forEach(userId => {
                 const user = users[userId];
@@ -1281,17 +1452,14 @@
                 
                 if (avatarElement && user) {
                     if (user.photo) {
-                        // Mostrar foto real
                         avatarElement.innerHTML = `<img src="${user.photo}" alt="${user.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
                     } else {
-                        // Fallback al emoji
                         avatarElement.textContent = user.icon;
                     }
                 }
             });
         }
         
-        // NUEVA FUNCIÓN PARA CALCULAR ESTADÍSTICAS
         async function calculateEstadisticas() {
             try {
                 const boletos = await loadBoletos();
@@ -1344,13 +1512,11 @@
                     
                     let mejorJornada = '-', peorJornada = '-';
                     if (stats.jornadas.length > 0) {
-                        // Mejor jornada: la que tiene la mejor de sus columnas más alta
                         const jornadaConMejorColumna = stats.jornadas.reduce((mejor, actual) => 
                             actual.mejorColumna > mejor.mejorColumna ? actual : mejor
                         );
                         mejorJornada = `${jornadaConMejorColumna.jornada} (${jornadaConMejorColumna.mejorColumna})`;
                         
-                        // Peor jornada: la que tiene la peor de sus columnas más baja
                         const jornadaConPeorColumna = stats.jornadas.reduce((peor, actual) => 
                             actual.peorColumna < peor.peorColumna ? actual : peor
                         );
@@ -1372,7 +1538,6 @@
             }
         }
         
-        // RESTO DEL CÓDIGO ORIGINAL SIN CAMBIOS
         async function loadResultados(boletoId) {
             try {
                 const { data, error } = await supabase
@@ -1398,89 +1563,6 @@
             }
         }
         
-        async function saveResultado(boletoId, partidoNumero, resultadoReal) {
-            try {
-                // Si el resultado está vacío, eliminar el registro
-                if (!resultadoReal || resultadoReal === '') {
-                    const { error } = await supabase
-                        .from('resultados')
-                        .delete()
-                        .eq('boleto_id', boletoId)
-                        .eq('partido_numero', partidoNumero);
-                    
-                    if (error) {
-                        console.error('Error eliminando resultado:', error);
-                        return false;
-                    }
-                    
-                    console.log('Resultado eliminado (vacío)');
-                    return true;
-                }
-                
-                // Si hay resultado, guardarlo
-                const { data, error } = await supabase
-                    .from('resultados')
-                    .upsert({
-                        boleto_id: boletoId,
-                        partido_numero: partidoNumero,
-                        resultado_real: resultadoReal,
-                        usuario_que_marco: currentUser.id
-                    }, {
-                        onConflict: 'boleto_id,partido_numero'
-                    });
-                
-                if (error) {
-                    console.error('Error en upsert, intentando con insert/update manual:', error);
-                    
-                    // Fallback: intentar primero insert, luego update
-                    const { data: existingData, error: selectError } = await supabase
-                        .from('resultados')
-                        .select('*')
-                        .eq('boleto_id', boletoId)
-                        .eq('partido_numero', partidoNumero)
-                        .single();
-                    
-                    if (existingData) {
-                        // Existe, hacer update
-                        const { error: updateError } = await supabase
-                            .from('resultados')
-                            .update({
-                                resultado_real: resultadoReal,
-                                usuario_que_marco: currentUser.id
-                            })
-                            .eq('boleto_id', boletoId)
-                            .eq('partido_numero', partidoNumero);
-                        
-                        if (updateError) {
-                            console.error('Error en update:', updateError);
-                            return false;
-                        }
-                    } else {
-                        // No existe, hacer insert
-                        const { error: insertError } = await supabase
-                            .from('resultados')
-                            .insert({
-                                boleto_id: boletoId,
-                                partido_numero: partidoNumero,
-                                resultado_real: resultadoReal,
-                                usuario_que_marco: currentUser.id
-                            });
-                        
-                        if (insertError) {
-                            console.error('Error en insert:', insertError);
-                            return false;
-                        }
-                    }
-                }
-                
-                return true;
-                
-            } catch (error) {
-                console.error('Error en saveResultado:', error);
-                return false;
-            }
-        }
-        
         function showSeguimiento() {
             if (!currentUser) {
                 showToast('Error', 'No hay usuario logueado', 'error');
@@ -1488,7 +1570,6 @@
             }
             
             navigateToScreen('seguimientoScreen');
-            
             loadBoletoSelector();
         }
         
@@ -1546,102 +1627,6 @@
             }
         }
         
-        function createSeguimientoTable() {
-            const container = document.getElementById('partidosContainer');
-            container.innerHTML = '';
-            
-            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
-            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
-            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
-            
-            for (let i = 0; i < 15; i++) {
-                const row = document.createElement('div');
-                row.className = 'table-row';
-                
-                const partido = equipos[i] || `Partido ${i + 1}`;
-                const apuesta1 = columna1[i] || '-';
-                const apuesta2 = columna2[i] || '-';
-                const resultadoActual = resultadosActuales[i + 1] || '';
-                
-                row.innerHTML = `
-                    <div class="col-partido">${i + 1}. ${partido}</div>
-                    <div class="col-apuesta">${apuesta1}</div>
-                    <div class="col-apuesta">${apuesta2}</div>
-                    <div class="col-resultado">
-                        ${i < 14 ? 
-                            `<select class="resultado-input" onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">
-                                <option value="">-</option>
-                                <option value="1" ${resultadoActual === '1' ? 'selected' : ''}>1</option>
-                                <option value="X" ${resultadoActual === 'X' ? 'selected' : ''}>X</option>
-                                <option value="2" ${resultadoActual === '2' ? 'selected' : ''}>2</option>
-                            </select>` :
-                            `<input type="text" class="resultado-input" placeholder="0-1" value="${resultadoActual}" 
-                                   onchange="updateResultado(${currentBoletoSeguimiento.id}, ${i + 1}, this.value)">`
-                        }
-                    </div>
-                    <div class="col-aciertos" id="aciertos-${i + 1}"></div>
-                `;
-                
-                container.appendChild(row);
-                updateAciertos(i + 1, apuesta1, apuesta2, resultadoActual);
-            }
-            
-            calculateTotals();
-        }
-        
-        window.updateResultado = async function(boletoId, partidoNumero, valor) {
-            console.log(`Actualizando partido ${partidoNumero} con valor: ${valor}`);
-            
-            resultadosActuales[partidoNumero] = valor;
-            
-            if (valor && valor !== '') {
-                const success = await saveResultado(boletoId, partidoNumero, valor);
-                if (success) {
-                    console.log('Resultado guardado en Supabase');
-                } else {
-                    console.error('Error guardando resultado');
-                }
-            }
-            
-            const equipos = currentBoletoSeguimiento.columnas_apuestas.equipos || [];
-            const columna1 = currentBoletoSeguimiento.columnas_apuestas.columna1 || [];
-            const columna2 = currentBoletoSeguimiento.columnas_apuestas.columna2 || [];
-            
-            updateAciertos(partidoNumero, columna1[partidoNumero - 1], columna2[partidoNumero - 1], valor);
-            calculateTotals();
-        }
-        
-        function updateAciertos(partidoNumero, apuesta1, apuesta2, resultado) {
-            const container = document.getElementById(`aciertos-${partidoNumero}`);
-            if (!container) return;
-            
-            if (!resultado) {
-                container.innerHTML = '<span class="pendiente">-</span>';
-                return;
-            }
-            
-            let acierto1 = false;
-            let acierto2 = false;
-            
-            if (partidoNumero <= 14) {
-                acierto1 = apuesta1 === resultado;
-                acierto2 = apuesta2 === resultado;
-            } else {
-                acierto1 = apuesta1 === resultado;
-                acierto2 = apuesta2 === resultado;
-            }
-            
-            const icon1 = acierto1 ? '✓' : '✗';
-            const icon2 = acierto2 ? '✓' : '✗';
-            const class1 = acierto1 ? 'acierto' : 'fallo';
-            const class2 = acierto2 ? 'acierto' : 'fallo';
-            
-            container.innerHTML = `
-                <span class="${class1}">${icon1}</span> 
-                <span class="${class2}">${icon2}</span>
-            `;
-        }
-        
         function calculateTotals() {
             let total1 = 0;
             let total2 = 0;
@@ -1651,14 +1636,9 @@
             
             for (let i = 1; i <= 15; i++) {
                 const resultado = resultadosActuales[i];
-                if (resultado) {
-                    if (i <= 14) {
-                        if (columna1[i - 1] === resultado) total1++;
-                        if (columna2[i - 1] === resultado) total2++;
-                    } else {
-                        if (columna1[i - 1] === resultado) total1++;
-                        if (columna2[i - 1] === resultado) total2++;
-                    }
+                if (resultado && resultado !== '' && resultado !== '-') {
+                    if (columna1[i - 1] === resultado) total1++;
+                    if (columna2[i - 1] === resultado) total2++;
                 }
             }
             
@@ -1884,7 +1864,6 @@
             loadHistorialSelector();
         }
         
-        // NUEVA FUNCIÓN PARA CARGAR SELECTOR DE HISTORIAL
         async function loadHistorialSelector() {
             try {
                 const boletos = await loadBoletos();
@@ -1897,7 +1876,6 @@
                     option.value = boleto.id;
                     option.textContent = `${boleto.jornada} - ${users[boleto.user_id]?.name || boleto.user_id}`;
                     
-                    // Seleccionar el más reciente por defecto
                     if (index === 0) {
                         option.selected = true;
                         loadSingleBoleto(boleto.id);
@@ -1908,12 +1886,10 @@
                 
             } catch (error) {
                 console.error('Error cargando selector historial:', error);
-                // Fallback al comportamiento anterior si hay error
                 loadAndShowBoletos();
             }
         }
         
-        // NUEVA FUNCIÓN PARA MOSTRAR UN BOLETO ESPECÍFICO
         async function loadSingleBoleto(boletoId) {
             if (!boletoId) {
                 document.getElementById('historialLoading').classList.add('hidden');
@@ -2160,27 +2136,22 @@
                 }
             };
             
-            let tipoDetectado = 'oficial'; // Por defecto oficial para mayor consistencia
+            let tipoDetectado = 'oficial';
             
             if (currentBoletoImage) {
-                // Análisis más robusto basado en múltiples factores
                 const timestamp = Date.now();
                 const imageSize = currentBoletoImage.length;
                 const userAgent = navigator.userAgent.toLowerCase();
                 
-                // Combinación de factores para detección más estable
                 const factor1 = imageSize % 7;
                 const factor2 = timestamp % 11;
                 const factor3 = userAgent.includes('mobile') ? 1 : 0;
                 
                 const combinedFactor = (factor1 + factor2 + factor3) % 4;
                 
-                // 75% oficial, 25% simple para mayor consistencia
                 if (combinedFactor === 3) {
                     tipoDetectado = 'simple';
                 }
-                
-                console.log('Detección mejorada - Factores:', {factor1, factor2, factor3, combinedFactor, tipoDetectado});
             }
             
             console.log('Tipo de boleto detectado:', tipoDetectado);
@@ -2193,20 +2164,16 @@
             document.getElementById('processingArea').classList.add('hidden');
             document.getElementById('extractedData').classList.remove('hidden');
             
-            // Auto-detectar siguiente jornada
             autoDetectNextJornada();
-            
             createEditableForm();
         }
         
-        // NUEVA FUNCIÓN PARA AUTO-DETECTAR SIGUIENTE JORNADA
         async function autoDetectNextJornada() {
             try {
                 const boletos = await loadBoletos();
                 let ultimaJornada = 1;
                 
                 if (boletos.length > 0) {
-                    // Buscar la jornada más alta
                     boletos.forEach(boleto => {
                         const jornadaNum = parseInt(boleto.jornada.replace('J', ''));
                         if (jornadaNum > ultimaJornada) {
@@ -2222,7 +2189,6 @@
                 
             } catch (error) {
                 console.error('Error detectando jornada:', error);
-                // Fallback a jornada 2 si hay error
                 document.getElementById('jornadaInput').value = 2;
             }
         }
@@ -2257,7 +2223,7 @@
                     equiposInput.value = extractedColumns.equipos[partidoIndex] || `Partido ${partidoIndex + 1}`;
                     equiposInput.id = `equipos-${columnaIndex}-${partidoIndex}`;
                     
-                    // Si es la primera columna, añadir event listener para copiar a la segunda columna
+                    // Copiar de columna 1 a columna 2
                     if (columnaIndex === 0) {
                         equiposInput.addEventListener('input', function() {
                             const segundaColumnaInput = document.getElementById(`equipos-1-${partidoIndex}`);
@@ -2531,26 +2497,23 @@
             }, 3000);
         }
         
-        // NUEVA FUNCIÓN PARA NAVEGACIÓN CON ANIMACIONES
         function navigateToScreen(targetScreenId) {
             const currentScreen = document.querySelector('.screen.active');
             const targetScreen = document.getElementById(targetScreenId);
             
             if (currentScreen && currentScreen !== targetScreen) {
-                // Animar salida de pantalla actual
                 currentScreen.classList.add('exiting');
                 
                 setTimeout(() => {
                     currentScreen.classList.remove('active', 'exiting');
-                    // Mostrar nueva pantalla con animación de entrada
                     targetScreen.classList.add('active');
                 }, 200);
             } else {
-                // Primera carga o misma pantalla
                 document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
                 targetScreen.classList.add('active');
             }
         }
+        
         function showToast(title, message, type = 'info') {
             const toastId = 'toast-' + Date.now();
             const toastHtml = `
@@ -2711,7 +2674,6 @@
                 loadSeguimientoBoleto(e.target.value);
             });
             
-            // NUEVO EVENT LISTENER PARA HISTORIAL
             document.getElementById('historialSelector').addEventListener('change', function(e) {
                 loadSingleBoleto(e.target.value);
             });
