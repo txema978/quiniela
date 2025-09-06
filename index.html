@@ -1400,6 +1400,24 @@
         
         async function saveResultado(boletoId, partidoNumero, resultadoReal) {
             try {
+                // Si el resultado está vacío, eliminar el registro
+                if (!resultadoReal || resultadoReal === '') {
+                    const { error } = await supabase
+                        .from('resultados')
+                        .delete()
+                        .eq('boleto_id', boletoId)
+                        .eq('partido_numero', partidoNumero);
+                    
+                    if (error) {
+                        console.error('Error eliminando resultado:', error);
+                        return false;
+                    }
+                    
+                    console.log('Resultado eliminado (vacío)');
+                    return true;
+                }
+                
+                // Si hay resultado, guardarlo
                 const { data, error } = await supabase
                     .from('resultados')
                     .upsert({
