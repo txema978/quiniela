@@ -1367,7 +1367,7 @@
             }
         }
         
-        // FUNCIÓN UPDATEACIERTOS CORREGIDA CON ICONOS VISIBLES
+        // FUNCIÓN UPDATEACIERTOS CORREGIDA CON ICONOS VISIBLES EN DESKTOP
         function updateAciertos(partidoNumero, apuesta1, apuesta2, resultado) {
             console.log('### updateAciertos ###');
             console.log('Partido:', partidoNumero, 'Apuesta1:', apuesta1, 'Apuesta2:', apuesta2, 'Resultado:', resultado);
@@ -1380,7 +1380,7 @@
             
             if (!resultado || resultado === '' || resultado === '-') {
                 console.log('Sin resultado, mostrando guión');
-                container.innerHTML = '<span class="pendiente">-</span>';
+                container.innerHTML = '<span class="pendiente" style="font-size: 16px;">-</span>';
                 return;
             }
             
@@ -1389,18 +1389,18 @@
             
             console.log('Aciertos calculados:', {acierto1, acierto2});
             
-            // Usar caracteres simples que se vean en todos los navegadores
+            // Usar caracteres simples y colores CSS inline forzados
             const icono1 = acierto1 ? '✓' : '✗';
             const icono2 = acierto2 ? '✓' : '✗';
             const color1 = acierto1 ? '#10b981' : '#ef4444';
             const color2 = acierto2 ? '#10b981' : '#ef4444';
             
             container.innerHTML = `
-                <span style="color: ${color1}; font-weight: bold; font-size: 18px; margin-right: 8px;">${icono1}</span>
-                <span style="color: ${color2}; font-weight: bold; font-size: 18px;">${icono2}</span>
+                <span style="color: ${color1} !important; font-weight: bold !important; font-size: 20px !important; margin-right: 8px !important; display: inline-block !important;">${icono1}</span><span style="color: ${color2} !important; font-weight: bold !important; font-size: 20px !important; display: inline-block !important;">${icono2}</span>
             `;
             
             console.log('HTML de aciertos actualizado:', container.innerHTML);
+            console.log('Contenido visible del container:', container.textContent);
         }
         
         // FUNCIÓN CREATESEGUIMIENTOTABLE CORREGIDA
